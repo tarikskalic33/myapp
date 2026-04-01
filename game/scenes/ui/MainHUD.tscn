@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/Integrity_HUD.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/Mana_HUD.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/Static_Meter_HUD.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/Consistency_HUD.tscn" id="4"]
+
+[node name="MainHUD" type="CanvasLayer"]
+
+[node name="IntegrityHUD" parent="." instance=ExtResource("1")]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 220.0
+offset_bottom = 40.0
+
+[node name="ManaHUD" parent="." instance=ExtResource("2")]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 50.0
+offset_right = 200.0
+offset_bottom = 65.0
+
+[node name="StaticMeterHUD" parent="." instance=ExtResource("3")]
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -270.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 30.0
+grow_horizontal = 0
+
+[node name="ConsistencyHUD" parent="." instance=ExtResource("4")]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -60.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0

@@ -1,0 +1,116 @@
+{
+  "sessions": [
+    {
+      "timestamp": "2026-03-21T07:03:00.040Z",
+      "objective": "unknown",
+      "composite": 2,
+      "autonomy_level": "Level 3 (Expert) — human gates active",
+      "faculties": {
+        "perception": 100,
+        "generation": 30,
+        "attention": 100,
+        "learning": 50,
+        "memory": 100,
+        "reasoning": 25,
+        "metacognition": 40,
+        "executive_functions": 10,
+        "problem_solving": 45,
+        "social_cognition": 20
+      },
+      "multipliers": {
+        "metacognition": 40,
+        "executive_functions": 10
+      },
+      "neuromodulators": {
+        "attention_gain": 1,
+        "learning_rate": 0.15,
+        "stress_level": 0,
+        "curiosity_drive": 0.5
+      },
+      "metabolism": "HUNGRY",
+      "evolution_triggers": [
+        "GENERATION → add MISSION_REPORT logging to loop",
+        "REASONING → enforce plan.md + track PLAN_MUTATED",
+        "METACOGNITION → add SKILL_CHECK logging to pre-flight",
+        "EXECUTIVE → enforce plan.md as hard gate",
+        "SOCIAL → enforce Mission Report in output contract"
+      ]
+    },
+    {
+      "timestamp": "2026-03-26T08:46:51.221Z",
+      "objective": "Kaggle metacognition track submission — April 16 deadline",
+      "composite": 2,
+      "autonomy_level": "Level 3 (Expert) — human gates active",
+      "faculties": {
+        "perception": 100,
+        "generation": 30,
+        "attention": 100,
+        "learning": 25,
+        "memory": 70,
+        "reasoning": 25,
+        "metacognition": 40,
+        "executive_functions": 10,
+        "problem_solving": 45,
+        "social_cognition": 20
+      },
+      "multipliers": {
+        "metacognition": 40,
+        "executive_functions": 10
+      },
+      "neuromodulators": {
+        "attention_gain": 0.82,
+        "learning_rate": 0.5,
+        "stress_level": 0.3,
+        "curiosity_drive": 0.65,
+        "rir_signal": 0.9511
+      },
+      "metabolism": "HUNGRY",
+      "evolution_triggers": [
+        "LEARNING → populate skills.md and workflows.md",
+        "GENERATION → add MISSION_REPORT logging to loop",
+        "REASONING → enforce plan.md + track PLAN_MUTATED",
+        "METACOGNITION → add SKILL_CHECK logging to pre-flight",
+        "EXECUTIVE → enforce plan.md as hard gate",
+        "SOCIAL → enforce Mission Report in output contract"
+      ]
+    },
+    {
+      "timestamp": "2026-03-26T15:03:42.561Z",
+      "objective": "Kaggle metacognition track submission — April 16 deadline",
+      "composite": 2,
+      "autonomy_level": "Level 3 (Expert) — human gates active",
+      "faculties": {
+        "perception": 100,
+        "generation": 30,
+        "attention": 100,
+        "learning": 25,
+        "memory": 70,
+        "reasoning": 25,
+        "metacognition": 40,
+        "executive_functions": 10,
+        "problem_solving": 45,
+        "social_cognition": 20
+      },
+      "multipliers": {
+        "metacognition": 40,
+        "executive_functions": 10
+      },
+      "neuromodulators": {
+        "attention_gain": 0.82,
+        "learning_rate": 0.5,
+        "stress_level": 0.3,
+        "curiosity_drive": 0.65,
+        "rir_signal": 0.9511
+      },
+      "metabolism": "HUNGRY",
+      "evolution_triggers": [
+        "LEARNING → populate skills.md and workflows.md",
+        "GENERATION → add MISSION_REPORT logging to loop",
+        "REASONING → enforce plan.md + track PLAN_MUTATED",
+        "METACOGNITION → add SKILL_CHECK logging to pre-flight",
+        "EXECUTIVE → enforce plan.md as hard gate",
+        "SOCIAL → enforce Mission Report in output contract"
+      ]
+    }
+  ]
+}

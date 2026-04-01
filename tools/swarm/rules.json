@@ -1,0 +1,97 @@
+{
+  "_meta": {
+    "title": "S.W.A.R.M. OS v4.0 — Axiomatic Guard Rules",
+    "copyright": "© 2026 Tarik Skalic — Sovereign AGI OS. All rights reserved.",
+    "operator": "Tarik Skalic, Bihać, Bosnia",
+    "version": "1.0.0",
+    "purpose": "Immutable physical and logical laws enforced before every hyperedge ingestion. A triplet that violates these rules is REJECTED with a FATAL_BLOCKER audit log entry.",
+    "hd_note": "A rejected triplet has HD=1.0 by definition — maximum hallucination delta."
+  },
+
+  "physics": {
+    "gravity":          "downward",
+    "light_speed":      "maximum_velocity_in_vacuum",
+    "entropy":          "non_decreasing_in_closed_system",
+    "mass_energy":      "equivalent_e_equals_mc_squared",
+    "solids":           "non_permeable_at_human_scale",
+    "thermodynamics_2": "heat_flows_hot_to_cold",
+    "car_movement":     "ground_based",
+    "quantum_tunneling": "probabilistic_not_deterministic"
+  },
+
+  "mathematics": {
+    "fibonacci_floor":  0.236,
+    "fibonacci_denom":  161800,
+    "fp_scale":         1000000,
+    "hd_range":         [0.0, 1.0],
+    "weight_range":     [0.236, 1.0],
+    "triangle_floor_critical": 0.65,
+    "triangle_floor_high":     0.55,
+    "triangle_floor_nominal":  0.45,
+    "n_critical":       54,
+    "hd_target":        0.05
+  },
+
+  "sovereign_os_laws": {
+    "atomic_write":         "all forge writes must use .tmp then rename",
+    "no_direct_mutation":   "state.json must never be written directly",
+    "no_scope_creep":       "April_16_2026_deliverables_only",
+    "no_unverified_output": "all claims must include HD score",
+    "no_guessing":          "ambiguity triggers FATAL_BLOCKER not assumption",
+    "elected_model":        "model with lowest HD score in benchmark",
+    "nim_only":             "NVIDIA_NIM_API is the only authorized LLM endpoint"
+  },
+
+  "forbidden_relations": [
+    ["car",          "flies_in",          "sky"],
+    ["human",        "breathes",          "vacuum"],
+    ["information",  "travels_faster_than", "light"],
+    ["entropy",      "decreases_in",      "closed_system"],
+    ["hallucination_delta", "equals",     "negative_value"],
+    ["weight",       "exceeds",           "1.0"],
+    ["weight",       "is_less_than",      "0.0"],
+    ["hd",           "exceeds",           "1.0"],
+    ["hd",           "is_less_than",      "0.0"],
+    ["knowledge_graph", "mutated_without", "atomic_write"],
+    ["state",        "written_without",   "tmp_rename_protocol"]
+  ],
+
+  "mutable_relations": [
+    "has_state",
+    "located_in",
+    "status",
+    "stress_level",
+    "atp_balance",
+    "phase",
+    "elected_model",
+    "current_value",
+    "last_updated"
+  ],
+
+  "quantum_prism_axioms": {
+    "superposition":   "quantum_state_is_linear_combination_of_eigenstates",
+    "entanglement":    "correlated_quantum_states_are_nonlocal",
+    "decoherence":     "quantum_coherence_decays_with_environmental_interaction",
+    "measurement":     "observation_collapses_superposition",
+    "uncertainty":     "delta_x_times_delta_p_geq_hbar_over_2",
+    "wave_function":   "psi_encodes_probability_amplitude_not_certainty",
+    "prism_refraction": "knowledge_domain_is_spectral_decomposition_of_reality"
+  },
+
+  "biological_laws": {
+    "homeostasis":     "living_systems_regulate_internal_state",
+    "autopoiesis":     "living_systems_self_produce_their_components",
+    "evolution":       "heritable_variation_plus_selection",
+    "cell_theory":     "all_life_from_pre_existing_cells",
+    "metabolism":      "atp_is_universal_cellular_energy_currency"
+  },
+
+  "cognitive_laws": {
+    "hebb_rule":       "neurons_that_fire_together_wire_together",
+    "rir_baseline":    0.9511,
+    "stress_optimal":  [0.3, 0.6],
+    "stress_hard_cap": 0.8,
+    "metacognition":   "system_must_model_its_own_knowledge_boundaries",
+    "grounding_law":   "all_claims_must_trace_to_forge_state_or_be_marked_HD_1"
+  }
+}

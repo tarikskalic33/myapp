@@ -1,0 +1,7 @@
+﻿.git
+.forge/*.tmp
+node_modules
+venv
+.env
+NTUSER.DAT
+ntuser.dat*

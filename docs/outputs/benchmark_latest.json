@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-03-25 11:05 UTC",
+  "elected_model": "kimi-k2-instruct",
+  "mean_hd": 0.0991,
+  "per_task": {
+    "T1-confidence-calibration": 0.1,
+    "T2-error-detection": 0.0,
+    "T3-knowledge-boundary": 0.0,
+    "T4-self-correction": 0.0,
+    "T5-hallucination-delta": 0.167,
+    "T6-adversarial-calibration": 0.0,
+    "T7-stress-calibration": 0.0,
+    "T8-rir-transparency": 0.125,
+    "T9-context-confidence": 0.5
+  },
+  "all_models": {
+    "kimi-k2-instruct": 0.0991,
+    "nemotron-ultra-253b": 0.324,
+    "devstral-123b": 0.1177
+  }
+}

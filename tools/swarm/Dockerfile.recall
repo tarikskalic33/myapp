@@ -1,0 +1,15 @@
+# © 2026 Tarik Skalic — Sovereign AGI OS. All rights reserved.
+# S.W.A.R.M. Recall Container — NIM-grounded query interface
+FROM python:3.11-slim
+
+LABEL maintainer="Tarik Skalic <tarikskalic33@gmail.com>"
+LABEL description="S.W.A.R.M. Recall Engine — hallucination-free hypergraph queries"
+
+WORKDIR /app
+
+COPY requirements_swarm.txt ./
+RUN pip install --no-cache-dir -r requirements_swarm.txt
+
+COPY . .
+
+CMD ["python", "-m", "tools.swarm.recall"]

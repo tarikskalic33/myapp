@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-03-25T22:04:40.773172+00:00",
+  "nodes_before": 48,
+  "edges_before": 35,
+  "added_nodes": [
+    {
+      "id": "limbic_cortisol_loop",
+      "parent": "hpa_axis_dynamics",
+      "weight": 0.236,
+      "weight_fixed": 236000,
+      "density": "CRITICAL",
+      "benchmark": "cortisol_spike_recovery_rate"
+    },
+    {
+      "id": "bayesian_hierarchical_brain",
+      "parent": "biomimetic_vector_hierarchy",
+      "weight": 0.236082,
+      "weight_fixed": 236082,
+      "density": "CRITICAL",
+      "benchmark": "predictive_coding_calibration"
+    },
+    {
+      "id": "embodied_action_loop",
+      "parent": "sensorimotor_feedback_loop",
+      "weight": 0.236,
+      "weight_fixed": 236000,
+      "density": "HIGH",
+      "benchmark": "action_grounding_fidelity"
+    },
+    {
+      "id": "clonal_selection_algorithm",
+      "parent": "antifragile_immunity",
+      "weight": 0.236,
+      "weight_fixed": 236000,
+      "density": "HIGH",
+      "benchmark": "clonal_expansion_convergence"
+    },
+    {
+      "id": "natural_selection_simulator",
+      "parent": "evolutionary_weight_scaling",
+      "weight": 0.236,
+      "weight_fixed": 236000,
+      "density": "NOMINAL",
+      "benchmark": "fitness_landscape_navigation"
+    },
+    {
+      "id": "attention_bottleneck_theorem",
+      "parent": "shannon_entropy_neural",
+      "weight": 0.236,
+      "weight_fixed": 236000,
+      "density": "CRITICAL",
+      "benchmark": "bottleneck_compression_ratio"
+    }
+  ],
+  "skipped_nodes": [],
+  "errors": [],
+  "nodes_after": 54,
+  "edges_after": 41,
+  "nodes_added_count": 6,
+  "graph_hd_after": 0.061111,
+  "graph_hd_before": 0.064375
+}

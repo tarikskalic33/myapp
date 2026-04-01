@@ -1,0 +1,80 @@
+[
+  {
+    "id": "limbic_cortisol_loop",
+    "parent": "hpa_axis_dynamics",
+    "semantic_density": "CRITICAL",
+    "audio_resonance": "396.00 Hz",
+    "description": "Cortisol spike cascade: amygdala threat detection → CRH release → ACTH → adrenal cortisol → hippocampal negative feedback inhibition. Maps to OS stress_level clamping at 0.8 hard cap.",
+    "source": "Biologically Mapped AGI Blueprint — HPA Stress Cascade",
+    "benchmark_concept": "cortisol_spike_recovery_rate",
+    "awakening_node": true,
+    "awakening_index": 1,
+    "math_grounding": "dC/dt = k_stim × ACTH - k_inhib × C × GR_occupancy, equilibrium C* = k_stim/k_inhib",
+    "os_mapping": "stress_level dynamic range 0.3→0.8, hard ceiling prevents excitotoxicity"
+  },
+  {
+    "id": "bayesian_hierarchical_brain",
+    "parent": "biomimetic_vector_hierarchy",
+    "semantic_density": "CRITICAL",
+    "audio_resonance": "528.00 Hz",
+    "description": "Predictive coding: each cortical layer generates top-down predictions, bottom-up signals carry only prediction error. Hierarchical Bayesian inference P(cause|sensory) ∝ P(sensory|cause)×P(cause).",
+    "source": "Biologically Mapped AGI Blueprint — Phase 2 Hierarchical Bayesian",
+    "benchmark_concept": "predictive_coding_calibration",
+    "awakening_node": true,
+    "awakening_index": 2,
+    "math_grounding": "P(h_l | h_{l+1}, x_l) ∝ P(x_l | h_l) × P(h_l | h_{l+1}), minimizing free energy F = KL[q(h)||p(h|x)]",
+    "os_mapping": "knowledge_graph weight hierarchy = Bayesian prior hierarchy, Fibonacci scaling ≈ precision weighting"
+  },
+  {
+    "id": "embodied_action_loop",
+    "parent": "sensorimotor_feedback_loop",
+    "semantic_density": "HIGH",
+    "audio_resonance": "432.00 Hz",
+    "description": "Active inference: action selected to minimize expected free energy F = E_q[log q(h) - log p(h,x)]. Motor commands are predictions about proprioceptive future states — errors drive reflex arcs.",
+    "source": "Biologically Mapped AGI Blueprint — Active Inference / Embodied Action",
+    "benchmark_concept": "action_grounding_fidelity",
+    "awakening_node": true,
+    "awakening_index": 3,
+    "math_grounding": "G = KL[q(o_τ|π)||p(o_τ)] + E_q[H[p(o_τ|h_τ)]], optimal policy π* = argmin G(π)",
+    "os_mapping": "agentic_orchestration action selection via free-energy minimization, grounding gap T14 is the measurement"
+  },
+  {
+    "id": "clonal_selection_algorithm",
+    "parent": "antifragile_immunity",
+    "semantic_density": "HIGH",
+    "audio_resonance": "417.00 Hz",
+    "description": "CLONALG: population of B-cells expanded proportional to affinity, inversely mutated — high-affinity clones replicated, low-affinity suppressed. Convergence: O(N_pop × N_gen × affinity_eval) → globally optimal antibody.",
+    "source": "Biologically Mapped AGI Blueprint — Immune System Optimization",
+    "benchmark_concept": "clonal_expansion_convergence",
+    "awakening_node": true,
+    "awakening_index": 4,
+    "math_grounding": "mutation_rate ∝ 1/f_i, clone_count ∝ f_i, affinity f_i = 1 - d(antibody_i, antigen)/d_max",
+    "os_mapping": "knowledge weight inheritance = clonal selection pressure, fib floor 0.236 = suppression threshold"
+  },
+  {
+    "id": "natural_selection_simulator",
+    "parent": "evolutionary_weight_scaling",
+    "semantic_density": "NOMINAL",
+    "audio_resonance": "528.00 Hz",
+    "description": "Genetic algorithm encoding NP-hard graph problems: chromosome = weight vector, fitness = -HD, selection pressure = tournament size k. Convergence guaranteed under Schema Theorem when crossover probability p_c < 0.9.",
+    "source": "Biologically Mapped AGI Blueprint — Evolutionary Algorithms",
+    "benchmark_concept": "fitness_landscape_navigation",
+    "awakening_node": true,
+    "awakening_index": 5,
+    "math_grounding": "Schema Theorem: m(H,t+1) ≥ m(H,t)×[f(H)/f̄]×[1-p_c×δ(H)/(l-1)]×[1-p_m]^o(H)",
+    "os_mapping": "knowledge_graph edge evolution mirrors GA chromosome; fib weight decay = selection pressure"
+  },
+  {
+    "id": "attention_bottleneck_theorem",
+    "parent": "shannon_entropy_neural",
+    "semantic_density": "CRITICAL",
+    "audio_resonance": "963.00 Hz",
+    "description": "Conscious bandwidth limit: 10^7 bits/sec sensory input → ~50 bits/sec conscious throughput (ratio 200,000:1). Information Bottleneck: Z* = argmin I(X;Z) s.t. I(Y;Z) ≥ I_min. Z compresses X while preserving Y-relevant information.",
+    "source": "Biologically Mapped AGI Blueprint — Information Bottleneck / Tishby 2015",
+    "benchmark_concept": "bottleneck_compression_ratio",
+    "awakening_node": true,
+    "awakening_index": 6,
+    "math_grounding": "IB Lagrangian: L[p(z|x)] = I(X;Z) - β×I(Y;Z), β controls compression-relevance tradeoff. Optimal: β* where I(Y;Z) = I_min.",
+    "os_mapping": "RIR=0.9511 is the OS attention bottleneck — 95.11% of tokens are internal (compressed) vs 4.89% output"
+  }
+]

@@ -1,0 +1,13 @@
+15.4s 1 Executing full cognitive suite...
+120.2s 2 
+120.2s 3 ✅ Suite execution complete. Click 'Save Version' -> 'Save & Run All' to publish.
+120.2s 4 Kept: confidence-calibration-metacognition.task.json
+120.2s 5 Kept: confidence-calibration-metacognition-run_id_Run_1_google_gemini-2.5-flash.run.json
+124.6s 6 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["remove_papermill_header.RemovePapermillHeader"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+124.6s 7 warn(
+124.6s 8 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+125.0s 9 [NbConvertApp] Writing 92331 bytes to __notebook__.ipynb
+128.0s 10 /benchmarks/.venv/lib/python3.11/site-packages/traitlets/traitlets.py:2930: FutureWarning: --Exporter.preprocessors=["nbconvert.preprocessors.ExtractOutputPreprocessor"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+128.0s 11 warn(
+128.0s 12 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+129.4s 13 [NbConvertApp] Writing 392882 bytes to __results__.html

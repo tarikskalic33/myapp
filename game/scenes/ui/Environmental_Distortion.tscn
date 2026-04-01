@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Shader" path="res://shaders/distortion.gdshader" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/Environmental_Distortion.gd" id="2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_distort"]
+shader = ExtResource("1")
+shader_parameter/distortion_strength = 0.0
+shader_parameter/glitch_amount = 0.0
+shader_parameter/chromatic_aberration = 0.003
+shader_parameter/scanline_strength = 0.05
+
+[node name="EnvironmentalDistortion" type="ColorRect"]
+material = SubResource("ShaderMaterial_distort")
+custom_minimum_size = Vector2(1280, 720)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2")

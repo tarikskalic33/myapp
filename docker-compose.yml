@@ -1,0 +1,127 @@
+# ============================================================
+# S.W.A.R.M. OS v4.0 — Sovereign AGI OS Deployment Hub
+# © 2026 Tarik Skalic — Sovereign AGI OS. All rights reserved.
+# Operator: Tarik Skalic, Bihać, Bosnia
+#
+# Services:
+#   swarm-brain      — S.W.A.R.M. Equilibrium Engine (FastAPI)
+#   swarm-forager    — Autonomous Wikipedia forager (NVIDIA NIM)
+#   swarm-dashboard  — Visual Cortex (Streamlit + D3.js)
+#   swarm-recall     — Recall CLI (interactive, NIM-grounded)
+#
+# Usage:
+#   docker-compose up swarm-brain                # start core only
+#   docker-compose up                            # full stack
+#   docker-compose up --build swarm-forager      # rebuild forager
+#   docker-compose run --rm swarm-recall         # interactive recall
+#
+# NOTE: NVIDIA_API_KEY is loaded from .env file automatically.
+#       Never hardcode API keys in this file.
+# ============================================================
+
+version: '3.8'
+
+services:
+
+  # ──────────────────────────────────────────────────────────
+  # THE BRAIN: S.W.A.R.M. Equilibrium Engine
+  # FastAPI server + Dream State background thread
+  # Persists to ./forge/ via atomic writes
+  # ──────────────────────────────────────────────────────────
+  swarm-brain:
+    build:
+      context: .
+      dockerfile: tools/swarm/Dockerfile.brain
+    image: sovereign-swarm-brain:4.0
+    container_name: swarm-brain
+    ports:
+      - "8001:8001"
+    environment:
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY}
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./.forge:/app/.forge          # Persist knowledge graph
+      - ./tools/swarm:/app/tools/swarm
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # ──────────────────────────────────────────────────────────
+  # THE FORAGER: Autonomous Wikipedia Explorer
+  # Feeds the Brain with knowledge triplets via NIM
+  # Runs after Brain is healthy
+  # ──────────────────────────────────────────────────────────
+  swarm-forager:
+    build:
+      context: .
+      dockerfile: tools/swarm/Dockerfile.forager
+    image: sovereign-swarm-forager:4.0
+    container_name: swarm-forager
+    depends_on:
+      swarm-brain:
+        condition: service_healthy
+    environment:
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY}
+      - EQUILIBRIUM_URL=http://swarm-brain:8001
+      - FORAGER_SEED=${FORAGER_SEED:-Autopoiesis}
+      - FORAGER_CYCLES=${FORAGER_CYCLES:-20}
+      - FORAGER_DELAY=${FORAGER_DELAY:-5.0}
+      - PYTHONUNBUFFERED=1
+    restart: on-failure
+
+  # ──────────────────────────────────────────────────────────
+  # THE EYE: Visual Cortex Dashboard (Streamlit + D3.js)
+  # Serves the sovereign dashboard at port 8501
+  # ──────────────────────────────────────────────────────────
+  swarm-dashboard:
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    image: sovereign-dashboard:4.0
+    container_name: swarm-dashboard
+    ports:
+      - "8501:8501"
+      - "8080:8080"         # Static files (index.html D3 visualizer)
+    depends_on:
+      - swarm-brain
+    environment:
+      - FORGE_PATH=/app/.forge
+    volumes:
+      - ./.forge:/app/.forge:ro       # Read-only for dashboard
+      - ./dashboard:/app/dashboard
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────────────────
+  # THE RECALL ENGINE: Interactive NIM-grounded query CLI
+  # Run with: docker-compose run --rm swarm-recall
+  # ──────────────────────────────────────────────────────────
+  swarm-recall:
+    build:
+      context: .
+      dockerfile: tools/swarm/Dockerfile.recall
+    image: sovereign-swarm-recall:4.0
+    container_name: swarm-recall
+    depends_on:
+      swarm-brain:
+        condition: service_healthy
+    environment:
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY}
+      - EQUILIBRIUM_URL=http://swarm-brain:8001
+    volumes:
+      - ./.forge:/app/.forge:ro
+    stdin_open: true
+    tty: true
+    profiles:
+      - recall              # Only run when explicitly requested
+
+networks:
+  default:
+    name: sovereign-os-net
+
+volumes:
+  forge_data:
+    driver: local

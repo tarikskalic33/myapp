@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/vfx/SlashEffect.gd" id="1"]
+[ext_resource type="Shader" path="res://shaders/slash_arc.gdshader" id="2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_slash"]
+shader = ExtResource("2")
+shader_parameter/progress = 0.0
+shader_parameter/edge_color = Color(1.0, 0.95, 0.7, 1.0)
+shader_parameter/trail_color = Color(0.0, 1.0, 1.0, 0.6)
+shader_parameter/arc_thickness = 0.12
+shader_parameter/arc_angle = 2.0
+shader_parameter/sharpness = 8.0
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_slash"]
+size = Vector2(128, 128)
+
+[node name="SlashEffect" type="Node2D"]
+script = ExtResource("1")
+
+[node name="ArcSprite" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_slash")
+modulate = Color(1, 1, 1, 0)
+scale = Vector2(1.5, 1.5)
+texture = SubResource("PlaceholderTexture2D_slash")

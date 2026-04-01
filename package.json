@@ -1,0 +1,23 @@
+{
+  "name": "sovereign-agi-os",
+  "version": "3.2.0",
+  "description": "Biologically-Mapped AGI: Cognitive Exoskeleton for AI Collaboration",
+  "main": "start.js",
+  "scripts": {
+    "start": "node start.js",
+    "bot": "node sovereign-discord.js",
+    "validate": "node tools/validate-state.js",
+    "eval": "node tools/cognitive-eval.js",
+    "logs": "node tools/analyze-logs.js",
+    "test:heartbeat": "node first-heartbeat.js",
+    "test:stress": "node sovereign-stress-test.js",
+    "test:failure": "node failure-path-verification.js",
+    "test:enforce": "node enforce-test.js",
+    "audit": "node audit-log.js",
+    "audit:json": "node audit-log.js --json"
+  },
+  "dependencies": {
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.3.1"
+  }
+}

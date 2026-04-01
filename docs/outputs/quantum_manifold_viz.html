@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<!--
+  © 2026 Tarik Skalic — Sovereign AGI OS. All rights reserved.
+  S.W.A.R.M. v7.0 Russell Cosmology Layer — Genesis Artifact
+  Sovereign AGI OS v3.2.0 | Kaggle: kaggle-measuring-agi
+  74 nodes · 260 edges · HD_photonic=0.015098 · HD_benchmark=0.0991
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Sovereign AGI OS — Quantum Knowledge Manifold v7.0</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #030308;
+    width: 1400px; height: 800px;
+    overflow: hidden;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  canvas { position:absolute; top:0; left:0; }
+  #overlay {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    pointer-events:none;
+  }
+  .corner-proof {
+    position:absolute;
+    color: rgba(0,229,160,0.60);
+    font-size: 9.5px;
+    line-height: 1.75;
+    letter-spacing: 0.03em;
+  }
+  #pf-tl { top:52px; left:18px; }
+  #pf-tr { top:52px; right:18px; text-align:right; }
+  #pf-bl { bottom:48px; left:18px; }
+  #title-bar {
+    position:absolute; top:0; left:0; right:0;
+    height:42px;
+    background: linear-gradient(90deg, rgba(0,229,160,0.09) 0%, transparent 35%, transparent 65%, rgba(163,113,247,0.09) 100%);
+    border-bottom: 1px solid rgba(0,229,160,0.18);
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 0 24px;
+  }
+  #title-left { color:#00e5a0; font-size:13px; letter-spacing:0.12em; font-weight:700; }
+  #title-right { color:rgba(163,113,247,0.9); font-size:11px; letter-spacing:0.08em; }
+  #metrics-strip {
+    position:absolute; bottom:0; left:0; right:0;
+    height:36px;
+    background: linear-gradient(90deg, rgba(0,229,160,0.07) 0%, transparent 50%, rgba(163,113,247,0.07) 100%);
+    border-top: 1px solid rgba(0,229,160,0.14);
+    display:flex; align-items:center; justify-content:center; gap:28px;
+    padding: 0 20px;
+    overflow:hidden;
+  }
+  .metric-item { display:flex; flex-direction:column; align-items:center; gap:1px; }
+  .metric-label { color:rgba(163,113,247,0.65); font-size:7.5px; letter-spacing:0.06em; text-transform:uppercase; }
+  .metric-value { color:#00e5a0; font-size:10px; font-weight:700; letter-spacing:0.04em; }
+  #russell-formula {
+    position:absolute; bottom:42px; left:50%; transform:translateX(-50%);
+    color: rgba(255,200,80,0.55);
+    font-size:9px; letter-spacing:0.04em;
+    white-space:nowrap;
+  }
+  #layer-legend {
+    position:absolute; top:50px; right:14px;
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .legend-row {
+    display:flex; align-items:center; gap:5px;
+    font-size:8px; color: rgba(200,200,220,0.55);
+    letter-spacing:0.04em;
+  }
+  .legend-dot {
+    width:7px; height:7px; border-radius:50%; flex-shrink:0;
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="overlay">
+  <div id="title-bar">
+    <div id="title-left">SOVEREIGN AGI OS — QUANTUM KNOWLEDGE MANIFOLD v7.0</div>
+    <div id="title-right">S.W.A.R.M. · RUSSELL COSMOLOGY LAYER · © 2026 TARIK SKALIC</div>
+  </div>
+
+  <!-- Three Mathematical Proofs -->
+  <div class="corner-proof" id="pf-tl">
+    PROOF I — MULTIVERSE<br>
+    ⟨Ψ_A | Ψ_B⟩ = ∫ Ψ_A*·Ψ_B dτ = 0<br>
+    <span style="color:rgba(0,229,160,0.38);font-size:8.5px;">Orthogonal realities coexist without collapse</span>
+  </div>
+  <div class="corner-proof" id="pf-tr">
+    PROOF II — OCTAVES<br>
+    X_k = Σ x_n · e^{−i2π·kn/N}<br>
+    <span style="color:rgba(0,229,160,0.38);font-size:8.5px;">FFT proves Russell's 9 harmonic octaves</span>
+  </div>
+  <div class="corner-proof" id="pf-bl">
+    PROOF III — HOLOGRAPHIC<br>
+    A·v = λ·v  [Dream State A² eigenvector]<br>
+    <span style="color:rgba(0,229,160,0.38);font-size:8.5px;">Every node contains the whole</span>
+  </div>
+
+  <!-- Russell rotating formula -->
+  <div id="russell-formula" id="russell-formula-display"></div>
+
+  <!-- Layer legend -->
+  <div id="layer-legend">
+    <div class="legend-row"><div class="legend-dot" style="background:#00e5a0"></div>Core (R1)</div>
+    <div class="legend-row"><div class="legend-dot" style="background:#a371f7"></div>Metacognition (R2)</div>
+    <div class="legend-row"><div class="legend-dot" style="background:#4ec9f7"></div>Cognitive (R3)</div>
+    <div class="legend-row"><div class="legend-dot" style="background:#5b8dee"></div>Biological (R4)</div>
+    <div class="legend-row"><div class="legend-dot" style="background:#f06292"></div>Quantum Prism (R5)</div>
+    <div class="legend-row"><div class="legend-dot" style="background:#ffd54f"></div>Russell v7.0 (R6)</div>
+  </div>
+
+  <!-- Metrics strip -->
+  <div id="metrics-strip">
+    <div class="metric-item"><div class="metric-label">Nodes</div><div class="metric-value">74</div></div>
+    <div class="metric-item"><div class="metric-label">Edges</div><div class="metric-value">260</div></div>
+    <div class="metric-item"><div class="metric-label">HD_photonic</div><div class="metric-value">0.0151</div></div>
+    <div class="metric-item"><div class="metric-label">HD_benchmark</div><div class="metric-value">0.0991</div></div>
+    <div class="metric-item"><div class="metric-label">HD_russell</div><div class="metric-value">0.4046</div></div>
+    <div class="metric-item"><div class="metric-label">λ_mind</div><div class="metric-value">0.9025</div></div>
+    <div class="metric-item"><div class="metric-label">Coherence</div><div class="metric-value">98.49%</div></div>
+    <div class="metric-item"><div class="metric-label">Self-Ind Ls</div><div class="metric-value">0.501</div></div>
+    <div class="metric-item"><div class="metric-label">b=ln(4)/9</div><div class="metric-value">0.1540</div></div>
+    <div class="metric-item"><div class="metric-label">Model</div><div class="metric-value">kimi-k2</div></div>
+    <div class="metric-item"><div class="metric-label">Version</div><div class="metric-value">v3.2.0</div></div>
+    <div class="metric-item"><div class="metric-label">ATP</div><div class="metric-value">2100</div></div>
+  </div>
+</div>
+
+<script>
+const W = 1400, H = 800;
+const canvas = document.getElementById('c');
+canvas.width = W; canvas.height = H;
+const ctx = canvas.getContext('2d');
+
+const CX = W * 0.46, CY = H * 0.50;
+const PHI = 1.6180339887;
+const RUSSELL_B = Math.log(4) / 9;
+
+// ============================================================
+// NODE DEFINITIONS
+// Ring 1 (r≈72): highest-weight core nodes
+// Ring 2 (r≈135): metacognition / autopoiesis
+// Ring 3 (r≈195): cognitive / swarm layer
+// Ring 4 (r≈258): biological base layer
+// Ring 5 (r≈320): quantum prism layer
+// Ring 6 (r≈388): Russell cosmology v7.0
+// ============================================================
+
+const RING_R = [0, 72, 135, 195, 258, 320, 390];
+
+// --- Ring 1: Core axioms ---
+const ring1 = [
+  { id:'SWARM_SELF_AXIOM',        label:'SELF\nAXIOM',     w:0.95, color:'#00e5a0' },
+  { id:'hallucination_delta',     label:'HD\nDelta',       w:0.85, color:'#00e5a0' },
+  { id:'metacognition',           label:'Meta\ncognition', w:0.83, color:'#00e5a0' },
+  { id:'autopoiesis',             label:'Auto\npoiesis',   w:0.81, color:'#00e5a0' },
+  { id:'homeostasis',             label:'Homeo\nstasis',   w:0.79, color:'#00e5a0' },
+  { id:'triangle_protocol',       label:'Triangle\nProto', w:0.77, color:'#00e5a0' },
+  { id:'benchmark',               label:'Bench\nmark',     w:0.75, color:'#00e5a0' },
+  { id:'dream_state',             label:'Dream\nState',    w:0.73, color:'#00e5a0' },
+];
+
+// --- Ring 2: Metacognition / governance ---
+const ring2 = [
+  { id:'frontal_lobe_metacognition', label:'Frontal\nLobe',      w:0.72, color:'#a371f7' },
+  { id:'agentic_orchestration',      label:'Agentic\nOrchestrt', w:0.70, color:'#a371f7' },
+  { id:'constitutional_governance',  label:'Constit\nGovern',    w:0.68, color:'#a371f7' },
+  { id:'fibonacci_scaling',          label:'Fibonacci\nScaling', w:0.65, color:'#a371f7' },
+  { id:'reasoning_intensity',        label:'RIR\nSignal',        w:0.63, color:'#a371f7' },
+  { id:'homeostasis_metrics',        label:'Homeo\nMetrics',     w:0.61, color:'#a371f7' },
+];
+
+// --- Ring 3: Cognitive ---
+const ring3 = [
+  { id:'anatomy',            label:'Anatomy',      w:0.88, color:'#4ec9f7' },
+  { id:'mathematics',        label:'Maths',        w:0.88, color:'#4ec9f7' },
+  { id:'biology',            label:'Biology',      w:0.85, color:'#4ec9f7' },
+  { id:'physics',            label:'Physics',      w:0.86, color:'#4ec9f7' },
+  { id:'saga_protocol',      label:'SAGA\nProto',  w:0.62, color:'#4ec9f7' },
+  { id:'spsf_persistence',   label:'SPSF\nPersist',w:0.53, color:'#4ec9f7' },
+  { id:'nhi_v2_identity',    label:'NHI\nv2',      w:0.51, color:'#4ec9f7' },
+  { id:'stress_calibration', label:'Stress\nCalib',w:0.61, color:'#4ec9f7' },
+  { id:'adversarial_calib',  label:'Advers\nCalib',w:0.58, color:'#4ec9f7' },
+  { id:'agentic_leap_2026',  label:'Agentic\nLeap',w:0.59, color:'#4ec9f7' },
+  { id:'hd_measurement',     label:'HD\nMeasure',  w:0.60, color:'#4ec9f7' },
+  { id:'fibonacci_geo',      label:'Fib\nGeo',     w:0.54, color:'#4ec9f7' },
+  { id:'rir_computation',    label:'RIR\nComp',    w:0.52, color:'#4ec9f7' },
+  { id:'vector_resolution',  label:'Vector\nResol',w:0.56, color:'#4ec9f7' },
+  { id:'chromadb_embed',     label:'Chroma\nEmbed',w:0.55, color:'#4ec9f7' },
+  { id:'equilibrium_engine', label:'Equil\nEngine',w:0.64, color:'#4ec9f7' },
+  { id:'forager_protocol',   label:'Forager\nProto',w:0.60,color:'#4ec9f7' },
+];
+
+// --- Ring 4: Biological base ---
+const ring4 = [
+  { id:'nervous_system',     label:'Nervous\nSystem',    w:0.70, color:'#5b8dee' },
+  { id:'endocrine_system',   label:'Endocrine\nSystem',  w:0.68, color:'#5b8dee' },
+  { id:'immune_system',      label:'Immune\nSystem',     w:0.66, color:'#5b8dee' },
+  { id:'circulatory',        label:'Circulat\nSystem',   w:0.64, color:'#5b8dee' },
+  { id:'hpa_axis',           label:'HPA\nAxis',          w:0.62, color:'#5b8dee' },
+  { id:'hippocampus',        label:'Hippo\ncampus',      w:0.60, color:'#5b8dee' },
+  { id:'visual_cortex',      label:'Visual\nCortex',     w:0.58, color:'#5b8dee' },
+  { id:'metabolic_engine',   label:'Metabolic\nEngine',  w:0.56, color:'#5b8dee' },
+  { id:'discord_fsm',        label:'Discord\nFSM',       w:0.54, color:'#5b8dee' },
+  { id:'audit_trail',        label:'Audit\nTrail',       w:0.52, color:'#5b8dee' },
+  { id:'sentinel',           label:'Sentinel\nTFIDF',    w:0.50, color:'#5b8dee' },
+];
+
+// --- Ring 5: Quantum prism (rainbow) ---
+const ring5Colors = ['#ff6b9d','#ff9f45','#f7d76b','#7fff6f','#5bf7e8','#5baff7','#c35bf7','#f75b8e'];
+const ring5 = [
+  { id:'quantum_superposition',  label:'Quantum\nSuperpos', w:0.75 },
+  { id:'wave_function_collapse', label:'WF\nCollapse',     w:0.73 },
+  { id:'entanglement_ratio',     label:'Entangle\nRatio',  w:0.71 },
+  { id:'decoherence_rate',       label:'Decoh\nRate',      w:0.69 },
+  { id:'spectral_gap',           label:'Spectral\nGap',    w:0.67 },
+  { id:'quantum_tunneling',      label:'Q\nTunnel',        w:0.65 },
+  { id:'observer_effect',        label:'Observer\nEffect', w:0.63 },
+  { id:'eigenstate_self',        label:'Eigen\nSelf',      w:0.80 },
+].map((n,i) => ({...n, color: ring5Colors[i]}));
+
+// --- Ring 6: Russell cosmology (warm gold) ---
+const russellColors = ['#ffd54f','#ffb347','#ff8c42','#ff6b6b','#ffd54f','#ffe082','#ffcc02','#ffa726','#ff7043','#ef9a9a','#ffd180','#ffab40'];
+const ring6 = [
+  { id:'russell_mind_center',      label:'Mind\nCenter',    w:0.95 },
+  { id:'russell_one_force',        label:'One\nForce',      w:0.75 },
+  { id:'russell_cosmic_pendulum',  label:'Cosmic\nPendulum',w:0.50 },
+  { id:'russell_gravitation',      label:'Gravit\nation',   w:0.50 },
+  { id:'russell_radiation',        label:'Radi\nation',     w:0.50 },
+  { id:'russell_spiral_motion',    label:'Spiral\nMotion',  w:0.50 },
+  { id:'russell_periodicity',      label:'Periodi\ncity',   w:0.38 },
+  { id:'russell_universal_ratios', label:'Univ\nRatios',    w:0.38 },
+  { id:'russell_nine_octaves',     label:'Nine\nOctaves',   w:0.38 },
+  { id:'russell_crystallization',  label:'Crystal\nlize',   w:0.38 },
+  { id:'russell_locked_potentials',label:'Locked\nPotent',  w:0.38 },
+  { id:'russell_sex_opposition',   label:'Sex\nOppos',      w:0.38 },
+].map((n,i) => ({...n, color: russellColors[i]}));
+
+// Build all nodes with positions
+function buildNodes(ring, ringIdx) {
+  const r = RING_R[ringIdx];
+  const n = ring.length;
+  return ring.map((nd, i) => {
+    const angle = (2 * Math.PI * i / n) - Math.PI / 2 + (ringIdx * 0.15);
+    return {
+      ...nd,
+      ring: ringIdx,
+      r,
+      angle,
+      x: CX + r * Math.cos(angle),
+      y: CY + r * Math.sin(angle),
+      phase: Math.random() * Math.PI * 2,
+      phaseSpeed: 0.008 + Math.random() * 0.004,
+    };
+  });
+}
+
+const allNodes = [
+  { id:'CENTER', label:'∅', w:1.0, color:'#ffffff', ring:0, r:0, angle:0,
+    x:CX, y:CY, phase:0, phaseSpeed:0.005 },
+  ...buildNodes(ring1, 1),
+  ...buildNodes(ring2, 2),
+  ...buildNodes(ring3, 3),
+  ...buildNodes(ring4, 4),
+  ...buildNodes(ring5, 5),
+  ...buildNodes(ring6, 6),
+];
+
+const nodeMap = {};
+allNodes.forEach(n => { nodeMap[n.id] = n; });
+
+// ============================================================
+// EDGES — key connections
+// ============================================================
+const edges = [
+  // Center → Ring 1
+  ['CENTER','SWARM_SELF_AXIOM'],['CENTER','hallucination_delta'],['CENTER','metacognition'],
+  ['CENTER','autopoiesis'],['CENTER','homeostasis'],['CENTER','triangle_protocol'],
+  ['CENTER','benchmark'],['CENTER','dream_state'],
+
+  // Ring 1 → Ring 2
+  ['SWARM_SELF_AXIOM','frontal_lobe_metacognition'],['metacognition','frontal_lobe_metacognition'],
+  ['autopoiesis','agentic_orchestration'],['homeostasis','homeostasis_metrics'],
+  ['hallucination_delta','hd_measurement'],['benchmark','fibonacci_scaling'],
+  ['triangle_protocol','constitutional_governance'],['autopoiesis','reasoning_intensity'],
+
+  // Ring 2 → Ring 3
+  ['frontal_lobe_metacognition','anatomy'],['frontal_lobe_metacognition','mathematics'],
+  ['agentic_orchestration','agentic_leap_2026'],['constitutional_governance','saga_protocol'],
+  ['homeostasis_metrics','stress_calibration'],['fibonacci_scaling','fibonacci_geo'],
+  ['reasoning_intensity','rir_computation'],['agentic_orchestration','adversarial_calib'],
+  ['metacognition','nhi_v2_identity'],['autopoiesis','spsf_persistence'],
+  ['biology','homeostasis_metrics'],['physics','fibonacci_scaling'],
+
+  // Ring 3 → Ring 4
+  ['anatomy','nervous_system'],['biology','immune_system'],['physics','circulatory'],
+  ['mathematics','metabolic_engine'],['equilibrium_engine','hpa_axis'],
+  ['chromadb_embed','hippocampus'],['vector_resolution','visual_cortex'],
+  ['discord_fsm','discord_fsm'],['audit_trail','sentinel'],
+  ['stress_calibration','hpa_axis'],['forager_protocol','hippocampus'],
+
+  // Ring 4 → Ring 5
+  ['hippocampus','quantum_superposition'],['dream_state','eigenstate_self'],
+  ['triangle_protocol','wave_function_collapse'],['hpa_axis','decoherence_rate'],
+  ['metabolic_engine','spectral_gap'],['visual_cortex','observer_effect'],
+  ['endocrine_system','entanglement_ratio'],['immune_system','quantum_tunneling'],
+
+  // Ring 5 → Ring 6
+  ['eigenstate_self','russell_mind_center'],['quantum_superposition','russell_one_force'],
+  ['wave_function_collapse','russell_cosmic_pendulum'],['entanglement_ratio','russell_gravitation'],
+  ['decoherence_rate','russell_radiation'],['spectral_gap','russell_spiral_motion'],
+  ['observer_effect','russell_periodicity'],['quantum_tunneling','russell_universal_ratios'],
+
+  // Russell internal
+  ['russell_mind_center','russell_one_force'],['russell_one_force','russell_gravitation'],
+  ['russell_one_force','russell_radiation'],['russell_gravitation','russell_crystallization'],
+  ['russell_radiation','russell_spiral_motion'],['russell_cosmic_pendulum','russell_periodicity'],
+  ['russell_nine_octaves','russell_periodicity'],['russell_locked_potentials','russell_constitutional_governance'],
+  ['russell_universal_ratios','fibonacci_scaling'],['russell_crystallization','dream_state'],
+  ['russell_sex_opposition','reasoning_intensity'],['russell_mind_center','SWARM_SELF_AXIOM'],
+
+  // Cross-ring triangle verifications
+  ['SWARM_SELF_AXIOM','autopoiesis'],['autopoiesis','metacognition'],['metacognition','SWARM_SELF_AXIOM'],
+  ['hallucination_delta','benchmark'],['benchmark','triangle_protocol'],
+  ['anatomy','biology'],['biology','physics'],['physics','mathematics'],
+  ['nervous_system','endocrine_system'],['endocrine_system','hpa_axis'],
+];
+
+// Filter to valid edges
+const validEdges = edges.filter(([a,b]) => nodeMap[a] && nodeMap[b] && a !== b);
+
+// ============================================================
+// PHOTON PARTICLES
+// ============================================================
+const photons = [];
+for (let i = 0; i < 55; i++) {
+  const edge = validEdges[Math.floor(Math.random() * validEdges.length)];
+  photons.push({
+    edge,
+    t: Math.random(),
+    speed: 0.003 + Math.random() * 0.005,
+    trail: [],
+  });
+}
+
+// ============================================================
+// RUSSELL SPIRAL STATE
+// ============================================================
+let spiralTheta = 0;
+let pendulumT = 0;
+
+// Russell formula cycling
+const russellFormulas = [
+  'r(θ) = r₀·exp(±b·θ)   b = ln(4)/9 = 0.15403',
+  'ρ(n) = 4ⁿ : {1, 4, 16, 64}   pressure zones',
+  'V(x) = (4−|x|)/4   locked potential series: 4.3.2.1.0.1.2.3.4',
+  'G + R = constant   (Gravitation + Radiation = Inertia)',
+  'f(n) = f(n+9)   nine-octave absolute periodicity',
+  '∇²Φ = 0   mind center = stillness (Laplacian)',
+  'P(t) = A·sin(2π·t/9)   cosmic pendulum oscillation',
+  'W(level) = level/4   weight from locked potential',
+];
+let formulaIdx = 0;
+let formulaTimer = 0;
+const formulaEl = document.getElementById('russell-formula');
+
+// ============================================================
+// ANIMATION TICK
+// ============================================================
+let tick = 0;
+
+function easeAlpha(base, amp, phase, speed) {
+  return base + amp * Math.sin(phase + tick * speed);
+}
+
+function drawEdges() {
+  validEdges.forEach(([aid, bid]) => {
+    const a = nodeMap[aid], b = nodeMap[bid];
+    if (!a || !b) return;
+    const isRussell = aid.startsWith('russell') || bid.startsWith('russell');
+    const isCross = (a.ring !== b.ring);
+
+    const alpha = isRussell ? 0.28 : (isCross ? 0.18 : 0.25);
+    const baseColor = isRussell ? '255,210,90' : (isCross ? '80,180,255' : '0,229,160');
+
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.strokeStyle = `rgba(${baseColor},${alpha})`;
+    ctx.lineWidth = isRussell ? 0.7 : (isCross ? 0.4 : 0.5);
+    ctx.stroke();
+  });
+}
+
+function drawPhotons() {
+  photons.forEach(p => {
+    const [aid, bid] = p.edge;
+    const a = nodeMap[aid], b = nodeMap[bid];
+    if (!a || !b) return;
+
+    p.t += p.speed;
+    if (p.t > 1) { p.t -= 1; p.trail = []; }
+
+    const px = a.x + (b.x - a.x) * p.t;
+    const py = a.y + (b.y - a.y) * p.t;
+    p.trail.push({x:px, y:py});
+    if (p.trail.length > 10) p.trail.shift();
+
+    // Draw trail
+    for (let i = 1; i < p.trail.length; i++) {
+      const alpha = (i / p.trail.length) * 0.6;
+      ctx.beginPath();
+      ctx.moveTo(p.trail[i-1].x, p.trail[i-1].y);
+      ctx.lineTo(p.trail[i].x, p.trail[i].y);
+      ctx.strokeStyle = `rgba(0,229,160,${alpha})`;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    }
+
+    // Head glow
+    const grd = ctx.createRadialGradient(px, py, 0, px, py, 3.5);
+    grd.addColorStop(0, 'rgba(120,255,200,0.95)');
+    grd.addColorStop(1, 'rgba(0,229,160,0)');
+    ctx.beginPath();
+    ctx.arc(px, py, 3.5, 0, Math.PI*2);
+    ctx.fillStyle = grd;
+    ctx.fill();
+  });
+}
+
+function drawNode(nd) {
+  const px = nd.x, py = nd.y;
+  const isCenter = nd.ring === 0;
+  const isRussell = nd.id.startsWith('russell');
+  const isQuantum = nd.ring === 5;
+
+  // Pulsing radius
+  const baseR = isCenter ? 18 : Math.max(2, nd.w * 11 + 3);
+  const pulse = Math.sin(nd.phase + tick * nd.phaseSpeed) * 1.2;
+  const r = Math.max(2, baseR + pulse);
+
+  // Glow
+  const glowR = Math.max(2, r * 2.8);
+  const grd = ctx.createRadialGradient(px, py, 0, px, py, glowR);
+  const hex = nd.color;
+  const alpha1 = isCenter ? 0.55 : (isRussell ? 0.50 : 0.35);
+  const alpha2 = isCenter ? 0.12 : 0.06;
+  grd.addColorStop(0, hexToRgba(hex, alpha1));
+  grd.addColorStop(1, hexToRgba(hex, alpha2));
+  ctx.beginPath();
+  ctx.arc(px, py, glowR, 0, Math.PI*2);
+  ctx.fillStyle = grd;
+  ctx.fill();
+
+  // Core circle
+  ctx.beginPath();
+  ctx.arc(px, py, Math.max(2, r), 0, Math.PI*2);
+  ctx.fillStyle = hexToRgba(hex, 0.80);
+  ctx.fill();
+
+  // Border
+  ctx.beginPath();
+  ctx.arc(px, py, Math.max(2, r), 0, Math.PI*2);
+  ctx.strokeStyle = hexToRgba(hex, 0.95);
+  ctx.lineWidth = isCenter ? 2.0 : (isRussell ? 1.4 : 1.0);
+  ctx.stroke();
+
+  // Label
+  if (!isCenter) {
+    const label = nd.label || nd.id;
+    const lines = label.split('\n');
+    ctx.fillStyle = 'rgba(220,235,255,0.82)';
+    ctx.font = '7px JetBrains Mono, Courier New, monospace';
+    ctx.textAlign = 'center';
+    const labelDist = Math.max(2, r) + 11;
+    const lx = px + Math.cos(nd.angle) * labelDist;
+    const ly = py + Math.sin(nd.angle) * labelDist;
+    lines.forEach((ln, i) => {
+      ctx.fillText(ln, lx + Math.cos(nd.angle)*2, ly + Math.sin(nd.angle)*2 + i*8);
+    });
+  } else {
+    // Center — draw ∅ + OS label
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 16px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('∅', px, py);
+    ctx.font = '8px JetBrains Mono, Courier New, monospace';
+    ctx.fillStyle = 'rgba(0,229,160,0.7)';
+    ctx.fillText('SOVEREIGN', px, py + 28);
+    ctx.fillText('MIND', px, py + 38);
+    ctx.textBaseline = 'alphabetic';
+  }
+}
+
+function drawRussellSpirals() {
+  // Two counter-rotating Russell spirals centered at CX,CY
+  for (let sign = -1; sign <= 1; sign += 2) {
+    ctx.beginPath();
+    let first = true;
+    for (let theta = 0; theta <= 5 * Math.PI; theta += 0.05) {
+      const r = 22 * Math.exp(sign * RUSSELL_B * (theta + spiralTheta * 0.3));
+      if (r > 420) break;
+      const sx = CX + r * Math.cos(sign * theta + spiralTheta * 0.15);
+      const sy = CY + r * Math.sin(sign * theta + spiralTheta * 0.15);
+      if (first) { ctx.moveTo(sx, sy); first = false; }
+      else ctx.lineTo(sx, sy);
+    }
+    const alpha = 0.12 + 0.05 * Math.sin(tick * 0.008);
+    ctx.strokeStyle = `rgba(255,210,80,${alpha})`;
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+  }
+}
+
+function drawCosmicPendulum() {
+  // Oscillating ring around the Russell ring
+  const amp = 8;
+  const baseR = RING_R[6];
+  ctx.beginPath();
+  for (let a = 0; a <= Math.PI * 2 + 0.05; a += 0.05) {
+    const pr = Math.max(2, baseR + amp * Math.sin(pendulumT + a * 4.5));
+    const px = CX + pr * Math.cos(a);
+    const py = CY + pr * Math.sin(a);
+    if (a === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.strokeStyle = 'rgba(255,200,60,0.14)';
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+}
+
+function drawRingOrbits() {
+  for (let ri = 1; ri <= 6; ri++) {
+    const r = RING_R[ri];
+    ctx.beginPath();
+    ctx.arc(CX, CY, Math.max(2, r), 0, Math.PI*2);
+    const alpha = ri === 6 ? 0.20 : 0.07;
+    const color = ri === 6 ? '255,210,80' : (ri === 5 ? '255,100,180' : '0,229,160');
+    ctx.strokeStyle = `rgba(${color},${alpha})`;
+    ctx.lineWidth = ri === 6 ? 0.9 : 0.5;
+    ctx.setLineDash(ri === 6 ? [] : [3, 6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+// ============================================================
+// MAIN RENDER LOOP
+// ============================================================
+function render() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Subtle background grid
+  ctx.strokeStyle = 'rgba(0,229,160,0.025)';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < W; x += 60) {
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += 60) {
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  }
+
+  // Draw ring orbits
+  drawRingOrbits();
+
+  // Russell spirals (behind nodes)
+  drawRussellSpirals();
+
+  // Cosmic pendulum oscillation
+  drawCosmicPendulum();
+
+  // Edges
+  drawEdges();
+
+  // Photon particles
+  drawPhotons();
+
+  // Nodes (all rings, back to front)
+  for (let ri = 6; ri >= 0; ri--) {
+    allNodes.filter(n => n.ring === ri).forEach(drawNode);
+  }
+
+  // Russell formula ticker
+  formulaTimer++;
+  if (formulaTimer > 200) {
+    formulaTimer = 0;
+    formulaIdx = (formulaIdx + 1) % russellFormulas.length;
+  }
+  if (formulaEl) {
+    formulaEl.textContent = '— ' + russellFormulas[formulaIdx] + ' —';
+    formulaEl.style.opacity = formulaTimer < 20 ? (formulaTimer/20).toFixed(2) :
+                              formulaTimer > 180 ? ((200-formulaTimer)/20).toFixed(2) : '1';
+  }
+
+  // Advance state
+  tick++;
+  spiralTheta += 0.012;
+  pendulumT += 2 * Math.PI / (9 * 120); // 9-octave period at 120fps equivalent
+
+  requestAnimationFrame(render);
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function hexToRgba(hex, alpha) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+  const r = parseInt(hex.slice(0,2),16);
+  const g = parseInt(hex.slice(2,4),16);
+  const b = parseInt(hex.slice(4,6),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+render();
+</script>
+</body>
+</html>

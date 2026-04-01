@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-14T11:24:54.912Z","event":"SESSION_START","agent":"SHELL","data":{"objective":"wire RoutineTracker to player FSM for Warden boss phase 1","pipeline":"build","firstAgent":"ARCHITECT"},"hash":"0641a3c0e408bc25"}
+{"timestamp":"2026-03-14T11:24:54.933Z","event":"PROCESS_SPAWN","agent":"ARCHITECT","data":{"id":"ARCHITECT_1773487494929","objective":"wire RoutineTracker to player FSM for Warden boss phase 1"},"hash":"2d11e8c9f6955f69"}

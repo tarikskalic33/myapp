@@ -1,0 +1,98 @@
+[gd_scene format=3 uid="uid://b68nacigdor4o"]
+
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/Integrity_HUD.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/Static_Overlay.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/Environmental_Distortion.tscn" id="4"]
+[ext_resource type="Script" uid="uid://laobp40dpt45" path="res://scripts/core/CameraShake.gd" id="6"]
+[ext_resource type="Script" path="res://scripts/core/RoomManager.gd" id="RoomManagerScript"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(4000, 40)
+
+[node name="MazeRoot" type="Node2D" unique_id=47429685]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="." unique_id=2083556109]
+
+[node name="PastLayer" type="ParallaxLayer" parent="ParallaxBackground" unique_id=1297770776]
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(1280, 0)
+
+[node name="ShadowTint" type="ColorRect" parent="ParallaxBackground/PastLayer" unique_id=770892408]
+offset_right = 640.0
+offset_bottom = 720.0
+color = Color(0.1, 0.05, 0, 0.4)
+
+[node name="HabitArt" type="ColorRect" parent="ParallaxBackground/PastLayer" unique_id=1207954431]
+offset_left = 100.0
+offset_top = 100.0
+offset_right = 300.0
+offset_bottom = 500.0
+color = Color(0.15, 0.1, 0.05, 1)
+
+[node name="FutureLayer" type="ParallaxLayer" parent="ParallaxBackground" unique_id=689698300]
+motion_scale = Vector2(0.5, 0.5)
+motion_mirroring = Vector2(1280, 0)
+
+[node name="LightTint" type="ColorRect" parent="ParallaxBackground/FutureLayer" unique_id=250856505]
+offset_left = 640.0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.9, 0.95, 1, 0.1)
+
+[node name="TowerSilhouettes" type="ColorRect" parent="ParallaxBackground/FutureLayer" unique_id=1328484878]
+offset_left = 800.0
+offset_top = 50.0
+offset_right = 1000.0
+offset_bottom = 600.0
+color = Color(0.2, 0.2, 0.25, 1)
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=749763177]
+use_parent_material = true
+
+[node name="LevelGeometry" type="Node2D" parent="." unique_id=1513887642]
+
+[node name="Floor" type="StaticBody2D" parent="LevelGeometry" unique_id=489155651]
+position = Vector2(640, 680)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LevelGeometry/Floor" unique_id=4856134]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="FloorVisual" type="ColorRect" parent="LevelGeometry/Floor" unique_id=1138093496]
+offset_left = -2000.0
+offset_top = -20.0
+offset_right = 2000.0
+offset_bottom = 20.0
+color = Color(0.05, 0.05, 0.08, 1)
+
+[node name="Player" parent="." unique_id=432380192 instance=ExtResource("1")]
+position = Vector2(300, 600)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player" unique_id=1966319736]
+remote_path = NodePath("../../Camera2D")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1408147885]
+position = Vector2(300, 600)
+zoom = Vector2(1.2, 1.2)
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+
+[node name="CameraShake" type="Node2D" parent="Camera2D" unique_id=1580417354]
+script = ExtResource("6")
+
+[node name="RoomManager" type="Node" parent="."]
+script = ExtResource("RoomManagerScript")
+
+[node name="Enemies" type="Node2D" parent="." unique_id=1317202219 groups=["EnemyContainer"]]
+
+[node name="UILayer" type="CanvasLayer" parent="." unique_id=1190857783]
+
+[node name="IntegrityHUD" parent="UILayer" unique_id=1573426237 instance=ExtResource("2")]
+
+[node name="OverlayStack" type="CanvasLayer" parent="." unique_id=1322956278]
+layer = 10
+
+[node name="StaticOverlay" parent="OverlayStack" unique_id=1796876242 instance=ExtResource("3")]
+
+[node name="EnvironmentalDistortion" parent="OverlayStack" unique_id=1530344218 instance=ExtResource("4")]

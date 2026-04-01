@@ -1,0 +1,12 @@
+__pycache__
+.claude
+.cursor
+.pytest_cache
+.ruff_cache
+.serena
+.venv
+agent_workspace
+.env
+server.log
+.coverage
+llama_cache

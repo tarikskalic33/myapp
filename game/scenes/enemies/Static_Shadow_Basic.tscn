@@ -1,0 +1,45 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" uid="uid://c22dytm8fo8iu" path="res://scripts/enemies/Static_Shadow_Basic.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/core/HitBox.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/core/HurtBox.tscn" id="3"]
+[ext_resource type="Script" path="res://scripts/vfx/IntentTrail.gd" id="IntentTrailScript"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_enemy"]
+size = Vector2(24, 24)
+
+[sub_resource type="RectangleShape2D" id="enemy_shape"]
+size = Vector2(24, 24)
+
+[sub_resource type="RectangleShape2D" id="hurtbox_shape"]
+size = Vector2(28, 28)
+
+[sub_resource type="RectangleShape2D" id="hitbox_shape"]
+size = Vector2(26, 26)
+
+[node name="StaticShadowBasic" type="CharacterBody2D" groups=["Enemies"]]
+script = ExtResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 1, 1, 0)
+texture = SubResource("PlaceholderTexture2D_enemy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("enemy_shape")
+
+[node name="HitBox" parent="." instance=ExtResource("2")]
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" parent="HitBox"]
+shape = SubResource("hitbox_shape")
+
+[node name="HurtBox" parent="." instance=ExtResource("3")]
+collision_layer = 8
+collision_mask = 4
+
+[node name="CollisionShape2D" parent="HurtBox"]
+shape = SubResource("hurtbox_shape")
+
+[node name="IntentTrail" type="Node2D" parent="."]
+script = ExtResource("IntentTrailScript")

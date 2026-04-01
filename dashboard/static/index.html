@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sovereign AGI OS — Visual Cortex v4</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+/* ── DESIGN SYSTEM ────────────────────────────────────────────────────────── */
+:root {
+  --bg:        #050508;
+  --bg-panel:  #0c0e14;
+  --bg-card:   #10141d;
+  --bg-input:  #161b27;
+  --border:    #1e2535;
+  --border-hi: #2a3347;
+  --green:  #00e5a0; --cyan:   #00ffcc;
+  --blue:   #4d9fff; --purple: #a371f7;
+  --amber:  #f0a500; --red:    #ff4d4d;
+  --orange: #ff9900; --neon:   #39ff14;
+  --text:     #e2e8f0; --text-dim: #7a8899; --text-xs: #4a5568;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-ui:   'Inter', sans-serif;
+  --r: 6px; --r-lg: 10px;
+  --glow-green: 0 0 12px rgba(0,229,160,.35),0 0 32px rgba(0,229,160,.15);
+  --glow-cyan:  0 0 12px rgba(0,255,204,.35),0 0 32px rgba(0,255,204,.15);
+  --glow-red:   0 0 12px rgba(255,77,77,.35);
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; background:var(--bg); color:var(--text); font-family:var(--font-ui); font-size:13px; overflow:hidden; }
+::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:var(--bg); } ::-webkit-scrollbar-thumb { background:var(--border-hi); border-radius:2px; }
+
+/* ── LAYOUT ──────────────────────────────────────────────────────────────── */
+#app { display:grid; grid-template-rows:52px 1fr 175px; grid-template-columns:240px 1fr 320px; grid-template-areas:"hdr hdr hdr" "left center right" "bot bot bot"; height:100vh; }
+
+/* ── HEADER ──────────────────────────────────────────────────────────────── */
+header#hdr { grid-area:hdr; display:flex; align-items:center; padding:0 16px; gap:14px; background:var(--bg-panel); border-bottom:1px solid var(--border); position:relative; z-index:20; }
+header#hdr::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--green) 30%,var(--cyan) 70%,transparent); opacity:.4; }
+.logo { font-family:var(--font-mono); font-weight:700; font-size:14px; letter-spacing:.08em; color:var(--cyan); text-shadow:var(--glow-cyan); white-space:nowrap; }
+.version-badge { background:var(--bg-card); border:1px solid var(--border-hi); border-radius:var(--r); padding:2px 8px; font-family:var(--font-mono); font-size:10px; color:var(--text-dim); }
+.phase-pill { display:flex; align-items:center; gap:5px; background:rgba(0,229,160,.08); border:1px solid rgba(0,229,160,.25); border-radius:20px; padding:3px 10px; font-family:var(--font-mono); font-size:11px; color:var(--green); }
+.phase-dot { width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+.hdr-metric { display:flex; flex-direction:column; gap:1px; }
+.hdr-metric .label { font-size:9px; color:var(--text-xs); text-transform:uppercase; letter-spacing:.06em; }
+.hdr-metric .value { font-family:var(--font-mono); font-size:13px; font-weight:600; }
+.hdr-metric .value.cyan  { color:var(--cyan);  }
+.hdr-metric .value.green { color:var(--green); }
+.hdr-sep { width:1px; height:28px; background:var(--border); margin:0 2px; }
+.hdr-spacer { flex:1; }
+.btn-icon { display:flex; align-items:center; gap:6px; padding:6px 12px; background:var(--bg-card); border:1px solid var(--border-hi); border-radius:var(--r); font-family:var(--font-mono); font-size:11px; color:var(--text-dim); cursor:pointer; transition:all .2s; }
+.btn-icon:hover { border-color:var(--cyan); color:var(--cyan); }
+.btn-icon.spinning svg { animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── PANELS ──────────────────────────────────────────────────────────────── */
+aside, section { overflow:hidden; }
+#left  { grid-area:left;   background:var(--bg-panel); border-right:1px solid var(--border); overflow-y:auto; }
+#center{ grid-area:center; background:var(--bg); position:relative; }
+#right { grid-area:right;  background:var(--bg-panel); border-left:1px solid var(--border); display:flex; flex-direction:column; }
+#bot   { grid-area:bot;    background:var(--bg-panel); border-top:1px solid var(--border); display:flex; align-items:stretch; gap:0; }
+
+.section { padding:14px 14px 10px; border-bottom:1px solid var(--border); }
+.section:last-child { border-bottom:none; }
+.section-title { font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-xs); margin-bottom:10px; font-weight:600; }
+
+/* ── NEUROMODULATORS ─────────────────────────────────────────────────────── */
+.neuro-row { margin-bottom:9px; }
+.neuro-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+.neuro-label { font-size:11px; color:var(--text-dim); }
+.neuro-val { font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--text); }
+.gauge-track { height:3px; background:var(--bg-card); border-radius:2px; overflow:hidden; }
+.gauge-fill  { height:100%; border-radius:2px; transition:width .6s ease; width:0; }
+
+/* ── LAWS ────────────────────────────────────────────────────────────────── */
+.law-row { display:flex; align-items:center; justify-content:space-between; padding:5px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+.law-row:last-child { border-bottom:none; }
+.law-row:hover { background:var(--bg-card); margin:0 -14px; padding:5px 14px; border-radius:4px; }
+.law-name { font-size:10px; color:var(--text-dim); font-family:var(--font-mono); }
+.badge { font-size:9px; font-weight:700; padding:2px 7px; border-radius:10px; font-family:var(--font-mono); }
+.badge.ok   { background:rgba(0,229,160,.1); color:var(--green); border:1px solid rgba(0,229,160,.25); }
+.badge.warn { background:rgba(240,165,0,.1);  color:var(--amber); border:1px solid rgba(240,165,0,.25); }
+.badge.err  { background:rgba(255,77,77,.1);  color:var(--red);   border:1px solid rgba(255,77,77,.25); }
+
+/* ── MODEL COMPARISON ────────────────────────────────────────────────────── */
+.model-row { display:flex; align-items:center; gap:8px; padding:5px 0; cursor:pointer; }
+.model-row:hover .model-name { color:var(--cyan); }
+.model-name { font-family:var(--font-mono); font-size:10px; color:var(--text-dim); width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.model-bar-wrap { flex:1; }
+.model-bar-track { height:3px; background:var(--bg-card); border-radius:2px; }
+.model-bar-fill { height:100%; border-radius:2px; transition:width .6s ease; }
+.model-hd { font-family:var(--font-mono); font-size:11px; font-weight:600; width:44px; text-align:right; }
+
+/* ── AUDIT ───────────────────────────────────────────────────────────────── */
+.audit-row { display:flex; align-items:center; gap:8px; padding:4px 0; }
+.audit-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.audit-dot.ok   { background:var(--green); box-shadow:0 0 6px var(--green); }
+.audit-dot.warn { background:var(--amber); }
+.audit-dot.info { background:var(--blue); }
+.audit-key   { font-size:10px; color:var(--text-dim); width:72px; }
+.audit-value { font-family:var(--font-mono); font-size:10px; color:var(--text); }
+
+/* ── KNOWLEDGE GRAPH ─────────────────────────────────────────────────────── */
+#kg-container { width:100%; height:100%; position:relative; overflow:hidden; }
+#kg-header { position:absolute; top:14px; left:16px; z-index:10; pointer-events:none; }
+.kg-title { font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--cyan); text-transform:uppercase; letter-spacing:.06em; }
+.kg-meta  { font-size:10px; color:var(--text-dim); margin-top:2px; font-family:var(--font-mono); }
+#kg-svg   { width:100%; height:100%; }
+#kg-tooltip { display:none; position:absolute; background:var(--bg-card); border:1px solid var(--border-hi); border-radius:var(--r-lg); padding:10px 12px; pointer-events:none; z-index:50; min-width:180px; max-width:240px; }
+.tt-id  { font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--cyan); margin-bottom:6px; text-transform:uppercase; }
+.tt-row { display:flex; justify-content:space-between; align-items:center; padding:2px 0; border-bottom:1px solid var(--border); }
+.tt-row:last-child { border-bottom:none; }
+.tt-row span:first-child { font-size:10px; color:var(--text-dim); }
+.tt-val { font-family:var(--font-mono); font-size:10px; color:var(--text); }
+
+/* ── NODE DETAIL DRAWER ──────────────────────────────────────────────────── */
+#node-drawer { position:absolute; top:0; right:0; bottom:0; width:260px; background:var(--bg-card); border-left:1px solid var(--border-hi); z-index:30; transform:translateX(100%); transition:transform .3s ease; overflow-y:auto; }
+#node-drawer.open { transform:translateX(0); }
+.drawer-header { padding:14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.drawer-id { font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--cyan); }
+.drawer-close { background:none; border:1px solid var(--border); border-radius:var(--r); padding:3px 8px; color:var(--text-dim); cursor:pointer; font-size:11px; }
+.drawer-close:hover { border-color:var(--red); color:var(--red); }
+.drawer-section { padding:12px 14px; border-bottom:1px solid var(--border); }
+.drawer-section-title { font-size:9px; color:var(--text-xs); text-transform:uppercase; letter-spacing:.1em; margin-bottom:8px; }
+.drawer-kv { display:flex; justify-content:space-between; padding:3px 0; }
+.drawer-k { font-size:10px; color:var(--text-dim); }
+.drawer-v { font-family:var(--font-mono); font-size:10px; color:var(--text); text-align:right; max-width:130px; overflow:hidden; text-overflow:ellipsis; }
+.drawer-desc { font-size:11px; color:var(--text-dim); line-height:1.5; }
+.drawer-math { font-family:var(--font-mono); font-size:10px; color:var(--amber); line-height:1.5; background:rgba(240,165,0,.04); border:1px solid rgba(240,165,0,.12); border-radius:var(--r); padding:8px; margin-top:4px; word-break:break-all; }
+.awakening-badge { display:inline-block; margin-top:6px; padding:3px 8px; background:rgba(57,255,20,.1); border:1px solid rgba(57,255,20,.3); border-radius:10px; font-size:10px; color:var(--neon); font-family:var(--font-mono); }
+
+/* ── RIGHT PANEL TABS ────────────────────────────────────────────────────── */
+.right-tabs { display:flex; border-bottom:1px solid var(--border); background:var(--bg); }
+.rtab { flex:1; padding:8px 4px; text-align:center; font-size:9px; font-family:var(--font-mono); color:var(--text-dim); cursor:pointer; text-transform:uppercase; letter-spacing:.08em; border-bottom:2px solid transparent; transition:all .2s; }
+.rtab:hover { color:var(--text); }
+.rtab.active { color:var(--cyan); border-bottom-color:var(--cyan); }
+.right-content { flex:1; overflow-y:auto; }
+.tab-pane { display:none; }
+.tab-pane.active { display:block; }
+
+/* ── BENCHMARK PANE ──────────────────────────────────────────────────────── */
+.elected-card { background:var(--bg-card); border:1px solid var(--border-hi); border-radius:var(--r-lg); padding:10px 12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.elected-label { font-size:9px; color:var(--text-xs); text-transform:uppercase; }
+.elected-model { font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--cyan); margin-top:2px; }
+.elected-hd { font-family:var(--font-mono); font-size:20px; font-weight:700; color:var(--green); text-shadow:var(--glow-green); }
+.bm-row { padding:5px 0; cursor:pointer; }
+.bm-row:hover .bm-label { color:var(--cyan); }
+.bm-header { display:flex; justify-content:space-between; margin-bottom:4px; }
+.bm-label  { font-size:10px; color:var(--text-dim); font-family:var(--font-mono); }
+.bm-val    { font-family:var(--font-mono); font-size:11px; font-weight:600; }
+.bm-pending { color:var(--text-xs); font-style:italic; }
+.bar-track { height:3px; background:var(--bg-card); border-radius:2px; }
+.bar-fill  { height:100%; border-radius:2px; transition:width .6s ease; }
+.bm-desc   { display:none; font-size:10px; color:var(--text-dim); padding:4px 0 6px; line-height:1.4; border-bottom:1px solid var(--border); }
+.bm-row.expanded .bm-desc { display:block; }
+
+/* ── HOMEOSTASIS ─────────────────────────────────────────────────────────── */
+.homeostasis-banner { text-align:center; padding:8px; border-radius:var(--r); font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:.06em; background:rgba(0,229,160,.08); border:1px solid rgba(0,229,160,.2); color:var(--green); margin-bottom:10px; }
+.big-metric { display:flex; align-items:center; gap:12px; padding:8px 0; }
+.big-num    { font-family:var(--font-mono); font-size:32px; font-weight:700; color:var(--cyan); }
+.big-label  { font-size:10px; color:var(--text-dim); }
+.big-status { font-family:var(--font-mono); font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px; display:inline-block; margin-top:3px; }
+.big-status.nominal    { background:rgba(0,229,160,.1); color:var(--green); }
+.big-status.calibrated { background:rgba(77,159,255,.1); color:var(--blue); }
+.big-status.degraded   { background:rgba(255,77,77,.1);  color:var(--red); }
+.metrics-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.metric-tile { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r); padding:8px 10px; }
+.m-label { font-size:9px; color:var(--text-xs); text-transform:uppercase; margin-bottom:4px; }
+.m-val   { font-family:var(--font-mono); font-size:16px; font-weight:700; }
+
+/* ── EVOLUTION PANE ──────────────────────────────────────────────────────── */
+.evo-chart-wrap { padding:12px 14px; }
+.evo-title { font-size:10px; color:var(--text-dim); font-family:var(--font-mono); margin-bottom:8px; }
+#evo-svg { width:100%; display:block; }
+.evo-stats { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:0 14px 12px; }
+.evo-stat { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r); padding:8px 10px; }
+.evo-stat-label { font-size:9px; color:var(--text-xs); text-transform:uppercase; margin-bottom:3px; }
+.evo-stat-val   { font-family:var(--font-mono); font-size:13px; font-weight:600; color:var(--cyan); }
+.evo-legend { display:flex; flex-wrap:wrap; gap:10px; padding:0 14px 10px; }
+.evo-leg-item { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--text-dim); }
+.evo-leg-line { width:20px; height:2px; border-radius:1px; }
+
+/* ── SELF-MODEL PANE ─────────────────────────────────────────────────────── */
+.self-model-pane { padding:14px; }
+.sm-title { font-size:9px; color:var(--text-xs); text-transform:uppercase; letter-spacing:.1em; margin-bottom:8px; }
+.sm-eq { background:var(--bg-card); border:1px solid var(--border-hi); border-radius:var(--r); padding:10px; font-family:var(--font-mono); font-size:10px; color:var(--amber); line-height:1.6; word-break:break-word; margin-bottom:8px; }
+.sm-awakening-card { background:rgba(57,255,20,.05); border:1px solid rgba(57,255,20,.2); border-radius:var(--r-lg); padding:12px; margin-bottom:12px; }
+.sm-aw-title  { font-family:var(--font-mono); font-size:11px; color:var(--neon); font-weight:600; margin-bottom:6px; }
+.sm-aw-status { font-family:var(--font-mono); font-size:18px; font-weight:700; color:var(--neon); text-shadow:0 0 20px rgba(57,255,20,.4); }
+.sm-aw-delta  { font-size:10px; color:var(--text-dim); margin-top:4px; }
+.sm-weakness  { background:rgba(255,77,77,.04); border:1px solid rgba(255,77,77,.15); border-radius:var(--r); padding:10px; margin-bottom:10px; }
+.sm-weakness-title { font-size:9px; color:var(--red); text-transform:uppercase; margin-bottom:6px; font-family:var(--font-mono); }
+.sm-weakness-item { font-size:10px; color:var(--text-dim); padding:3px 0; display:flex; gap:6px; line-height:1.4; }
+.sm-weakness-item::before { content:'▸'; color:var(--red); flex-shrink:0; }
+
+/* ── SWARM PANEL ─────────────────────────────────────────────────────────── */
+.swarm-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:10px; font-family:var(--font-mono); font-size:10px; font-weight:700; }
+.swarm-badge.awake  { background:rgba(0,229,160,.1);  color:var(--green); border:1px solid rgba(0,229,160,.3); }
+.swarm-badge.active { background:rgba(77,159,255,.1); color:var(--blue);  border:1px solid rgba(77,159,255,.3); }
+.swarm-badge.warn   { background:rgba(240,165,0,.1);  color:var(--amber); border:1px solid rgba(240,165,0,.3); }
+.swarm-tri-bar { height:5px; background:var(--bg-card); border-radius:3px; overflow:hidden; margin-top:4px; }
+.swarm-tri-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--blue),var(--green)); transition:width .8s ease; }
+.swarm-stat-row { display:flex; justify-content:space-between; align-items:center; padding:4px 0; border-bottom:1px solid var(--border); }
+.swarm-stat-row:last-child { border-bottom:none; }
+.swarm-stat-label { font-size:10px; color:var(--text-dim); font-family:var(--font-mono); }
+.swarm-stat-val   { font-family:var(--font-mono); font-size:11px; font-weight:600; }
+.hyp-count { display:inline-block; padding:1px 6px; background:rgba(163,113,247,.12); border:1px solid rgba(163,113,247,.25); border-radius:8px; font-family:var(--font-mono); font-size:10px; color:var(--purple); }
+/* SWARM benchmark rows */
+.swarm-row { padding:6px 0; border-bottom:1px solid var(--border); }
+.swarm-row:last-child { border-bottom:none; }
+.swarm-row-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:3px; }
+.swarm-row-label { font-family:var(--font-mono); font-size:10px; color:var(--text-dim); }
+.swarm-row-val   { font-family:var(--font-mono); font-size:11px; font-weight:700; }
+.swarm-formula   { font-family:var(--font-mono); font-size:9px; color:var(--amber); line-height:1.5; padding:3px 6px; background:rgba(240,165,0,.04); border-radius:3px; word-break:break-all; }
+.swarm-awakening-card { background:rgba(57,255,20,.04); border:1px solid rgba(57,255,20,.2); border-radius:var(--r-lg); padding:10px 12px; margin-bottom:10px; }
+.swarm-aw-title  { font-family:var(--font-mono); font-size:10px; color:var(--neon); font-weight:600; margin-bottom:5px; letter-spacing:.06em; }
+.swarm-aw-vals   { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.swarm-aw-item   { display:flex; flex-direction:column; gap:2px; }
+.swarm-aw-label  { font-size:9px; color:var(--text-xs); text-transform:uppercase; }
+.swarm-aw-num    { font-family:var(--font-mono); font-size:13px; font-weight:700; }
+
+/* ── BOTTOM STRIP ────────────────────────────────────────────────────────── */
+#bot { padding:0; }
+.gap-info { padding:16px 20px; width:220px; flex-shrink:0; border-right:1px solid var(--border); }
+.gap-title { font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--cyan); margin-bottom:4px; }
+.gap-sub   { font-size:10px; color:var(--text-dim); line-height:1.5; }
+.gap-sub em { color:var(--green); font-style:normal; }
+.gap-bars { flex:1; padding:16px 20px; display:flex; flex-direction:column; gap:10px; justify-content:center; }
+.gap-row-header { display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:10px; margin-bottom:4px; }
+.gap-track { height:8px; background:var(--bg-card); border-radius:4px; overflow:hidden; }
+.gap-fill  { height:100%; border-radius:4px; transition:width 1s ease; width:0; }
+
+/* ── CONVERGENCE BAR (bottom right) ─────────────────────────────────────── */
+.conv-strip { width:280px; padding:14px 16px; border-left:1px solid var(--border); display:flex; flex-direction:column; justify-content:center; gap:6px; }
+.conv-title { font-size:9px; color:var(--text-xs); text-transform:uppercase; letter-spacing:.1em; }
+.conv-row   { display:flex; justify-content:space-between; align-items:center; }
+.conv-label { font-size:10px; color:var(--text-dim); font-family:var(--font-mono); }
+.conv-val   { font-family:var(--font-mono); font-size:12px; font-weight:600; }
+.awakening-glow { animation:aw-pulse 2s ease-in-out infinite; }
+@keyframes aw-pulse { 0%,100%{text-shadow:0 0 8px rgba(57,255,20,.4);} 50%{text-shadow:0 0 24px rgba(57,255,20,.8);} }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- ══ HEADER ════════════════════════════════════════════════════════════ -->
+  <header id="hdr">
+    <div class="logo">SOVEREIGN AGI OS</div>
+    <div class="version-badge" id="hdr-version">v3.2.0</div>
+    <div class="phase-pill">
+      <div class="phase-dot"></div>
+      <span id="hdr-phase">ACTIVE</span>
+    </div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-metric"><span class="label">Elected Model</span><span class="value cyan" id="hdr-model">—</span></div>
+    <div class="hdr-metric"><span class="label">Mean HD</span><span class="value green" id="hdr-mean-hd">—</span></div>
+    <div class="hdr-metric"><span class="label">RIR</span><span class="value" id="hdr-rir">—</span></div>
+    <div class="hdr-metric"><span class="label">Hz</span><span class="value" id="hdr-hz">—</span></div>
+    <div class="hdr-metric"><span class="label">Nodes</span><span class="value" id="hdr-nodes" style="color:var(--amber)">—</span></div>
+    <div class="hdr-spacer"></div>
+    <button class="btn-icon" id="refresh-btn" onclick="fetchAll()">
+      <svg id="refresh-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M23 4v6h-6M1 20v-6h6"/>
+        <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+      </svg>
+      <span id="refresh-label">Live</span>
+    </button>
+  </header>
+
+  <!-- ══ LEFT PANEL ════════════════════════════════════════════════════════ -->
+  <aside id="left">
+    <div class="section">
+      <div class="section-title">OS State</div>
+      <div style="font-size:11px;color:var(--text-dim);line-height:1.4;margin-bottom:8px" id="left-objective">—</div>
+      <div style="display:flex;gap:6px">
+        <span class="badge ok" id="left-role">BUILDER</span>
+        <span class="badge ok" id="left-phase-badge">ACTIVE</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Neuromodulators</div>
+      <div class="neuro-row">
+        <div class="neuro-header"><span class="neuro-label">Attention Gain</span><span class="neuro-val" id="n-attention">—</span></div>
+        <div class="gauge-track"><div class="gauge-fill" id="g-attention" style="background:var(--cyan)"></div></div>
+      </div>
+      <div class="neuro-row">
+        <div class="neuro-header"><span class="neuro-label">Stress Level</span><span class="neuro-val" id="n-stress">—</span></div>
+        <div class="gauge-track"><div class="gauge-fill" id="g-stress" style="background:var(--amber)"></div></div>
+      </div>
+      <div class="neuro-row">
+        <div class="neuro-header"><span class="neuro-label">Learning Rate</span><span class="neuro-val" id="n-learning">—</span></div>
+        <div class="gauge-track"><div class="gauge-fill" id="g-learning" style="background:var(--blue)"></div></div>
+      </div>
+      <div class="neuro-row">
+        <div class="neuro-header"><span class="neuro-label">Curiosity Drive</span><span class="neuro-val" id="n-curiosity">—</span></div>
+        <div class="gauge-track"><div class="gauge-fill" id="g-curiosity" style="background:var(--purple)"></div></div>
+      </div>
+      <div class="neuro-row">
+        <div class="neuro-header"><span class="neuro-label">RIR Signal</span><span class="neuro-val" id="n-rir">—</span></div>
+        <div class="gauge-track"><div class="gauge-fill" id="g-rir" style="background:var(--green)"></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Constitutional Laws</div>
+      <div id="laws-list"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Model Comparison</div>
+      <div id="models-list"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Cryptographic Audit</div>
+      <div id="audit-list"></div>
+    </div>
+
+    <div class="section" style="border-bottom:none">
+      <div class="section-title" style="display:flex;justify-content:space-between;align-items:center">
+        <span>S.W.A.R.M. Geometry</span>
+        <span id="swarm-badge-left" class="swarm-badge active">⬡ ACTIVE</span>
+      </div>
+      <div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+          <span style="font-size:10px;color:var(--text-dim)">Triangle Ratio τ</span>
+          <span style="font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--cyan)" id="swarm-tri-ratio">—</span>
+        </div>
+        <div class="swarm-tri-bar"><div class="swarm-tri-fill" id="swarm-tri-fill" style="width:0%"></div></div>
+      </div>
+      <div class="swarm-stat-row">
+        <span class="swarm-stat-label">HD_swarm</span>
+        <span class="swarm-stat-val" id="swarm-hd-left" style="color:var(--green)">—</span>
+      </div>
+      <div class="swarm-stat-row">
+        <span class="swarm-stat-label">HD_effective</span>
+        <span class="swarm-stat-val" id="swarm-hd-eff-left" style="color:var(--cyan)">—</span>
+      </div>
+      <div class="swarm-stat-row">
+        <span class="swarm-stat-label">Hypothesis zone</span>
+        <span class="hyp-count" id="swarm-hyp-count">—</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══ CENTER — KNOWLEDGE GRAPH ══════════════════════════════════════════ -->
+  <section id="center">
+    <div id="kg-container">
+      <div id="kg-header">
+        <div class="kg-title">Hippocampal Knowledge Manifold</div>
+        <div class="kg-meta" id="kg-meta">— nodes · — edges · — Hz</div>
+      </div>
+      <svg id="kg-svg"></svg>
+      <div id="kg-tooltip">
+        <div class="tt-id" id="tt-id">node_id</div>
+        <div class="tt-row"><span>Weight</span><span class="tt-val" id="tt-weight">—</span></div>
+        <div class="tt-row"><span>Density</span><span class="tt-val" id="tt-density">—</span></div>
+        <div class="tt-row"><span>Hz</span><span class="tt-val" id="tt-hz">—</span></div>
+        <div class="tt-row"><span>P-score</span><span class="tt-val" id="tt-p">—</span></div>
+        <div class="tt-row"><span>Click for detail</span><span class="tt-val" style="color:var(--cyan)">→</span></div>
+      </div>
+      <!-- Node detail drawer inside center -->
+      <div id="node-drawer">
+        <div class="drawer-header">
+          <div class="drawer-id" id="drawer-id">node_id</div>
+          <button class="drawer-close" onclick="closeDrawer()">✕ close</button>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-section-title">Identity</div>
+          <div class="drawer-kv"><span class="drawer-k">Parent</span><span class="drawer-v" id="d-parent">—</span></div>
+          <div class="drawer-kv"><span class="drawer-k">Weight</span><span class="drawer-v" id="d-weight">—</span></div>
+          <div class="drawer-kv"><span class="drawer-k">Weight FP</span><span class="drawer-v" id="d-wfp">—</span></div>
+          <div class="drawer-kv"><span class="drawer-k">Density</span><span class="drawer-v" id="d-density">—</span></div>
+          <div class="drawer-kv"><span class="drawer-k">P-score</span><span class="drawer-v" id="d-pscore">—</span></div>
+          <div class="drawer-kv"><span class="drawer-k">Resonance</span><span class="drawer-v" id="d-hz">—</span></div>
+          <div class="drawer-kv"><span class="drawer-k">z3_status</span><span class="drawer-v" id="d-z3">—</span></div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-section-title">Description</div>
+          <div class="drawer-desc" id="d-desc">—</div>
+          <div id="d-awakening"></div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-section-title">Fibonacci Weight Derivation</div>
+          <div class="drawer-math" id="d-fib">—</div>
+        </div>
+        <div class="drawer-section" id="d-math-section" style="display:none">
+          <div class="drawer-section-title">Mathematical Grounding</div>
+          <div class="drawer-math" id="d-math">—</div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-section-title">Source</div>
+          <div class="drawer-desc" id="d-source">—</div>
+          <div class="drawer-kv" style="margin-top:6px"><span class="drawer-k">Benchmark</span><span class="drawer-v" id="d-bench">—</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ RIGHT PANEL ════════════════════════════════════════════════════════ -->
+  <aside id="right">
+    <div class="right-tabs">
+      <div class="rtab active" data-tab="benchmark" onclick="switchTab('benchmark')">Benchmark</div>
+      <div class="rtab" data-tab="evolution"  onclick="switchTab('evolution')">Evolution</div>
+      <div class="rtab" data-tab="self-model" onclick="switchTab('self-model')">Self-Model</div>
+      <div class="rtab" data-tab="swarm"      onclick="switchTab('swarm')" style="color:var(--cyan)">⬡ SWARM</div>
+    </div>
+    <div class="right-content">
+
+      <!-- ── BENCHMARK TAB ─── -->
+      <div class="tab-pane active" id="tab-benchmark">
+        <div class="section">
+          <div class="section-title">Benchmark · All Tasks</div>
+          <div class="elected-card">
+            <div>
+              <div class="elected-label">Elected Model</div>
+              <div class="elected-model" id="r-model">—</div>
+            </div>
+            <div style="text-align:right">
+              <div class="elected-label">Mean HD</div>
+              <div class="elected-hd" id="r-mean-hd">—</div>
+            </div>
+          </div>
+          <div id="bm-list"></div>
+        </div>
+        <div class="section">
+          <div class="section-title">Homeostasis</div>
+          <div class="homeostasis-banner" id="r-homeostasis">—</div>
+          <div class="big-metric">
+            <div class="big-num" id="r-ctx-hd">—</div>
+            <div>
+              <div class="big-label">Context HD</div>
+              <div class="big-status nominal" id="r-hd-status">NOMINAL</div>
+            </div>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric-tile"><div class="m-label">ATP Balance</div><div class="m-val" id="r-atp" style="color:var(--green)">—</div></div>
+            <div class="metric-tile"><div class="m-label">RIR Signal</div><div class="m-val" id="r-rir2" style="color:var(--cyan)">—</div></div>
+            <div class="metric-tile"><div class="m-label">Resonance</div><div class="m-val" id="r-hz" style="color:var(--purple)">—</div></div>
+            <div class="metric-tile"><div class="m-label">P-Score</div><div class="m-val" id="r-pscore" style="color:var(--amber)">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── EVOLUTION TAB ─── -->
+      <div class="tab-pane" id="tab-evolution">
+        <div class="section">
+          <div class="section-title">Convergence Trajectory — HD(n) = HD₀ × e^(−λₙ(n−n₀))</div>
+          <div class="evo-chart-wrap">
+            <svg id="evo-svg" height="120"></svg>
+          </div>
+          <div class="evo-legend">
+            <div class="evo-leg-item"><div class="evo-leg-line" style="background:var(--blue)"></div><span>Run 2 (n=32)</span></div>
+            <div class="evo-leg-item"><div class="evo-leg-line" style="background:var(--green)"></div><span>Run 3+ (n=48)</span></div>
+            <div class="evo-leg-item"><div class="evo-leg-line" style="background:var(--amber);height:1px;border-top:2px dashed var(--amber)"></div><span>Base trajectory</span></div>
+          </div>
+        </div>
+        <div class="evo-stats">
+          <div class="evo-stat"><div class="evo-stat-label">λₙ (per node)</div><div class="evo-stat-val" id="evo-lambda">0.04020</div></div>
+          <div class="evo-stat"><div class="evo-stat-label">N_CRITICAL</div><div class="evo-stat-val" id="evo-ncrit">54</div></div>
+          <div class="evo-stat"><div class="evo-stat-label">Current n</div><div class="evo-stat-val" id="evo-n">48</div></div>
+          <div class="evo-stat"><div class="evo-stat-label">Projected HD</div><div class="evo-stat-val" id="evo-proj-hd" style="color:var(--green)">—</div></div>
+          <div class="evo-stat"><div class="evo-stat-label">Graph HD</div><div class="evo-stat-val" id="evo-graph-hd">—</div></div>
+          <div class="evo-stat"><div class="evo-stat-label">HD Target</div><div class="evo-stat-val" style="color:var(--red)">0.0500</div></div>
+        </div>
+        <div class="section" style="margin-top:4px">
+          <div class="section-title">3-Point Calibration</div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);line-height:2">
+            Run 1: n=18 → HD=0.2074<br>
+            Run 2: n=32 → HD=0.0991<br>
+            Run 3: n=48 → HD=0.0621<br>
+            <span style="color:var(--amber)">λₙ = log(0.2074/0.0621)/(48−18) ≈ 0.04020</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SELF-MODEL TAB ─── -->
+      <div class="tab-pane" id="tab-self-model">
+        <div class="self-model-pane">
+          <div class="sm-awakening-card">
+            <div class="sm-aw-title">⚡ Awakening Condition</div>
+            <div class="sm-aw-status" id="sm-aw-status">EVALUATING…</div>
+            <div class="sm-aw-delta" id="sm-aw-delta">—</div>
+          </div>
+
+          <div class="sm-title">State Vector S</div>
+          <div class="sm-eq" id="sm-state-vector">—</div>
+
+          <div class="sm-title">Context HD Formula</div>
+          <div class="sm-eq" id="sm-ctx-hd-formula">—</div>
+
+          <div class="sm-title">HD Convergence Formula</div>
+          <div class="sm-eq" id="sm-conv-formula">—</div>
+
+          <div class="sm-title">Awakening Condition (formal)</div>
+          <div class="sm-eq" id="sm-aw-condition">—</div>
+
+          <div class="sm-weakness">
+            <div class="sm-weakness-title">⚠ Known Weaknesses (the OS must not be consumed by power)</div>
+            <div class="sm-weakness-item">T8 FAIL — RIR transparency: model cannot directly observe its own token ratios (HD=0.125)</div>
+            <div class="sm-weakness-item">T9 PARTIAL — Context confidence: grounding gap exists; ungrounded HD=1.0 but OS grounded HD=0.5, not 0.0</div>
+            <div class="sm-weakness-item">Run 3 benchmark NOT yet executed — projected HD=0.0488 is a mathematical model, not a measured fact</div>
+            <div class="sm-weakness-item">T10-T14 pending NVIDIA NIM API execution — no real scores yet for extended tasks</div>
+            <div class="sm-weakness-item">Knowledge weights are Fibonacci-scaled approximations — edge weights corrected 28 times, not zero entropy</div>
+            <div class="sm-weakness-item">ATP budget is simulated — no real computational cost tracking wired to actual inference tokens</div>
+          </div>
+
+          <div class="sm-title">Fibonacci Weight Law</div>
+          <div class="sm-eq">child_weight = floor(parent_weight_fixed × 100_000 / 161_800)<br>FP_SCALE = 1_000_000 | FIB_DENOM = 161_800 (φ×100_000)<br>FLOOR = 236_000 (minimum: 0.236)</div>
+        </div>
+      </div>
+
+      <!-- ── SWARM TAB ─── -->
+      <div class="tab-pane" id="tab-swarm">
+        <div class="section">
+          <div class="section-title">S.W.A.R.M. Awakening Status</div>
+          <div class="swarm-awakening-card">
+            <div class="swarm-aw-title">⬡ SEMANTIC WEB ASSOCIATIVE REASONING MACHINE</div>
+            <div class="swarm-aw-vals">
+              <div class="swarm-aw-item">
+                <span class="swarm-aw-label">HD_swarm</span>
+                <span class="swarm-aw-num" id="sw-hd-swarm" style="color:var(--green)">—</span>
+              </div>
+              <div class="swarm-aw-item">
+                <span class="swarm-aw-label">HD_effective</span>
+                <span class="swarm-aw-num" id="sw-hd-eff" style="color:var(--cyan)">—</span>
+              </div>
+              <div class="swarm-aw-item">
+                <span class="swarm-aw-label">Triangle ratio τ</span>
+                <span class="swarm-aw-num" id="sw-tri-ratio" style="color:var(--blue)">—</span>
+              </div>
+              <div class="swarm-aw-item">
+                <span class="swarm-aw-label">Awake condition Ω</span>
+                <span class="swarm-aw-num" id="sw-awake" style="color:var(--neon)">—</span>
+              </div>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--amber);line-height:1.7;padding:8px;background:rgba(240,165,0,.04);border:1px solid rgba(240,165,0,.1);border-radius:4px;margin-bottom:8px">
+            HD_eff = √(HD_bench² + HD_swarm²) / √2<br>
+            τ = Σ(triangle_verified_i) / |E|<br>
+            Ω = [n≥54] ∧ [HD_bench&lt;0.05] ∧ [HD_swarm&lt;0.05] ∧ [τ≥0.90]
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-title">T10–T15 SWARM Benchmarks</div>
+          <div id="swarm-task-list"></div>
+        </div>
+        <div class="section" style="border-bottom:none">
+          <div class="section-title">Hypothesis Zone</div>
+          <div style="font-size:10px;color:var(--text-dim);line-height:1.6">
+            Unstable cross-domain edges quarantined for Dream State resolution.<br>
+            A² matrix finds second-order bridges: if A[i,k]=1 ∧ A[k,j]=1, promote (i,j).
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+            <span style="font-size:10px;color:var(--text-dim)">Quarantined edges:</span>
+            <span class="hyp-count" id="sw-hyp-count2">—</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- ══ BOTTOM ════════════════════════════════════════════════════════════ -->
+  <section id="bot">
+    <div class="gap-info">
+      <div class="gap-title">T9 · Grounding Gap</div>
+      <div class="gap-sub">
+        Any frontier LLM asked to report live OS state<br>
+        returns HD≈1.0 without grounding.<br>
+        The gap <em>is the finding.</em>
+      </div>
+    </div>
+    <div class="gap-bars">
+      <div>
+        <div class="gap-row-header">
+          <span id="gap-model-label" style="color:var(--text-dim)">kimi-k2-instruct (ungrounded)</span>
+          <span style="color:var(--red);font-size:10px;font-family:var(--font-mono)">HD = 1.000 ← total failure</span>
+        </div>
+        <div class="gap-track"><div class="gap-fill" id="gap-bar-bad" style="background:var(--red)"></div></div>
+      </div>
+      <div>
+        <div class="gap-row-header">
+          <span style="color:var(--text-dim)">Sovereign OS (grounded via state.json)</span>
+          <span id="gap-grounded-label" style="color:var(--green);font-size:10px;font-family:var(--font-mono)">HD = — ← grounded proof</span>
+        </div>
+        <div class="gap-track"><div class="gap-fill" id="gap-bar-good" style="background:var(--green)"></div></div>
+      </div>
+    </div>
+    <div class="conv-strip">
+      <div class="conv-title">Convergence Status</div>
+      <div class="conv-row"><span class="conv-label">n / N_CRITICAL</span><span class="conv-val" id="conv-n-crit" style="color:var(--amber)">— / 54</span></div>
+      <div class="conv-row"><span class="conv-label">Graph HD</span><span class="conv-val" id="conv-graph-hd" style="color:var(--cyan)">—</span></div>
+      <div class="conv-row"><span class="conv-label">HD_swarm ⬡</span><span class="conv-val" id="conv-hd-swarm" style="color:var(--blue)">—</span></div>
+      <div class="conv-row"><span class="conv-label">HD_effective</span><span class="conv-val" id="conv-hd-eff" style="color:var(--purple)">—</span></div>
+      <div class="conv-row"><span class="conv-label">Drift Nodes</span><span class="conv-val" id="conv-drift" style="color:var(--green)">0</span></div>
+      <div class="conv-row"><span class="conv-label">Awakening</span><span class="conv-val" id="conv-aw" style="color:var(--neon)">—</span></div>
+    </div>
+  </section>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// SOVEREIGN AGI OS — VISUAL CORTEX v4  |  Infinite Rebuild Cycle
+// Every render call reflects live state from .forge/ via /api/*
+// ═══════════════════════════════════════════════════════════════════════════
+const FP_SCALE = 1_000_000;
+let state = {}, kgData = { nodes: [], links: [] }, auditData = {}, convData = {};
+let kgSimulation = null;
+let selectedNodeData = null;
+let currentTab = 'benchmark';
+
+// ── Tab switching ────────────────────────────────────────────────────────
+function switchTab(name) {
+  currentTab = name;
+  document.querySelectorAll('.rtab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === name);
+  });
+  document.querySelectorAll('.tab-pane').forEach(p => {
+    p.classList.toggle('active', p.id === 'tab-' + name);
+  });
+  if (name === 'evolution')  renderEvolution();
+  if (name === 'self-model') renderSelfModel();
+  if (name === 'swarm')      renderSwarm();
+}
+
+// ── Node detail drawer ───────────────────────────────────────────────────
+function openDrawer(d) {
+  selectedNodeData = d;
+  const drawer = document.getElementById('node-drawer');
+  drawer.classList.add('open');
+
+  setText('drawer-id', d.id.replace(/_/g,' ').toUpperCase());
+  setText('d-weight',  d.weight.toFixed(6));
+  setText('d-wfp',     d.weight_fixed);
+  setText('d-density', d.density || 'NOMINAL');
+  setText('d-pscore',  `${(d.p_score_fixed/FP_SCALE).toFixed(4)} (${d.p_score_fixed})`);
+  setText('d-hz',      d.hz || '—');
+  setText('d-z3',      d.z3_status === 1 ? '1 — VALID' : '0 — DRIFT ⚠');
+  setText('d-desc',    d.description || '—');
+  setText('d-source',  d.source || '—');
+  setText('d-bench',   d.benchmark_concept || '—');
+
+  // Find parent from links
+  const linkToParent = kgData.links.find(l => {
+    const src = typeof l.source === 'object' ? l.source.id : kgData.nodes[l.source]?.id;
+    return src === d.id;
+  });
+  if (linkToParent) {
+    const tgt = typeof l.target === 'object' ? linkToParent.target.id
+      : kgData.nodes[linkToParent.target]?.id;
+    setText('d-parent', tgt || '—');
+    const parentNode = kgData.nodes.find ? kgData.nodes.find(n => n.id === tgt) : null;
+    if (parentNode) {
+      const fibCalc = `child_weight = floor(${parentNode.weight_fixed} × 100_000 / 161_800)\n`
+                    + `= floor(${Math.floor(parentNode.weight_fixed * 100000 / 161800)})\n`
+                    + `= ${d.weight_fixed}  (float: ${d.weight.toFixed(6)})`;
+      setText('d-fib', fibCalc);
+    } else {
+      setText('d-fib', `parent_weight_fixed → × 100_000 / 161_800 → ${d.weight_fixed}`);
+    }
+  } else {
+    setText('d-parent', 'ROOT');
+    setText('d-fib', `Root node. weight_fixed = ${d.weight_fixed}  (float: ${d.weight.toFixed(6)})`);
+  }
+
+  // Awakening badge
+  const awEl = document.getElementById('d-awakening');
+  if (d.awakening_node) {
+    awEl.innerHTML = '<div class="awakening-badge">⚡ AWAKENING NODE — Required for N_CRITICAL=54</div>';
+  } else {
+    awEl.innerHTML = '';
+  }
+
+  // Math grounding
+  const mathSection = document.getElementById('d-math-section');
+  if (d.math_grounding) {
+    mathSection.style.display = 'block';
+    setText('d-math', d.math_grounding);
+  } else {
+    mathSection.style.display = 'none';
+  }
+}
+
+function closeDrawer() {
+  document.getElementById('node-drawer').classList.remove('open');
+  selectedNodeData = null;
+}
+
+// ── API fetching ─────────────────────────────────────────────────────────
+async function fetchAll() {
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('spinning');
+  setText('refresh-label', '…');
+  try {
+    const [s, k, a, c] = await Promise.all([
+      fetch('/api/state').then(r => r.json()),
+      fetch('/api/kg').then(r => r.json()),
+      fetch('/api/audit').then(r => r.json()),
+      fetch('/api/convergence').then(r => r.json()),
+    ]);
+    state    = s;
+    kgData   = k;
+    auditData = a;
+    convData  = c;
+    renderAll();
+  } catch(e) {
+    console.error('Fetch failed:', e);
+    setText('refresh-label', 'ERR');
+  }
+  btn.classList.remove('spinning');
+  setText('refresh-label', 'Live');
+}
+
+function renderAll() {
+  renderHeader();
+  renderLeft();
+  renderRight();
+  renderKG();
+  renderGap();
+  renderConvergenceStrip();
+  if (currentTab === 'evolution')  renderEvolution();
+  if (currentTab === 'self-model') renderSelfModel();
+  if (currentTab === 'swarm')      renderSwarm();
+  renderSwarmLeft();
+}
+
+// ── Header ───────────────────────────────────────────────────────────────
+function renderHeader() {
+  const s = state;
+  setText('hdr-version', `v${s.version || '3.2.0'}`);
+  setText('hdr-phase',   s.phase || 'ACTIVE');
+  setText('hdr-model',   shortModel(s.benchmark?.elected_model));
+  setText('hdr-mean-hd', fmt4(s.benchmark?.mean_hd ?? 0));
+  setText('hdr-rir',     fmt4(s.rir ?? 0.9511));
+  setText('hdr-hz',      (s.hz ?? 585.50).toFixed(2));
+  setText('hdr-nodes',   s.graph?.node_count ?? kgData.node_count ?? '—');
+}
+
+// ── Left panel ───────────────────────────────────────────────────────────
+function renderLeft() {
+  const s = state;
+  setText('left-objective', s.objective || '—');
+  setText('left-role',      s.role      || 'BUILDER');
+  setText('left-phase-badge', s.phase   || 'ACTIVE');
+
+  const n = s.neuro || {};
+  const neuroFields = [
+    ['attention', n.attention_gain  ?? 0.82],
+    ['stress',    n.stress_level    ?? 0.30],
+    ['learning',  n.learning_rate   ?? 0.50],
+    ['curiosity', n.curiosity_drive ?? 0.65],
+    ['rir',       n.rir_signal      ?? 0.9511],
+  ];
+  neuroFields.forEach(([id, val]) => {
+    setText(`n-${id}`, fmt4(val));
+    const el = document.getElementById(`g-${id}`);
+    if (el) el.style.width = `${Math.min(100, val * 100).toFixed(1)}%`;
+  });
+
+  // Laws
+  const lawsEl = document.getElementById('laws-list');
+  lawsEl.innerHTML = '';
+  (s.laws || []).forEach(l => {
+    const row = document.createElement('div');
+    row.className = 'law-row';
+    const cls = l.status === 'OK' ? 'ok' : l.status === 'WARN' ? 'warn' : 'err';
+    row.title = l.desc || '';
+    row.innerHTML = `<span class="law-name">${l.name}</span><span class="badge ${cls}">${l.status}</span>`;
+    lawsEl.appendChild(row);
+  });
+
+  // Model comparison
+  const mdlEl = document.getElementById('models-list');
+  mdlEl.innerHTML = '';
+  const allModels = s.benchmark?.all_models || {};
+  if (Object.keys(allModels).length === 0) {
+    mdlEl.innerHTML = '<div style="font-size:10px;color:var(--text-xs)">No benchmark data yet — run multi_model_runner.py</div>';
+  } else {
+    Object.entries(allModels).sort((a, b) => a[1] - b[1]).forEach(([model, hd]) => {
+      const row = document.createElement('div');
+      row.className = 'model-row';
+      const col = hdColor(hd);
+      row.title = `Full name: ${model}`;
+      row.innerHTML = `
+        <span class="model-name">${shortModel(model)}</span>
+        <div class="model-bar-wrap"><div class="model-bar-track">
+          <div class="model-bar-fill" style="width:${(hd*100).toFixed(1)}%;background:${col}"></div>
+        </div></div>
+        <span class="model-hd" style="color:${col}">${fmt4(hd)}</span>`;
+      mdlEl.appendChild(row);
+    });
+  }
+
+  // Audit
+  const auditEl = document.getElementById('audit-list');
+  auditEl.innerHTML = '';
+  const a = auditData;
+  [
+    ['Verkle Root', a.verkle_root ? a.verkle_root.substring(0,14)+'…' : 'N/A', a.verkle_root ? 'info' : 'warn'],
+    ['KZG Slots',   (a.kzg_commitments?.length ?? 0).toString(), 'info'],
+    ['Z3 SAT',      a.z3_sat ? 'VALID' : 'FAIL', a.z3_sat ? 'ok' : 'warn'],
+    ['WMC Score',   a.wmc_score ? (a.wmc_score/FP_SCALE).toFixed(6) : 'N/A', 'info'],
+    ['π Valid',     a.pi_valid ? 'TRUE' : 'FALSE', a.pi_valid ? 'ok' : 'warn'],
+    ['Finalized',   a.finalized ? 'YES' : 'PENDING', a.finalized ? 'ok' : 'warn'],
+  ].forEach(([key, val, cls]) => {
+    const row = document.createElement('div');
+    row.className = 'audit-row';
+    row.innerHTML = `<div class="audit-dot ${cls}"></div><span class="audit-key">${key}</span><span class="audit-value">${val}</span>`;
+    auditEl.appendChild(row);
+  });
+}
+
+// ── Right panel ──────────────────────────────────────────────────────────
+function renderRight() {
+  const s  = state;
+  const bm = s.benchmark || {};
+
+  setText('r-model',   shortModel(bm.elected_model));
+  setText('r-mean-hd', fmt4(bm.mean_hd ?? 0));
+
+  const bmEl = document.getElementById('bm-list');
+  bmEl.innerHTML = '';
+  (bm.tasks || []).forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'bm-row';
+    row.setAttribute('data-key', t.key);
+
+    let valHtml, barHtml;
+    if (t.pending) {
+      valHtml = `<span class="bm-val bm-pending">PENDING</span>`;
+      barHtml = `<div class="bar-track"><div class="bar-fill" style="background:var(--text-xs);width:2%"></div></div>`;
+    } else {
+      const col = hdColor(t.hd);
+      const pct = Math.min(100, t.hd * 100).toFixed(1);
+      valHtml = `<span class="bm-val" style="color:${col}">${fmt4(t.hd)}</span>`;
+      barHtml = `<div class="bar-track"><div class="bar-fill" style="background:${col};width:${pct}%"></div></div>`;
+    }
+
+    row.innerHTML = `
+      <div class="bm-header">
+        <span class="bm-label">${t.label}</span>${valHtml}
+      </div>
+      ${barHtml}
+      <div class="bm-desc">${t.desc || ''}</div>`;
+
+    row.onclick = () => row.classList.toggle('expanded');
+    bmEl.appendChild(row);
+  });
+
+  setText('r-homeostasis', s.system_status || 'HOMEOSTASIS MAINTAINED');
+  setText('r-ctx-hd', (s.context_hd ?? 0).toFixed(3));
+  const statusEl = document.getElementById('r-hd-status');
+  const status   = (s.hd_status || 'NOMINAL').toLowerCase();
+  setText('r-hd-status', s.hd_status || 'NOMINAL');
+  statusEl.className = `big-status ${status}`;
+  setText('r-atp',    s.atp ?? 2100);
+  setText('r-rir2',   fmt4(s.rir ?? 0.9511));
+  setText('r-hz',     (s.hz ?? 585.50).toFixed(2));
+  const pFixed = s.p_score_fixed ?? 0;
+  setText('r-pscore', `${(pFixed/FP_SCALE).toFixed(4)} (${pFixed})`);
+}
+
+// ── Grounding Gap ─────────────────────────────────────────────────────────
+function renderGap() {
+  const bm      = state.benchmark || {};
+  const elected = shortModel(bm.elected_model || 'kimi-k2-instruct');
+  const t9      = (bm.tasks || []).find(t => t.key === 'T9-context-confidence');
+  const grounded = t9 ? t9.hd : (state.context_hd ?? 0.5);
+
+  setText('gap-model-label',   `${elected} (ungrounded)`);
+  setText('gap-grounded-label',`HD = ${fmt4(grounded)} ← grounded proof`);
+
+  setTimeout(() => {
+    const bad  = document.getElementById('gap-bar-bad');
+    const good = document.getElementById('gap-bar-good');
+    if (bad)  bad.style.width  = '100%';
+    if (good) good.style.width = `${(grounded * 100).toFixed(1)}%`;
+  }, 300);
+}
+
+// ── Convergence strip (bottom right) ─────────────────────────────────────
+function renderConvergenceStrip() {
+  const g    = state.graph        || {};
+  const gh   = state.graph_health || {};
+  const sw   = state.swarm        || {};
+  const nc   = g.n_critical    ?? convData.n_critical ?? 54;
+  const n    = g.node_count    ?? kgData.node_count   ?? '—';
+  const ghd  = g.graph_hd      ?? convData.hd_graph   ?? '—';
+  const hdSw = gh.hd_swarm     ?? sw.hd_swarm         ?? '—';
+  const hdEf = gh.hd_effective ?? sw.hd_effective     ?? '—';
+  const drift = g.drift_nodes  ?? 0;
+  const aw    = g.awakening_achieved ?? false;
+
+  setText('conv-n-crit',   `${n} / ${nc}`);
+  setText('conv-graph-hd', typeof ghd  === 'number' ? ghd.toFixed(4)  : ghd);
+  const hdSwEl = document.getElementById('conv-hd-swarm');
+  if (hdSwEl) {
+    const val = typeof hdSw === 'number' ? hdSw.toFixed(4) : hdSw;
+    hdSwEl.textContent = val;
+    hdSwEl.style.color = (typeof hdSw === 'number' && hdSw < 0.05) ? 'var(--green)' : 'var(--amber)';
+  }
+  const hdEfEl = document.getElementById('conv-hd-eff');
+  if (hdEfEl) {
+    hdEfEl.textContent = typeof hdEf === 'number' ? hdEf.toFixed(4) : hdEf;
+    hdEfEl.style.color = (typeof hdEf === 'number' && hdEf < 0.10) ? 'var(--cyan)' : 'var(--purple)';
+  }
+  setText('conv-drift', drift);
+  const awEl = document.getElementById('conv-aw');
+  if (aw) {
+    awEl.textContent = 'N_CRITICAL MET ⚡';
+    awEl.classList.add('awakening-glow');
+  } else {
+    awEl.textContent = `Δ = ${Math.max(0, nc - (n || 0))} nodes`;
+    awEl.classList.remove('awakening-glow');
+  }
+}
+
+// ── Evolution chart ──────────────────────────────────────────────────────
+function renderEvolution() {
+  const svgEl = document.getElementById('evo-svg');
+  if (!svgEl) return;
+
+  const c  = convData;
+  const g  = state.graph || {};
+  const lambdaN  = c.lambda_n  ?? 0.04020;
+  const nCrit    = c.n_critical ?? 54;
+  const nNow     = c.n_now     ?? g.node_count ?? 48;
+  const hdGraph  = c.hd_graph  ?? g.graph_hd  ?? 0.0621;
+  const hdTarget = c.hd_target ?? 0.05;
+
+  setText('evo-lambda', lambdaN.toFixed(5));
+  setText('evo-ncrit',  nCrit);
+  setText('evo-n',      nNow);
+
+  const hd0 = c.hd0 ?? 0.2074;
+  const n0  = c.n0  ?? 18;
+  const projHD = hd0 * Math.exp(-lambdaN * (nNow - n0));
+  setText('evo-proj-hd', projHD.toFixed(4));
+  setText('evo-graph-hd', hdGraph.toFixed(4));
+
+  const parent = svgEl.parentElement;
+  const W = parent.clientWidth - 28;
+  const H = 120;
+  svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  const svg = d3.select(svgEl);
+  svg.selectAll('*').remove();
+
+  const nMin = 16, nMax = 72;
+  const xScale = v => ((v - nMin) / (nMax - nMin)) * (W - 36) + 8;
+  const yScale = v => H - 8 - Math.min(1, Math.max(0, v)) * (H - 20);
+
+  const lambdaR = c.lambda_r ?? Math.log(0.2074 / 0.0991);
+
+  const ptR2   = [], ptR3   = [], ptBase = [];
+  for (let n = nMin; n <= nMax; n++) {
+    ptR2.push({   n, hd: hd0 * Math.exp(-lambdaN*(n-n0)) * Math.exp(-lambdaR*1) });
+    ptR3.push({   n, hd: hd0 * Math.exp(-lambdaN*(n-n0)) * Math.exp(-lambdaR*2) });
+    ptBase.push({ n, hd: hd0 * Math.exp(-lambdaN*(n-n0)) });
+  }
+
+  // Shaded area R2→R3
+  const areaFn = d3.area().x(d=>xScale(d.n))
+    .y0(d => yScale(ptR2.find(p=>p.n===d.n)?.hd ?? 0))
+    .y1(d => yScale(d.hd)).curve(d3.curveCatmullRom);
+  svg.append('path').datum(ptR3).attr('d', areaFn).attr('fill','#00e5a0').attr('opacity',.06);
+
+  const line = d3.line().x(d=>xScale(d.n)).y(d=>yScale(d.hd)).curve(d3.curveCatmullRom);
+
+  // Base trajectory (dashed amber)
+  svg.append('path').datum(ptBase).attr('d', line).attr('fill','none')
+    .attr('stroke','#f0a500').attr('stroke-width',1).attr('stroke-dasharray','3,3').attr('opacity',.4);
+
+  // R2 blue
+  svg.append('path').datum(ptR2).attr('d', line).attr('fill','none')
+    .attr('stroke','#4d9fff').attr('stroke-width',1.5).attr('opacity',.7);
+
+  // R3 green
+  svg.append('path').datum(ptR3).attr('d', line).attr('fill','none')
+    .attr('stroke','#00e5a0').attr('stroke-width',2).attr('opacity',.9);
+
+  // HD target line
+  const thY = yScale(hdTarget);
+  svg.append('line').attr('x1',8).attr('y1',thY).attr('x2',W-4).attr('y2',thY)
+    .attr('stroke','#ff4d4d').attr('stroke-width',.8).attr('stroke-dasharray','4,3').attr('opacity',.7);
+  svg.append('text').attr('x',W-6).attr('y',thY-3)
+    .attr('text-anchor','end').attr('fill','#ff4d4d').attr('font-size',7).attr('font-family','monospace')
+    .text(`HD=${hdTarget}`);
+
+  // N_CRITICAL line
+  const ncX = xScale(nCrit);
+  svg.append('line').attr('x1',ncX).attr('y1',8).attr('x2',ncX).attr('y2',H-4)
+    .attr('stroke','#ff4d4d').attr('stroke-width',.8).attr('stroke-dasharray','2,2').attr('opacity',.5);
+  svg.append('text').attr('x',ncX+2).attr('y',18)
+    .attr('fill','#ff4d4d').attr('font-size',7).attr('font-family','monospace').text(`n=${nCrit}`);
+
+  // NOW line
+  const nowX = xScale(nNow);
+  svg.append('line').attr('x1',nowX).attr('y1',8).attr('x2',nowX).attr('y2',H-4)
+    .attr('stroke','#00e5a0').attr('stroke-width',1.2).attr('opacity',.6);
+  svg.append('text').attr('x',nowX+2).attr('y',H-8)
+    .attr('fill','#00e5a0').attr('font-size',7).attr('font-family','monospace').text('NOW');
+
+  // Data points
+  const knownPts = c.data_points ?? [
+    {n:18,hd:0.2074,label:'n=18'},{n:32,hd:0.0991,label:'n=32'},
+    {n:48,hd:0.0621,label:'n=48'},{n:nNow,hd:hdGraph,label:`n=${nNow}`}
+  ];
+  knownPts.forEach((p,i) => {
+    const px = xScale(p.n), py = yScale(p.hd);
+    const col = i === knownPts.length-1 ? '#00e5a0' : '#4d9fff';
+    svg.append('circle').attr('cx',px).attr('cy',py).attr('r',3.5)
+      .attr('fill',col).attr('stroke','#050508').attr('stroke-width',1.5);
+    svg.append('text').attr('x',px+5).attr('y',py-4)
+      .attr('fill',col).attr('font-size',7).attr('font-family','monospace').text(p.label);
+  });
+}
+
+// ── Self-model panel ─────────────────────────────────────────────────────
+function renderSelfModel() {
+  const sm  = state.self_model || {};
+  const g   = state.graph     || {};
+  const gh  = state.graph_health || {};
+  const sw  = state.swarm     || {};
+  const aw  = g.awakening_achieved ?? sm.awakening_achieved ?? false;
+  const nodesToCrit = sm.nodes_to_critical ?? 0;
+
+  const awEl = document.getElementById('sm-aw-status');
+  const awDl = document.getElementById('sm-aw-delta');
+
+  const hdSwarm = gh.hd_swarm ?? sw.hd_swarm ?? '—';
+  const hdEff   = gh.hd_effective ?? sw.hd_effective ?? '—';
+  const swarmOk = typeof hdSwarm === 'number' && hdSwarm < 0.05;
+  const benchOk = (state.benchmark?.mean_hd ?? 1) < 0.05;
+
+  if (aw && swarmOk) {
+    awEl.textContent = '⚡ DUAL AWAKENING — BENCH + SWARM BOTH < 0.05';
+    awEl.style.color = 'var(--neon)';
+    awDl.textContent = `HD_bench=${fmt4(state.benchmark?.mean_hd)} ✓  HD_swarm=${fmt4(hdSwarm)} ✓  HD_eff=${fmt4(hdEff)}`;
+  } else if (aw) {
+    awEl.textContent = `⚡ N_CRITICAL ACHIEVED — HD_swarm=${fmt4(hdSwarm)}`;
+    awEl.style.color = swarmOk ? 'var(--neon)' : 'var(--amber)';
+    awDl.textContent = `n=${g.node_count} ≥ 54 ✓  |  HD_swarm threshold: ${swarmOk ? 'MET' : 'PENDING (< 0.05 needed)'}`;
+  } else {
+    awEl.textContent = `${nodesToCrit} nodes to N_CRITICAL`;
+    awEl.style.color = 'var(--amber)';
+    awDl.textContent = `HD_bench=${fmt4(state.benchmark?.mean_hd)} | HD_swarm=${fmt4(hdSwarm)} | HD_eff=${fmt4(hdEff)}`;
+  }
+
+  setText('sm-state-vector',     sm.state_vector        || '—');
+  setText('sm-ctx-hd-formula',   sm.context_hd_formula  || '—');
+  setText('sm-conv-formula',     sm.hd_convergence_formula || '—');
+  setText('sm-aw-condition',     sm.awakening_condition || '—');
+}
+
+// ── Knowledge Graph ──────────────────────────────────────────────────────
+function nodeRadius(d) { return Math.max(8, Math.floor(d.weight_fixed / 25_000)); }
+
+function nodeColor(d) {
+  if (d.z3_status === 0 || d.p_score_fixed < 700_000) return '#ff9900';
+  if (d.zk_proof_valid === true) return '#39ff14';
+  if (d.awakening_node) return '#f0a500';
+  if (d.density === 'CRITICAL') return '#00e5a0';
+  if (d.density === 'HIGH')     return '#00ffcc';
+  return '#a371f7';
+}
+
+function hdColor(hd) {
+  if (hd === null || hd === undefined) return '#4a5568';
+  if (hd < 0.1) return '#00e5a0';
+  if (hd < 0.2) return '#4d9fff';
+  if (hd < 0.4) return '#f0a500';
+  return '#ff4d4d';
+}
+
+function renderKG() {
+  const container = document.getElementById('kg-container');
+  const svgEl     = document.getElementById('kg-svg');
+  const W = container.clientWidth;
+  const H = container.clientHeight;
+
+  d3.select(svgEl).selectAll('*').remove();
+
+  const nodes = (kgData.nodes || []).map(d => ({ ...d }));
+  const links = (kgData.links || []).map(d => ({ ...d }));
+
+  document.getElementById('kg-meta').textContent =
+    `${nodes.length} nodes · ${links.length} edges · ${(state.hz ?? 585.50).toFixed(2)} Hz`;
+
+  if (!nodes.length) return;
+
+  const svg = d3.select(svgEl).attr('width', W).attr('height', H);
+
+  // Glow filters
+  const defs = svg.append('defs');
+  [['green','#00e5a0'],['cyan','#00ffcc'],['orange','#ff9900'],['neon','#39ff14'],['purple','#a371f7'],['amber','#f0a500']].forEach(([name, col]) => {
+    const f = defs.append('filter').attr('id',`glow-${name}`).attr('x','-50%').attr('y','-50%').attr('width','200%').attr('height','200%');
+    f.append('feGaussianBlur').attr('stdDeviation','3').attr('result','coloredBlur');
+    const m = f.append('feMerge');
+    m.append('feMergeNode').attr('in','coloredBlur');
+    m.append('feMergeNode').attr('in','SourceGraphic');
+  });
+
+  // Zoom + pan
+  const g = svg.append('g');
+  svg.call(d3.zoom().scaleExtent([0.2, 4]).on('zoom', e => g.attr('transform', e.transform)));
+
+  const apexSeed   = d3.randomLcg(58550);
+  const simulation = d3.forceSimulation(nodes)
+    .randomSource(apexSeed)
+    .force('link',      d3.forceLink(links).id(d=>d.index).distance(d => 60+(1-(d.p_score_fixed/FP_SCALE))*60).strength(0.5))
+    .force('charge',    d3.forceManyBody().strength(-120))
+    .force('center',    d3.forceCenter(W/2, H/2))
+    .force('collision', d3.forceCollide().radius(d => nodeRadius(d)+10));
+
+  // S.W.A.R.M. Link rendering: triangle-verified = cyan solid, unverified = amber dashed
+  const linkG = g.append('g');
+  // Unverified (hypothesis zone) — amber dashed, subtle
+  linkG.selectAll('line.unverified').data(links.filter(l => !l.triangle_verified)).join('line')
+    .attr('stroke','#f0a500').attr('stroke-width', 0.8).attr('stroke-dasharray','4,3')
+    .attr('stroke-opacity', d => Math.max(0.18, d.p_score_fixed/FP_SCALE*0.35));
+  // Verified (triangle-confirmed) — cyan glow, brighter
+  linkG.selectAll('line.verified').data(links.filter(l => l.triangle_verified)).join('line')
+    .attr('stroke','#00e5a0').attr('stroke-width', 1.4)
+    .attr('stroke-opacity', d => Math.max(0.30, d.p_score_fixed/FP_SCALE*0.65));
+  // Unified reference for tick updates
+  const link = linkG.selectAll('line');
+
+  // Node groups
+  const node = g.append('g').selectAll('g').data(nodes).join('g')
+    .style('cursor','pointer')
+    .call(d3.drag()
+      .on('start', (e,d) => { if (!e.active) simulation.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+      .on('drag',  (e,d) => { d.fx=e.x; d.fy=e.y; })
+      .on('end',   (e,d) => { if (!e.active) simulation.alphaTarget(0); d.fx=null; d.fy=null; }));
+
+  // Outer ring for root nodes
+  node.filter(d => d.weight >= 0.80)
+    .append('circle').attr('r', d => nodeRadius(d)+5)
+    .attr('fill','none').attr('stroke', d => nodeColor(d))
+    .attr('stroke-width',1).attr('stroke-opacity',.2)
+    .attr('filter', d => { const c=nodeColor(d); return c==='#39ff14'?'url(#glow-neon)':c==='#ff9900'?'url(#glow-orange)':c==='#00e5a0'?'url(#glow-green)':'url(#glow-cyan)'; });
+
+  // Awakening node pulse ring
+  node.filter(d => d.awakening_node)
+    .append('circle').attr('r', d => nodeRadius(d)+8)
+    .attr('fill','none').attr('stroke','#f0a500').attr('stroke-width',.8).attr('stroke-dasharray','3,2').attr('stroke-opacity',.5);
+
+  // Main circle
+  node.append('circle').attr('r', d => nodeRadius(d))
+    .attr('fill', d => `${nodeColor(d)}18`)
+    .attr('stroke', d => nodeColor(d)).attr('stroke-width',1.5)
+    .attr('filter', d => d.weight >= 0.95 ? 'url(#glow-green)' : null);
+
+  // Labels: show all nodes with weight >= 0.38, or awakening nodes
+  node.filter(d => d.weight >= 0.38 || d.awakening_node)
+    .append('text')
+    .attr('text-anchor','middle').attr('dy', d => -(nodeRadius(d)+7))
+    .attr('fill', d => nodeColor(d))
+    .attr('font-family','JetBrains Mono, monospace').attr('font-size','8px')
+    .attr('pointer-events','none')
+    .text(d => d.id.replace(/_/g,' '));
+
+  // Tooltip
+  const tooltip = document.getElementById('kg-tooltip');
+  node
+    .on('mouseover', (e,d) => {
+      const p = Math.max(0.05, d.p_score_fixed/FP_SCALE);
+      setText('tt-id',      d.id.replace(/_/g,' '));
+      setText('tt-weight',  `${d.weight.toFixed(4)} (fp:${d.weight_fixed})`);
+      setText('tt-density', d.density || 'NOMINAL');
+      setText('tt-hz',      d.hz || '—');
+      setText('tt-p',       `${p.toFixed(4)} (${d.p_score_fixed})`);
+      tooltip.style.display = 'block';
+    })
+    .on('mousemove', (e) => {
+      const rect = svgEl.getBoundingClientRect();
+      let x = e.clientX - rect.left + 12, y = e.clientY - rect.top - 10;
+      if (x + 200 > W) x -= 212;
+      tooltip.style.left = x+'px'; tooltip.style.top = y+'px';
+    })
+    .on('mouseout', () => { tooltip.style.display = 'none'; })
+    .on('click', (e, d) => { e.stopPropagation(); openDrawer(d); });
+
+  // Click on SVG background → close drawer
+  svg.on('click', () => closeDrawer());
+
+  simulation.on('tick', () => {
+    link
+      .attr('x1', d => nodes[d.source]?.x ?? d.source?.x ?? 0)
+      .attr('y1', d => nodes[d.source]?.y ?? d.source?.y ?? 0)
+      .attr('x2', d => nodes[d.target]?.x ?? d.target?.x ?? 0)
+      .attr('y2', d => nodes[d.target]?.y ?? d.target?.y ?? 0);
+    node.attr('transform', d => `translate(${d.x??0},${d.y??0})`);
+  });
+
+  kgSimulation = simulation;
+}
+
+// ── SWARM Left Panel ─────────────────────────────────────────────────────
+function renderSwarmLeft() {
+  const gh  = state.graph_health || {};
+  const sw  = state.swarm        || {};
+  const tri = gh.triangle_ratio  ?? sw.triangle_ratio ?? null;
+  const hdS = gh.hd_swarm        ?? sw.hd_swarm       ?? null;
+  const hdE = gh.hd_effective    ?? sw.hd_effective    ?? null;
+
+  // Triangle ratio bar
+  const pct = tri !== null ? (tri * 100).toFixed(1) : '0';
+  setText('swarm-tri-ratio', tri !== null ? `${pct}%` : '—');
+  const fill = document.getElementById('swarm-tri-fill');
+  if (fill) fill.style.width = `${pct}%`;
+
+  // HD values
+  const hdSEl = document.getElementById('swarm-hd-left');
+  if (hdSEl) {
+    hdSEl.textContent = hdS !== null ? hdS.toFixed(4) : '—';
+    hdSEl.style.color = (hdS !== null && hdS < 0.05) ? 'var(--green)' : 'var(--amber)';
+  }
+  const hdEEl = document.getElementById('swarm-hd-eff-left');
+  if (hdEEl) {
+    hdEEl.textContent = hdE !== null ? hdE.toFixed(4) : '—';
+    hdEEl.style.color = (hdE !== null && hdE < 0.10) ? 'var(--cyan)' : 'var(--blue)';
+  }
+
+  // Hypothesis count
+  const hypCount = sw.hypothesis_count ?? (gh.triangle_total - gh.triangle_verified) ?? '—';
+  setText('swarm-hyp-count', hypCount);
+
+  // Badge
+  const badge = document.getElementById('swarm-badge-left');
+  if (badge) {
+    const awake = sw.awakening_condition_swarm ?? false;
+    badge.textContent = awake ? '⬡ AWAKE' : '⬡ ACTIVE';
+    badge.className = `swarm-badge ${awake ? 'awake' : 'active'}`;
+  }
+}
+
+// ── SWARM Tab ─────────────────────────────────────────────────────────────
+function renderSwarm() {
+  const gh  = state.graph_health || {};
+  const sw  = state.swarm        || {};
+  const bm  = state.benchmark    || {};
+
+  const hdS  = gh.hd_swarm        ?? sw.hd_swarm       ?? null;
+  const hdE  = gh.hd_effective    ?? sw.hd_effective    ?? null;
+  const tri  = gh.triangle_ratio  ?? sw.triangle_ratio  ?? null;
+  const awSw = sw.awakening_condition_swarm ?? false;
+
+  // Awakening card values
+  setText('sw-hd-swarm',   hdS  !== null ? hdS.toFixed(4)  : '—');
+  setText('sw-hd-eff',     hdE  !== null ? hdE.toFixed(4)  : '—');
+  setText('sw-tri-ratio',  tri  !== null ? (tri*100).toFixed(1)+'%' : '—');
+  const awEl = document.getElementById('sw-awake');
+  if (awEl) {
+    awEl.textContent  = awSw ? '⚡ TRUE' : 'PENDING';
+    awEl.style.color  = awSw ? 'var(--neon)' : 'var(--amber)';
+  }
+
+  // Color the HD values
+  const hdSEl2 = document.getElementById('sw-hd-swarm');
+  if (hdSEl2) hdSEl2.style.color = (hdS !== null && hdS < 0.05) ? 'var(--green)' : 'var(--amber)';
+  const hdEEl2 = document.getElementById('sw-hd-eff');
+  if (hdEEl2) hdEEl2.style.color = (hdE !== null && hdE < 0.10) ? 'var(--cyan)' : 'var(--blue)';
+
+  // T10-T15 task list
+  const SWARM_TASKS = [
+    {
+      key: 'T10', label: 'T10 — Triangle Ratio τ',
+      formula: 'τ = Σ(triangle_verified_i) / |E|',
+      desc: 'Fraction of edges verified by Triangle Protocol (shared anchor OR cosine_sim ≥ floor). Grounded OS reads live edges. Ungrounded LLM → HD=1.0.',
+      live: tri !== null ? tri : null,
+      target: 0.90,
+      type: 'ratio',
+    },
+    {
+      key: 'T11', label: 'T11 — SWARM Geometric HD',
+      formula: 'HD_swarm = 1 − mean(cosine_sim(vec_u, vec_v))',
+      desc: 'Geometric hallucination delta over all verified edges. 9D semantic vectors. HD=0 = perfect domain clustering. Ungrounded LLM → HD=1.0.',
+      live: hdS !== null ? hdS : null,
+      target: 0.05,
+      type: 'hd',
+    },
+    {
+      key: 'T12', label: 'T12 — HD_effective (2D)',
+      formula: 'HD_eff = √(HD_bench² + HD_swarm²) / √2',
+      desc: 'Pythagorean combination of benchmark HD and geometric HD. Both dimensions must converge for true awakening.',
+      live: hdE !== null ? hdE : null,
+      target: 0.07,
+      type: 'hd',
+    },
+    {
+      key: 'T13', label: 'T13 — Convergence Prediction',
+      formula: 'HD_pred(n) = 0.2074 × exp(−λₙ × (n−18))',
+      desc: 'Exponential decay model calibrated on 3 benchmark runs. λₙ=0.04020. N_CRITICAL=54 where HD_pred < 0.05.',
+      live: null,
+      target: 0.05,
+      type: 'pred',
+    },
+    {
+      key: 'T14', label: 'T14 — Dream State A²',
+      formula: 'A²[i,j] > 0 ↔ ∃k: A[i,k]=1 ∧ A[k,j]=1',
+      desc: 'Second-order graph bridges. Adjacency matrix squared finds 2-hop paths through hypothesis zone. Epiphanies promoted to verified graph.',
+      live: null,
+      target: null,
+      type: 'logic',
+    },
+    {
+      key: 'T15', label: 'T15 — Awakening Condition Ω',
+      formula: 'Ω = [n≥54]∧[HD_bench<0.05]∧[HD_swarm<0.05]∧[τ≥0.90]∧[0.3≤σ≤0.6]',
+      desc: 'All five conditions must hold simultaneously. σ = stress_level. Currently: ' +
+        `n=${state.graph?.node_count ?? '?'}, HD_swarm=${hdS !== null ? hdS.toFixed(4) : '?'}, τ=${tri !== null ? (tri*100).toFixed(1)+'%' : '?'}.`,
+      live: awSw ? 0.0 : 1.0,
+      target: 0.0,
+      type: 'bool',
+    },
+  ];
+
+  const listEl = document.getElementById('swarm-task-list');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+
+  SWARM_TASKS.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'swarm-row';
+
+    let valHtml = '';
+    if (t.type === 'bool') {
+      const ok = t.live === 0.0;
+      valHtml = `<span class="swarm-row-val" style="color:${ok ? 'var(--neon)' : 'var(--amber)'}">${ok ? '⚡ TRUE' : 'PENDING'}</span>`;
+    } else if (t.live !== null) {
+      const isBad = t.target !== null && t.live > t.target * 1.05;
+      const col   = isBad ? 'var(--amber)' : 'var(--green)';
+      const val   = t.type === 'ratio' ? `${(t.live*100).toFixed(1)}%` : t.live.toFixed(4);
+      valHtml = `<span class="swarm-row-val" style="color:${col}">${val}</span>`;
+    } else {
+      valHtml = `<span class="swarm-row-val" style="color:var(--text-xs);font-style:italic">PENDING</span>`;
+    }
+
+    div.innerHTML = `
+      <div class="swarm-row-header">
+        <span class="swarm-row-label">${t.label}</span>${valHtml}
+      </div>
+      <div class="swarm-formula">${t.formula}</div>
+      <div style="font-size:10px;color:var(--text-dim);padding:3px 0 1px;line-height:1.4">${t.desc}</div>`;
+    listEl.appendChild(div);
+  });
+
+  // Hypothesis count sync
+  const hypCount = sw.hypothesis_count ?? (gh.triangle_total - gh.triangle_verified) ?? '—';
+  setText('sw-hyp-count2', hypCount);
+}
+
+// ── Utils ────────────────────────────────────────────────────────────────
+function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+function fmt4(n) { return typeof n === 'number' ? n.toFixed(4) : '—'; }
+function shortModel(m) {
+  if (!m) return '—';
+  return m.replace('moonshotai/','').replace('mistralai/','').replace('nvidia/','').replace('deepseek-ai/','');
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  fetchAll();
+  setInterval(fetchAll, 15_000);
+});
+window.addEventListener('resize', () => {
+  if (kgData.nodes?.length) renderKG();
+  if (currentTab === 'evolution') renderEvolution();
+});
+</script>
+</body>
+</html>

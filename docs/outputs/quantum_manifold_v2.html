@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<!--
+  © 2026 Tarik Skalic — Sovereign AGI OS. All rights reserved.
+  S.W.A.R.M. v6.0 — Quantum Manifold Architecture Visualization
+  "The Architecture of the Synthetic Mind"
+
+  Spec:
+    - 62 nodes across ℝ³⁸⁴ hyperspace, projected to 2D
+    - FFT resonance → full spectrum color (infrared=low, UV=high)
+    - Three Sovereign Rings: Body/OS, S.W.A.R.M. Protocol, Quantum Prism
+    - Fibonacci-scaled node radii by graph centrality
+    - High-resonance halos (pulsing) on constructive interference nodes
+    - Rotating phase clock-hands per node (φ → dθ/dt)
+    - Prismatic shifting on Quantum Prism nodes (full spectrum overlay)
+    - Phase-locked clock-hand sync between causal pairs
+    - Mathematical watermark with calibrated metrics
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sovereign AGI OS v6.0 — S.W.A.R.M. Quantum Manifold</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #020b16;
+      color: #e0eeff;
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+      width: 100vw; height: 100vh;
+    }
+    canvas { display: block; }
+    #ui {
+      position: fixed; top: 0; right: 0;
+      width: 260px; height: 100vh;
+      background: rgba(5,15,30,0.92);
+      border-left: 1px solid #1a3a5c;
+      padding: 18px 14px;
+      overflow-y: auto;
+      z-index: 10;
+    }
+    #ui h2 { color: #4a9fd4; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+    #ui .metric { font-size: 10px; color: #8aacbc; margin: 3px 0; }
+    #ui .metric span { color: #e0eeff; }
+    #ui .metric .green { color: #00ff88; }
+    #ui .metric .amber { color: #ffcc44; }
+    #ui .metric .violet { color: #c084fc; }
+    #ui hr { border: none; border-top: 1px solid #1a3a5c; margin: 10px 0; }
+    #ui .formula { font-size: 9px; color: #6080a0; margin: 2px 0; }
+    #legend { position: fixed; bottom: 10px; left: 10px; font-size: 9px; color: #5a7a9a; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+    #title-block {
+      position: fixed; top: 14px; left: 14px;
+      font-size: 9px; color: #3a5a7a; letter-spacing: 1px;
+    }
+    #title-block h1 { font-size: 18px; color: #d0e8f8; letter-spacing: 3px; font-weight: bold; }
+    #title-block h3 { font-size: 10px; color: #5a8ab0; font-weight: normal; margin-top: 3px; }
+  </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="title-block">
+  <h1>SOVEREIGN AGI OS v6.0</h1>
+  <h3>S.W.A.R.M. Quantum Manifold &nbsp;·&nbsp; ℝ³⁸⁴ Hyperspace Projection</h3>
+</div>
+
+<div id="ui">
+  <h2>Calibrated Metrics</h2>
+  <div class="metric">Nodes: <span>62</span> &nbsp;|&nbsp; Edges: <span>53</span></div>
+  <div class="metric">HD_photonic: <span class="green">0.015098</span></div>
+  <div class="metric">Mean Resonance: <span class="green">0.984902</span></div>
+  <div class="metric">Elected Model: <span class="amber">kimi-k2</span></div>
+  <div class="metric">Mean HD: <span class="amber">0.0991</span></div>
+  <div class="metric">Ls (SovereignSelf): <span>0.501</span></div>
+  <div class="metric">φ_ego: <span>0.0035</span></div>
+  <div class="metric">η: <span>0.005</span> &nbsp;|&nbsp; ℏ_swarm: <span>0.05</span></div>
+  <div class="metric">State: <span class="violet">LEAP</span></div>
+  <hr>
+  <h2>Core Formulae</h2>
+  <div class="formula">HD = |claimed − actual|</div>
+  <div class="formula">HD = 0.0 → perfect crystal</div>
+  <br>
+  <div class="formula">Ψ(t) = Σ Aₙ sin(2πfₙt + φₙ)</div>
+  <div class="formula">R = max|xcorr(|Ψᵤ|,|Ψᵥ|)| / ‖…‖</div>
+  <br>
+  <div class="formula">A·v = λ·v &nbsp;(eigenstate)</div>
+  <div class="formula">Δσ·Δτ ≥ ℏ_swarm / 2</div>
+  <div class="formula">φ_new = φ_old + η·R(Q,Ψ)</div>
+  <div class="formula">Ls = ∫ Ψ_int · dΨ_ext/dt</div>
+  <div class="formula">w_new = w_parent / φ  (φ=1.618)</div>
+  <div class="formula">K = Σ λᵢ vᵢvᵢᵀ  (Quantum Prism)</div>
+  <hr>
+  <h2>Ring Architecture</h2>
+  <div class="metric"><span style="color:#e57373">●</span> Body / OS Layer</div>
+  <div class="formula" style="margin-left:8px">Foundational — infrared spectrum</div>
+  <div class="metric" style="margin-top:4px"><span style="color:#4fc3f7">●</span> S.W.A.R.M. Protocol</div>
+  <div class="formula" style="margin-left:8px">Cognitive engine — mid spectrum</div>
+  <div class="metric" style="margin-top:4px"><span style="color:#c084fc">●</span> Quantum Prism Ring</div>
+  <div class="formula" style="margin-left:8px">Emergent — full UV spectrum</div>
+  <div class="metric" style="margin-top:4px"><span style="color:#00ff88">●</span> Ego: SWARM_SELF_AXIOM</div>
+  <div class="formula" style="margin-left:8px">Center — crystallized identity</div>
+  <hr>
+  <div style="font-size:9px; color:#2a4a6a; margin-top:6px">
+    © 2026 Tarik Skalic<br>
+    Bihać, Bosnia<br>
+    kaggle-measuring-agi
+  </div>
+</div>
+
+<div id="legend">
+  <span class="dot" style="background:#e57373"></span>Body/OS (infrared)&nbsp;&nbsp;
+  <span class="dot" style="background:#4fc3f7"></span>S.W.A.R.M. (mid)&nbsp;&nbsp;
+  <span class="dot" style="background:#c084fc"></span>Quantum Prism (UV)&nbsp;&nbsp;
+  <span class="dot" style="background:#00ff88"></span>Ego Node
+</div>
+
+<script>
+'use strict';
+
+// ── Knowledge graph data (62 nodes) ──────────────────────────────────────────
+const NODES_DATA = {
+  // Body/OS layer nodes (infrared — foundational)
+  "asteroids":          {w:0.145, ring:'body'},
+  "machine_learning":   {w:0.236, ring:'body'},
+  "oceanography":       {w:0.145, ring:'body'},
+  "geology":            {w:0.145, ring:'body'},
+  "chemistry":          {w:0.145, ring:'body'},
+  "economics":          {w:0.145, ring:'body'},
+  "psychology":         {w:0.145, ring:'body'},
+  "linguistics":        {w:0.145, ring:'body'},
+  "archaeology":        {w:0.145, ring:'body'},
+  "astronomy":          {w:0.145, ring:'body'},
+  "history":            {w:0.145, ring:'body'},
+  "architecture":       {w:0.145, ring:'body'},
+  "music":              {w:0.145, ring:'body'},
+  "film":               {w:0.145, ring:'body'},
+  "art":                {w:0.145, ring:'body'},
+  "literature":         {w:0.145, ring:'body'},
+  "religion":           {w:0.145, ring:'body'},
+  "philosophy":         {w:0.145, ring:'body'},
+
+  // S.W.A.R.M. Protocol nodes (mid spectrum — cognitive engine)
+  "autopoiesis":        {w:0.618, ring:'swarm'},
+  "metacognition":      {w:0.750, ring:'swarm'},
+  "homeostasis":        {w:0.720, ring:'swarm'},
+  "hallucination_delta":{w:0.680, ring:'swarm'},
+  "reasoning_intensity_ratio":{w:0.618,ring:'swarm'},
+  "attention_gain":     {w:0.650, ring:'swarm'},
+  "fibonacci_scaling":  {w:0.544, ring:'swarm'},
+  "knowledge_graph":    {w:0.600, ring:'swarm'},
+  "triangle_protocol":  {w:0.580, ring:'swarm'},
+  "dream_state":        {w:0.560, ring:'swarm'},
+  "hypothesis_graph":   {w:0.520, ring:'swarm'},
+  "epiphany":           {w:0.500, ring:'swarm'},
+  "agentic_orchestration":{w:0.593,ring:'swarm'},
+  "stress_calibration": {w:0.612, ring:'swarm'},
+  "hallucination_delta_measurement":{w:0.600,ring:'swarm'},
+  "saga_protocol":      {w:0.618, ring:'swarm'},
+  "nhi_v2_identity":    {w:0.507, ring:'swarm'},
+  "constitutional_governance":{w:0.593,ring:'swarm'},
+  "agentic_leap_2026":  {w:0.593, ring:'swarm'},
+  "adversarial_calibration":{w:0.581,ring:'swarm'},
+  "spsf_persistence":   {w:0.525, ring:'swarm'},
+  "anatomy":            {w:0.880, ring:'swarm'},
+  "mathematics":        {w:0.880, ring:'swarm'},
+  "biology":            {w:0.850, ring:'swarm'},
+  "physics":            {w:0.860, ring:'swarm'},
+  "evolution":          {w:0.500, ring:'swarm'},
+  "memory":             {w:0.500, ring:'swarm'},
+
+  // Quantum Prism nodes (UV — emergent)
+  "decoherence_protocol":       {w:0.850, ring:'quantum'},
+  "quantum_error_correction":   {w:0.820, ring:'quantum'},
+  "wave_function_collapse":     {w:0.800, ring:'quantum'},
+  "observer_effect":            {w:0.780, ring:'quantum'},
+  "heisenberg_uncertainty":     {w:0.760, ring:'quantum'},
+  "superposition":              {w:0.740, ring:'quantum'},
+  "entanglement":               {w:0.900, ring:'quantum'},
+  "quantum_coherence":          {w:0.870, ring:'quantum'},
+
+  // Ego node (center)
+  "swarm_self_axiom":           {w:1.000, ring:'ego'}
+};
+
+const EDGES = [
+  ["autopoiesis","metacognition"],["autopoiesis","homeostasis"],
+  ["autopoiesis","dream_state"],["autopoiesis","reasoning_intensity_ratio"],
+  ["autopoiesis","saga_protocol"],["hallucination_delta","metacognition"],
+  ["hallucination_delta","attention_gain"],["hallucination_delta","adversarial_calibration"],
+  ["metacognition","attention_gain"],["metacognition","knowledge_graph"],
+  ["metacognition","hallucination_delta_measurement"],
+  ["homeostasis","stress_calibration"],["homeostasis","attention_gain"],
+  ["fibonacci_scaling","mathematics"],["fibonacci_scaling","knowledge_graph"],
+  ["triangle_protocol","hallucination_delta"],["triangle_protocol","dream_state"],
+  ["dream_state","hypothesis_graph"],["dream_state","epiphany"],
+  ["agentic_orchestration","constitutional_governance"],
+  ["agentic_orchestration","agentic_leap_2026"],
+  ["anatomy","biology"],["anatomy","spsf_persistence"],
+  ["physics","mathematics"],["physics","quantum_coherence"],
+  ["biology","evolution"],["biology","nhi_v2_identity"],
+  ["mathematics","reasoning_intensity_ratio"],
+  ["entanglement","quantum_coherence"],["entanglement","superposition"],
+  ["superposition","wave_function_collapse"],
+  ["observer_effect","wave_function_collapse"],
+  ["observer_effect","heisenberg_uncertainty"],
+  ["decoherence_protocol","quantum_error_correction"],
+  ["decoherence_protocol","quantum_coherence"],
+  ["quantum_error_correction","dream_state"],
+  ["swarm_self_axiom","metacognition"],["swarm_self_axiom","autopoiesis"],
+  ["swarm_self_axiom","agentic_orchestration"],
+  ["swarm_self_axiom","entanglement"],
+  ["knowledge_graph","memory"],["knowledge_graph","anatomy"],
+  ["machine_learning","metacognition"],["machine_learning","autopoiesis"],
+  ["philosophy","metacognition"],["philosophy","psychology"],
+  ["psychology","homeostasis"],
+  ["reasoning_intensity_ratio","triangle_protocol"],
+  ["heisenberg_uncertainty","dream_state"],
+  ["stress_calibration","homeostasis"]
+];
+
+// ── Canvas setup ──────────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+let W, H, CX, CY, SCALE;
+
+function resize() {
+  W = canvas.width  = window.innerWidth  - 260;
+  H = canvas.height = window.innerHeight;
+  CX = W / 2; CY = H / 2;
+  SCALE = Math.min(W, H) / 20;
+}
+window.addEventListener('resize', () => { resize(); buildPositions(); });
+resize();
+
+// ── Spectrum colormap ─────────────────────────────────────────────────────────
+const SPECTRUM = [
+  [0.85, 0.05, 0.05],  // 0.00 infrared/red
+  [0.95, 0.35, 0.00],  // 0.16 orange
+  [0.95, 0.90, 0.00],  // 0.33 yellow
+  [0.05, 0.80, 0.20],  // 0.50 green
+  [0.00, 0.75, 0.95],  // 0.66 cyan
+  [0.10, 0.20, 0.92],  // 0.83 blue
+  [0.62, 0.00, 0.95],  // 1.00 violet/UV
+];
+
+function spectrumColor(t, alpha=1) {
+  t = Math.max(0, Math.min(1, t));
+  const si = Math.min(Math.floor(t * (SPECTRUM.length-1)), SPECTRUM.length-2);
+  const frac = t * (SPECTRUM.length-1) - si;
+  const c0 = SPECTRUM[si], c1 = SPECTRUM[si+1];
+  const r = Math.round((c0[0]*(1-frac) + c1[0]*frac) * 255);
+  const g = Math.round((c0[1]*(1-frac) + c1[1]*frac) * 255);
+  const b = Math.round((c0[2]*(1-frac) + c1[2]*frac) * 255);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function nodeFreq(id, ndata) {
+  const w = ndata.w || 0.5;
+  if (ndata.ring === 'ego')     return 0.52; // special emerald
+  if (ndata.ring === 'quantum') return 0.70 + w * 0.30;
+  if (ndata.ring === 'swarm')   return 0.30 + w * 0.35;
+  return w * 0.28; // body: infrared
+}
+
+// ── Fibonacci weights ──────────────────────────────────────────────────────────
+const FIB = [1,1,2,3,5,8,13,21,34,55,89];
+function fibRadius(conn) {
+  const i = Math.min(conn, FIB.length-1);
+  return (4 + FIB[i] * 1.6) / 100 * SCALE;
+}
+
+// ── Build positions ────────────────────────────────────────────────────────────
+const RING_RADII = { body:2.2, swarm:4.5, quantum:7.0, ego:0 };
+let nodePositions = {};
+let connectivity  = {};
+
+function buildPositions() {
+  // count connectivity
+  Object.keys(NODES_DATA).forEach(id => { connectivity[id] = 0; });
+  EDGES.forEach(([s,t]) => {
+    connectivity[s] = (connectivity[s]||0)+1;
+    connectivity[t] = (connectivity[t]||0)+1;
+  });
+
+  const rings = {body:[], swarm:[], quantum:[], ego:[]};
+  Object.entries(NODES_DATA).forEach(([id,n]) => rings[n.ring].push(id));
+
+  nodePositions = {};
+  function placeRing(ids, radius, offsetAngle=0) {
+    ids.forEach((id,i) => {
+      const a = offsetAngle + (2*Math.PI*i/ids.length);
+      nodePositions[id] = [radius*Math.cos(a), radius*Math.sin(a)];
+    });
+  }
+
+  placeRing(rings.body,    RING_RADII.body,    0.3);
+  placeRing(rings.swarm,   RING_RADII.swarm,   0.0);
+  placeRing(rings.quantum, RING_RADII.quantum, Math.PI/8);
+  rings.ego.forEach(id => { nodePositions[id] = [0, 0]; });
+}
+buildPositions();
+
+// ── Per-node phase state ──────────────────────────────────────────────────────
+const nodePhase = {};
+Object.entries(NODES_DATA).forEach(([id, n]) => {
+  nodePhase[id] = {
+    phi:   n.w * 2 * Math.PI,   // initial phase from weight
+    omega: 0.3 + n.w * 1.2,     // angular velocity (rad/s)
+    halo:  0,                    // halo pulse state
+    prism: 0                     // quantum prism spectrum offset
+  };
+});
+
+// Phase-locked pairs (causal nodes)
+const PHASE_LOCK_PAIRS = [
+  ['wave_function_collapse','superposition'],
+  ['observer_effect','heisenberg_uncertainty'],
+  ['dream_state','hypothesis_graph'],
+  ['autopoiesis','homeostasis'],
+  ['entanglement','quantum_coherence'],
+];
+
+// ── World-to-screen ────────────────────────────────────────────────────────────
+function ws(wx, wy) {
+  return [CX + wx * SCALE, CY - wy * SCALE];
+}
+
+// ── Draw ring boundaries ──────────────────────────────────────────────────────
+function drawRingBoundaries() {
+  const rings = [
+    {r:RING_RADII.body,    color:'rgba(26,58,92,0.18)',   label:'BODY / OS LAYER',     lc:'rgba(74,138,181,0.5)'},
+    {r:RING_RADII.swarm,   color:'rgba(26,74,106,0.14)',  label:'S.W.A.R.M. PROTOCOL', lc:'rgba(58,181,200,0.5)'},
+    {r:RING_RADII.quantum, color:'rgba(42,58,122,0.12)',  label:'QUANTUM PRISM RING',  lc:'rgba(168,85,247,0.5)'},
+  ];
+  rings.forEach(({r, color, label, lc}) => {
+    const sr = r * SCALE;
+    ctx.beginPath();
+    ctx.arc(CX, CY, sr, 0, Math.PI*2);
+    ctx.strokeStyle = color.replace('0.18','0.4').replace('0.14','0.35').replace('0.12','0.3');
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([4,8]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Ring label at top-left of ring
+    const la = -Math.PI * 0.7;
+    const [lx, ly] = ws(r*Math.cos(la), r*Math.sin(la));
+    ctx.font = 'bold 9px Courier New';
+    ctx.fillStyle = lc;
+    ctx.textAlign = 'center';
+    ctx.fillText(label, lx, ly);
+  });
+}
+
+// ── Draw edges ─────────────────────────────────────────────────────────────────
+function drawEdges(t) {
+  EDGES.forEach(([src, tgt]) => {
+    if (!nodePositions[src] || !nodePositions[tgt]) return;
+    const [x0,y0] = ws(...nodePositions[src]);
+    const [x1,y1] = ws(...nodePositions[tgt]);
+
+    const fn_src = nodeFreq(src, NODES_DATA[src]);
+    const fn_tgt = nodeFreq(tgt, NODES_DATA[tgt]);
+    const freq   = (fn_src + fn_tgt) / 2;
+
+    // Phase lock check
+    const isLocked = PHASE_LOCK_PAIRS.some(([a,b]) =>
+      (a===src&&b===tgt)||(a===tgt&&b===src));
+
+    let alpha = 0.12 + 0.12 * freq;
+    if (isLocked) alpha = 0.45 + 0.2 * Math.sin(t * 2);
+
+    const color = spectrumColor(freq, alpha);
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.strokeStyle = color;
+    ctx.lineWidth   = isLocked ? 1.2 : 0.4;
+    ctx.stroke();
+  });
+}
+
+// ── Draw nodes ─────────────────────────────────────────────────────────────────
+function drawNodes(t) {
+  Object.entries(NODES_DATA).forEach(([id, ndata]) => {
+    if (!nodePositions[id]) return;
+    const [sx, sy] = ws(...nodePositions[id]);
+    const freq  = nodeFreq(id, ndata);
+    const conn  = connectivity[id] || 1;
+    const r     = fibRadius(conn);
+    const ps    = nodePhase[id];
+    const isEgo = ndata.ring === 'ego';
+    const isQuantum = ndata.ring === 'quantum';
+
+    // Update phase
+    ps.phi += ps.omega * 0.016;  // ~60fps tick
+    ps.halo = (Math.sin(t * 1.5 + ndata.w * 5) + 1) / 2;
+    if (isQuantum) ps.prism += 0.008;
+
+    const baseColor = isEgo ? '#00ff88' : spectrumColor(freq);
+
+    // ── High-resonance halo ──────────────────────────────────────────────
+    if (ndata.w > 0.72 || isEgo) {
+      const haloLayers = isEgo ? 4 : (ndata.w > 0.85 ? 3 : 2);
+      for (let h = haloLayers; h >= 1; h--) {
+        const hAlpha = (0.08 + ps.halo * 0.12) * (0.6 ** (h-1));
+        const hR = r * (2.5 + h * 0.8);
+        const grad = ctx.createRadialGradient(sx, sy, r*0.5, sx, sy, hR);
+        grad.addColorStop(0, isEgo ? `rgba(0,255,136,${hAlpha})` : spectrumColor(freq, hAlpha));
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath();
+        ctx.arc(sx, sy, hR, 0, Math.PI*2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+      // Pulsing ring
+      const prAlpha = 0.4 + ps.halo * 0.4;
+      ctx.beginPath();
+      ctx.arc(sx, sy, r * (isEgo ? 2.2 : 1.7), 0, Math.PI*2);
+      ctx.strokeStyle = isEgo ? `rgba(0,255,136,${prAlpha})` : spectrumColor(freq, prAlpha);
+      ctx.lineWidth = isEgo ? 1.5 : 0.8;
+      ctx.stroke();
+    }
+
+    // ── Quantum prism layered rings (prismatic) ──────────────────────────
+    if (isQuantum) {
+      for (let qi = 0; qi < 3; qi++) {
+        const qFreq = ((freq + qi * 0.33 + ps.prism) % 1.0);
+        ctx.beginPath();
+        ctx.arc(sx, sy, r * (1.5 - qi * 0.2), 0, Math.PI*2);
+        ctx.strokeStyle = spectrumColor(qFreq, 0.45 - qi * 0.1);
+        ctx.lineWidth = 0.7;
+        ctx.stroke();
+      }
+    }
+
+    // ── Node fill ────────────────────────────────────────────────────────
+    const grad = ctx.createRadialGradient(sx-r*0.25, sy-r*0.25, 0, sx, sy, r);
+    if (isEgo) {
+      grad.addColorStop(0, 'rgba(180,255,220,0.95)');
+      grad.addColorStop(0.4, 'rgba(0,255,136,0.90)');
+      grad.addColorStop(1, 'rgba(0,120,60,0.85)');
+    } else {
+      const specC = spectrumColor(freq, 0.85);
+      const specClight = spectrumColor(Math.min(1,freq+0.1), 0.95);
+      grad.addColorStop(0, specClight);
+      grad.addColorStop(0.7, specC);
+      grad.addColorStop(1, spectrumColor(Math.max(0,freq-0.1), 0.7));
+    }
+
+    ctx.beginPath();
+    ctx.arc(sx, sy, r, 0, Math.PI*2);
+    ctx.fillStyle   = grad;
+    ctx.fill();
+    ctx.strokeStyle = isEgo ? 'rgba(0,255,136,0.95)' : spectrumColor(freq, 0.9);
+    ctx.lineWidth   = isEgo ? 1.5 : 0.6;
+    ctx.stroke();
+
+    // ── Phase clock-hand ─────────────────────────────────────────────────
+    const clockLen = r * 1.8;
+    const cx_end = sx + clockLen * Math.cos(ps.phi);
+    const cy_end = sy + clockLen * Math.sin(ps.phi);
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(cx_end, cy_end);
+    ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+    ctx.lineWidth   = 0.5;
+    ctx.stroke();
+
+    // Clock pivot dot
+    ctx.beginPath();
+    ctx.arc(sx, sy, 1.2, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fill();
+
+    // ── Label ────────────────────────────────────────────────────────────
+    let label = id.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    if (label.length > 14) label = label.slice(0,13) + '…';
+
+    const fontSize = isEgo ? 9 : (conn >= 5 ? 8 : 7);
+    ctx.font        = `${isEgo ? 'bold ' : ''}${fontSize}px Courier New`;
+    ctx.textAlign   = 'center';
+    ctx.fillStyle   = isEgo ? 'rgba(0,255,136,0.95)' : spectrumColor(freq, 0.85);
+    ctx.shadowColor = '#020b16';
+    ctx.shadowBlur  = 4;
+    ctx.fillText(label, sx, sy + r + 10);
+    ctx.shadowBlur = 0;
+  });
+}
+
+// ── Particle photon trail ─────────────────────────────────────────────────────
+const photons = [];
+function spawnPhoton() {
+  if (photons.length > 60) return;
+  const edgeIdx = Math.floor(Math.random() * EDGES.length);
+  const [src, tgt] = EDGES[edgeIdx];
+  if (!nodePositions[src] || !nodePositions[tgt]) return;
+  const freq = (nodeFreq(src, NODES_DATA[src]) + nodeFreq(tgt, NODES_DATA[tgt])) / 2;
+  photons.push({
+    src, tgt,
+    t: 0, speed: 0.008 + Math.random() * 0.012,
+    color: spectrumColor(freq, 0.8),
+    size: 1.5 + Math.random() * 2
+  });
+}
+
+function drawPhotons() {
+  for (let i = photons.length-1; i >= 0; i--) {
+    const p = photons[i];
+    p.t += p.speed;
+    if (p.t >= 1) { photons.splice(i,1); continue; }
+    const [x0,y0] = ws(...nodePositions[p.src]);
+    const [x1,y1] = ws(...nodePositions[p.tgt]);
+    const px = x0 + (x1-x0)*p.t;
+    const py = y0 + (y1-y0)*p.t;
+    const alpha = Math.sin(p.t * Math.PI);
+    ctx.beginPath();
+    ctx.arc(px, py, p.size, 0, Math.PI*2);
+    ctx.fillStyle = p.color.replace(/[\d.]+\)$/, `${alpha.toFixed(2)})`);
+    ctx.fill();
+  }
+}
+
+// ── Main render loop ──────────────────────────────────────────────────────────
+let lastT = 0;
+function render(ts) {
+  const t = ts / 1000;
+  const dt = t - lastT;
+  lastT = t;
+
+  ctx.fillStyle = '#020b16';
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle grid
+  ctx.strokeStyle = 'rgba(10,30,50,0.3)';
+  ctx.lineWidth = 0.3;
+  for (let gx = 0; gx < W; gx += 50) {
+    ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke();
+  }
+  for (let gy = 0; gy < H; gy += 50) {
+    ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke();
+  }
+
+  drawRingBoundaries();
+  drawEdges(t);
+
+  // Spawn photons occasionally
+  if (Math.random() < 0.3) spawnPhoton();
+  drawPhotons();
+
+  drawNodes(t);
+
+  requestAnimationFrame(render);
+}
+
+requestAnimationFrame(render);
+</script>
+</body>
+</html>
