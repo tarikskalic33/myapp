@@ -120,18 +120,17 @@ async def ingest_triplet(triplet: Triplet):
         triplet.context,
     )
     snap = manifold.get_state_snapshot()
-    await _broadcast({"type": "INGEST", "edge_id": edge_id, **snap})
-    return {"ok": True, "edge_id": edge_id, "total_hyperedges": snap["total_hyperedges"]}
+    await _broadcast({"type": "INGEST", "edge_id": edge_id, "manifold": snap})
+    return {"ok": True, "edge_id": edge_id, "total_hyperedges": snap["total_hyperedges"], "manifold": snap}
 
 
 @app.post("/dream")
 async def trigger_dream():
     before_epiphanies = manifold.epiphany_count
-    before_cycles = manifold.dream_cycle_count
     manifold.dream_state_cycle()
     snap = manifold.get_state_snapshot()
     new_epiphanies = manifold.epiphany_count - before_epiphanies
-    await _broadcast({"type": "DREAM_COMPLETE", **snap})
+    await _broadcast({"type": "DREAM_COMPLETE", "manifold": snap})
     return {
         "ok": True,
         "dream_cycle": snap["dream_cycles_completed"],
@@ -166,6 +165,7 @@ async def websocket_endpoint(ws: WebSocket):
         "type": "SNAPSHOT",
         "events": list(events)[-50:],
         "epiphanies": epiphanies,
+        "manifold": manifold.get_state_snapshot(),
     }))
     try:
         while True:

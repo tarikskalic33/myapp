@@ -108,4 +108,51 @@ class QuantumManifold:
         audit("DREAM_COMPLETE", {"cycle":self.dream_cycle_count,"epiphanies_this_cycle":cycle_epiphanies,"total_epiphanies":self.epiphany_count,"total_edges":len(self.hyperedges)})
 
     def get_state_snapshot(self) -> dict:
-        return {"ts":datetime.now(timezone.utc).isoformat(),"version":"swarm-6.0.0","total_hyperedges":len(self.hyperedges),"dream_cycles_completed":self.dream_cycle_count,"total_epiphanies":self.epiphany_count,"ego_id":self.ego_id,"ego_z_level":4,"eta":self.eta}
+        node_ids = set([self.ego_id])
+        edges = []
+
+        for data in self.hyperedges.values():
+            a = data.get("s")
+            b = data.get("o")
+            if a:
+                node_ids.add(a)
+            if b:
+                node_ids.add(b)
+            for n in data.get("nodes", []):
+                if n:
+                    node_ids.add(n)
+            if a and b:
+                edges.append({
+                    "a": a,
+                    "b": b,
+                    "epiphany": data.get("r") == "resonates_with" or "dream_state_epiphany" in data.get("context", []),
+                })
+
+        nodes = []
+        sorted_ids = sorted(node_ids)
+        if sorted_ids:
+            meta_res = self.resolver.ontology.get(ids=sorted_ids, include=['metadatas'])
+            metadatas = (meta_res or {}).get('metadatas') or []
+            for idx, node_id in enumerate(sorted_ids):
+                meta = metadatas[idx][0] if idx < len(metadatas) and metadatas[idx] else {}
+                nodes.append({
+                    "id": node_id,
+                    "z": int(meta.get("z_level", 0)),
+                    "phase": float(meta.get("phase", 0.0)),
+                })
+
+        edge_map = {(e["a"], e["b"], e["epiphany"]): e for e in edges}
+        normalized_edges = [edge_map[k] for k in sorted(edge_map.keys())]
+
+        return {
+            "ts": datetime.now(timezone.utc).isoformat(),
+            "version": "swarm-6.0.0",
+            "total_hyperedges": len(self.hyperedges),
+            "dream_cycles_completed": self.dream_cycle_count,
+            "total_epiphanies": self.epiphany_count,
+            "ego_id": self.ego_id,
+            "ego_z_level": 4,
+            "eta": self.eta,
+            "nodes": nodes,
+            "edges": normalized_edges,
+        }
