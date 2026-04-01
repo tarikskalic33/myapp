@@ -19,10 +19,13 @@ def start_server():
     global SERVER_PROC
     root = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(root)  # parent of swarm/
+    log_file = open("server.log", "w", encoding="utf-8")
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
     SERVER_PROC = subprocess.Popen(
         [sys.executable, os.path.join(root, "server.py")],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-        cwd=project_root
+        stdout=log_file, stderr=subprocess.STDOUT,
+        cwd=project_root, env=env
     )
     # Wait for server to be ready
     for i in range(20):
@@ -31,14 +34,22 @@ def start_server():
             # Server crashed
             out, err = SERVER_PROC.communicate()
             print(f"SERVER CRASHED (code {SERVER_PROC.returncode})")
-            print(f"STDOUT: {out.decode()}")
-            print(f"STDERR: {err.decode()}")
+            print("Check server.log for details.")
             return False
         try:
             urllib.request.urlopen(f"{BASE}/health", timeout=2)
             return True
         except Exception:
             pass
+            
+    # Timeout reached
+    print("TIMEOUT REACHED. SERVER LOGS:")
+    SERVER_PROC.terminate()
+    try:
+        with open("server.log", "r") as f:
+            print(f.read())
+    except:
+        pass
     return False
 
 def stop_server():
