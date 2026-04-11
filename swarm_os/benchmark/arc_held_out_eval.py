@@ -211,10 +211,69 @@ def run_induction_round(
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
 
+def load_real_arc_tasks(arc_data_path: Path, n: int = 50) -> list[dict]:
+    """Load real ARC tasks from JSON files."""
+    files = sorted(arc_data_path.glob("*.json"))
+    if not files:
+        raise FileNotFoundError(
+            f"No ARC JSON files found at '{arc_data_path}'. "
+            "Place ARC-AGI .json files there before running. "
+            "Synthetic fallback is disabled (NO TOYS directive)."
+        )
+    random.shuffle(files)
+    tasks = []
+    vm = DSLVM()
+    for f in files[:n * 3]:   # try more to get n valid ones
+        try:
+            data = json.loads(f.read_text())
+            if not data.get("train"):
+                continue
+            ex   = data["train"][0]
+            inp  = np.array(ex["input"],  dtype=np.int64)
+            outp = np.array(ex["output"], dtype=np.int64)
+            if inp.size < 1 or outp.size < 1:
+                continue
+            tasks.append({
+                "id":           f.stem,
+                "input":        inp,
+                "output":       outp,
+                "true_program": [],   # unknown for real tasks
+                "transform":    "real_arc",
+            })
+        except Exception:
+            continue
+        if len(tasks) >= n:
+            break
+    print(f"  Loaded {len(tasks)} real ARC tasks from {arc_data_path}")
+    return tasks
+
+
 def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--arc-data", default=None,
+                        help="Path to arc_data/ directory with JSON task files")
+    args, _ = parser.parse_known_args()
+
+    # Determine task source
+    if args.arc_data:
+        arc_path = Path(args.arc_data)
+    else:
+        # Auto-detect real data
+        candidates = [
+            ARC_ROOT / "data" / "arc_data",
+            ARC_ROOT.parent / "arc_data",
+        ]
+        arc_path = next((p for p in candidates if p.exists() and list(p.glob("*.json"))), None)
+
+    use_real = arc_path is not None and arc_path.exists() and list(arc_path.glob("*.json"))
+
     print("=" * 60)
-    print("ARC GENERALIZATION PROOF — Phase 1")
-    print(f"Held-out tasks: 50 | Beam width: 8 | Max depth: {MAX_PROGRAM_LEN}")
+    if use_real:
+        print(f"ARC GENERALIZATION PROOF — Phase 1 (REAL DATA: {arc_path.name})")
+    else:
+        print("ARC GENERALIZATION PROOF — Phase 1 (synthetic — no arc_data found)")
+    print(f"Tasks: 50 | Beam width: 8 | Max depth: {MAX_PROGRAM_LEN}")
     print("=" * 60)
 
     # Init
@@ -224,7 +283,10 @@ def main():
     inducer = GrammarInducer(max_macro_len=4, top_k=20)
     gvm     = GrammarVM(library)
 
-    tasks   = generate_tasks(50)
+    if use_real:
+        tasks = load_real_arc_tasks(arc_path, n=50)
+    else:
+        tasks = generate_tasks(50)
     t0      = time.time()
 
     results = []
