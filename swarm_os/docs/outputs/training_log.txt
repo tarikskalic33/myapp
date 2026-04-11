@@ -1,2 +1,20 @@
+Loaded 800 ARC tasks from 'data/arc_data'
 D:\03_WORK_PROJECTS\system_rebuild\.claude\worktrees\stupefied-blackwell\swarm_os\arc\model\grammar_policy.py:48: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
   self.transformer = nn.TransformerEncoder(layer, n_layer)
+[METABOLIC GATE] stress=0.4262  ATP=21.0%
+[METABOLIC GATE] PASS — optimal zone (stress in 0.30-0.80, ATP >= 10%)
+
+Grammar size: 11 rules (all primitives)
+Induction every 1000 steps
+
+step=   200  acc=0.3775  CVS=0.9909  MDL=1600  rules=11  level=1  t=22s
+step=   400  acc=0.6210  CVS=0.9255  MDL=1600  rules=11  level=2  t=39s
+step=   600  acc=0.6719  CVS=0.9805  MDL=1600  rules=11  level=4  t=63s
+step=   800  acc=0.6925  CVS=0.9745  MDL=1600  rules=11  level=7  t=88s
+[METABOLIC GATE] stress=0.4262  ATP=21.0%
+[METABOLIC GATE] PASS — optimal zone (stress in 0.30-0.80, ATP >= 10%)
+
+[INDUCTION step=1000] +20 macros | library=31 rules | |G|=83 | top: SHIFT_DOWN → SHIFT_UP → INVERT → SHIFT_DOWN, SHIFT_UP → INVERT → SHIFT_DOWN → SHIFT_UP, SHIFT_DOWN → SHIFT_UP → INVERT
+
+[PHOTONIC BRIDGE] 20 macros -> knowledge_graph (Triangle Protocol)
+step=  1000  acc=0.6520  CVS=0.8280  MDL=1683  rules=31  level=9  t=108s

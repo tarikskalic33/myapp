@@ -2418,6 +2418,346 @@
       "description": "ARC Grammar Macro — FLIP_X → INVERT",
       "ingested_at": "2026-04-11T16:51:02Z",
       "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_000_SHIFT_DOWN_SHIFT_UP_INVERT_SHIFT_DOWN": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_DOWN → SHIFT_UP → INVERT → SHIFT_DOWN",
+      "ingested_at": "2026-04-11T17:13:20Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_001_SHIFT_UP_INVERT_SHIFT_DOWN_SHIFT_UP": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_UP → INVERT → SHIFT_DOWN → SHIFT_UP",
+      "ingested_at": "2026-04-11T17:13:20Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_002_SHIFT_DOWN_SHIFT_UP_INVERT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_DOWN → SHIFT_UP → INVERT",
+      "ingested_at": "2026-04-11T17:13:20Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_003_SHIFT_UP_INVERT_SHIFT_DOWN": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_UP → INVERT → SHIFT_DOWN",
+      "ingested_at": "2026-04-11T17:13:20Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_004_INVERT_SHIFT_DOWN_SHIFT_UP": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — INVERT → SHIFT_DOWN → SHIFT_UP",
+      "ingested_at": "2026-04-11T17:13:20Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_005_SHIFT_DOWN_SHIFT_UP": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_DOWN → SHIFT_UP",
+      "ingested_at": "2026-04-11T17:13:20Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_006_INVERT_SHIFT_DOWN_SHIFT_UP_INVERT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — INVERT → SHIFT_DOWN → SHIFT_UP → INVERT",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_007_SHIFT_UP_INVERT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_UP → INVERT",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_008_INVERT_SHIFT_DOWN": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — INVERT → SHIFT_DOWN",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_009_SHIFT_UP_INVERT_SHIFT_LEFT_SHIFT_UP": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_UP → INVERT → SHIFT_LEFT → SHIFT_UP",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_010_SHIFT_UP_INVERT_SHIFT_LEFT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_UP → INVERT → SHIFT_LEFT",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_011_SHIFT_DOWN_SHIFT_UP_INVERT_SHIFT_LEFT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_DOWN → SHIFT_UP → INVERT → SHIFT_LEFT",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_012_INVERT_SHIFT_LEFT_SHIFT_UP": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — INVERT → SHIFT_LEFT → SHIFT_UP",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_013_INVERT_SHIFT_LEFT_SHIFT_UP_INVERT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — INVERT → SHIFT_LEFT → SHIFT_UP → INVERT",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_014_INVERT_SHIFT_LEFT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — INVERT → SHIFT_LEFT",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_015_SHIFT_LEFT_SHIFT_UP_INVERT_SHIFT_LEFT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_LEFT → SHIFT_UP → INVERT → SHIFT_LEFT",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_016_SHIFT_LEFT_SHIFT_UP_INVERT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_LEFT → SHIFT_UP → INVERT",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_017_SHIFT_LEFT_SHIFT_UP": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_LEFT → SHIFT_UP",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_018_INVERT_SHIFT_LEFT_SHIFT_LEFT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — INVERT → SHIFT_LEFT → SHIFT_LEFT",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
+    },
+    "MACRO_019_SHIFT_UP_INVERT_SHIFT_LEFT_SHIFT_LEFT": {
+      "weight": 0.618,
+      "weight_fixed": 618000,
+      "semantic_density": "VECTOR_RESOLUTION",
+      "audio_resonance": "415.00 Hz",
+      "visual_geometry": {
+        "x": 0.5,
+        "y": 0.618,
+        "z": 0.15
+      },
+      "z3_status": 3,
+      "p_score_fixed": 850000,
+      "hd_fixed": 150000,
+      "description": "ARC Grammar Macro — SHIFT_UP → INVERT → SHIFT_LEFT → SHIFT_LEFT",
+      "ingested_at": "2026-04-11T17:13:21Z",
+      "type": "GRAMMAR_MACRO"
     }
   },
   "edges": [
@@ -6084,6 +6424,226 @@
       "cosine_sim": 0.8985,
       "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
       "ingested_at": "2026-04-11T16:51:02Z"
+    },
+    {
+      "source": "MACRO_000_SHIFT_DOWN_SHIFT_UP_INVERT_SHIFT_DOWN",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:20Z"
+    },
+    {
+      "source": "MACRO_001_SHIFT_UP_INVERT_SHIFT_DOWN_SHIFT_UP",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:20Z"
+    },
+    {
+      "source": "MACRO_002_SHIFT_DOWN_SHIFT_UP_INVERT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:20Z"
+    },
+    {
+      "source": "MACRO_003_SHIFT_UP_INVERT_SHIFT_DOWN",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:20Z"
+    },
+    {
+      "source": "MACRO_004_INVERT_SHIFT_DOWN_SHIFT_UP",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:20Z"
+    },
+    {
+      "source": "MACRO_005_SHIFT_DOWN_SHIFT_UP",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:20Z"
+    },
+    {
+      "source": "MACRO_006_INVERT_SHIFT_DOWN_SHIFT_UP_INVERT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_007_SHIFT_UP_INVERT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_008_INVERT_SHIFT_DOWN",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_009_SHIFT_UP_INVERT_SHIFT_LEFT_SHIFT_UP",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_010_SHIFT_UP_INVERT_SHIFT_LEFT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_011_SHIFT_DOWN_SHIFT_UP_INVERT_SHIFT_LEFT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_012_INVERT_SHIFT_LEFT_SHIFT_UP",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_013_INVERT_SHIFT_LEFT_SHIFT_UP_INVERT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_014_INVERT_SHIFT_LEFT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_015_SHIFT_LEFT_SHIFT_UP_INVERT_SHIFT_LEFT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_016_SHIFT_LEFT_SHIFT_UP_INVERT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_017_SHIFT_LEFT_SHIFT_UP",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_018_INVERT_SHIFT_LEFT_SHIFT_LEFT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
+    },
+    {
+      "source": "MACRO_019_SHIFT_UP_INVERT_SHIFT_LEFT_SHIFT_LEFT",
+      "target": "ARC_Grammar_Core",
+      "relation": "is_verified_axiom_of",
+      "weight": 0.618,
+      "p_score_fixed": 618000,
+      "triangle_verified": true,
+      "cosine_sim": 0.8985,
+      "triangle_reason": "Direct cosine bridge (sim=0.899 ≥ 0.45)",
+      "ingested_at": "2026-04-11T17:13:21Z"
     }
   ]
 }
