@@ -1,0 +1,569 @@
+{
+  "timestamp": "2026-04-11T10:23:51.389405+00:00",
+  "phase": "ARC_GENERALIZATION_PROOF",
+  "architecture": "GraphWorldModel+BeamSearch+GrammarInduction",
+  "n_tasks": 50,
+  "n_solved": 50,
+  "success_rate": 1.0,
+  "n_macros_induced": 0,
+  "macro_ids": [],
+  "avg_beam_depth": 1.16,
+  "elapsed_seconds": 0.67,
+  "per_transform": {
+    "ROT90": {
+      "solved": 5,
+      "total": 5
+    },
+    "ROT180": {
+      "solved": 5,
+      "total": 5
+    },
+    "FLIP_X": {
+      "solved": 5,
+      "total": 5
+    },
+    "FLIP_Y": {
+      "solved": 5,
+      "total": 5
+    },
+    "TRANSPOSE": {
+      "solved": 5,
+      "total": 5
+    },
+    "INVERT": {
+      "solved": 5,
+      "total": 5
+    },
+    "FLIP_X_then_FLIP_Y": {
+      "solved": 4,
+      "total": 4
+    },
+    "ROT90_twice": {
+      "solved": 4,
+      "total": 4
+    },
+    "FLIP_X_then_ROT90": {
+      "solved": 4,
+      "total": 4
+    },
+    "INVERT_then_FLIP_X": {
+      "solved": 4,
+      "total": 4
+    },
+    "ROT90_FLIP_X_ROT90": {
+      "solved": 4,
+      "total": 4
+    }
+  },
+  "task_results": [
+    {
+      "task_id": "held_out_000_ROT90",
+      "transform": "ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "ROT180"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_001_ROT180",
+      "transform": "ROT180",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_X"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_002_FLIP_X",
+      "transform": "FLIP_X",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_003_FLIP_Y",
+      "transform": "FLIP_Y",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "TRANSPOSE"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_004_TRANSPOSE",
+      "transform": "TRANSPOSE",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "INVERT"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_005_INVERT",
+      "transform": "INVERT",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "SHIFT_UP"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_006_FLIP_X_then_FLIP_Y",
+      "transform": "FLIP_X_then_FLIP_Y",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "TRANSPOSE",
+        "FLIP_X"
+      ],
+      "depth": 2,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_007_ROT90_twice",
+      "transform": "ROT90_twice",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "NOP"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_008_FLIP_X_then_ROT90",
+      "transform": "FLIP_X_then_ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_X"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_009_INVERT_then_FLIP_X",
+      "transform": "INVERT_then_FLIP_X",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "SHIFT_UP",
+        "FLIP_Y"
+      ],
+      "depth": 2,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_010_ROT90_FLIP_X_ROT90",
+      "transform": "ROT90_FLIP_X_ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_011_ROT90",
+      "transform": "ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "ROT180"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_012_ROT180",
+      "transform": "ROT180",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_X"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_013_FLIP_X",
+      "transform": "FLIP_X",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_014_FLIP_Y",
+      "transform": "FLIP_Y",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "TRANSPOSE"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_015_TRANSPOSE",
+      "transform": "TRANSPOSE",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "INVERT"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_016_INVERT",
+      "transform": "INVERT",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "SHIFT_UP"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_017_FLIP_X_then_FLIP_Y",
+      "transform": "FLIP_X_then_FLIP_Y",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y",
+        "TRANSPOSE"
+      ],
+      "depth": 2,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_018_ROT90_twice",
+      "transform": "ROT90_twice",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "NOP"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_019_FLIP_X_then_ROT90",
+      "transform": "FLIP_X_then_ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_X"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_020_INVERT_then_FLIP_X",
+      "transform": "INVERT_then_FLIP_X",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y",
+        "SHIFT_DOWN"
+      ],
+      "depth": 2,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_021_ROT90_FLIP_X_ROT90",
+      "transform": "ROT90_FLIP_X_ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_022_ROT90",
+      "transform": "ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "ROT180"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_023_ROT180",
+      "transform": "ROT180",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_X"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_024_FLIP_X",
+      "transform": "FLIP_X",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_025_FLIP_Y",
+      "transform": "FLIP_Y",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "TRANSPOSE"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_026_TRANSPOSE",
+      "transform": "TRANSPOSE",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "INVERT"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_027_INVERT",
+      "transform": "INVERT",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "SHIFT_UP"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_028_FLIP_X_then_FLIP_Y",
+      "transform": "FLIP_X_then_FLIP_Y",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "TRANSPOSE",
+        "FLIP_X"
+      ],
+      "depth": 2,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_029_ROT90_twice",
+      "transform": "ROT90_twice",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "NOP"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_030_FLIP_X_then_ROT90",
+      "transform": "FLIP_X_then_ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_X"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_031_INVERT_then_FLIP_X",
+      "transform": "INVERT_then_FLIP_X",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "SHIFT_UP",
+        "FLIP_Y"
+      ],
+      "depth": 2,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_032_ROT90_FLIP_X_ROT90",
+      "transform": "ROT90_FLIP_X_ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_033_ROT90",
+      "transform": "ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "ROT180"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_034_ROT180",
+      "transform": "ROT180",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_X"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_035_FLIP_X",
+      "transform": "FLIP_X",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_036_FLIP_Y",
+      "transform": "FLIP_Y",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "TRANSPOSE"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_037_TRANSPOSE",
+      "transform": "TRANSPOSE",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "INVERT"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_038_INVERT",
+      "transform": "INVERT",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "SHIFT_UP"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_039_FLIP_X_then_FLIP_Y",
+      "transform": "FLIP_X_then_FLIP_Y",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "ROT180",
+        "ROT90"
+      ],
+      "depth": 2,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_040_ROT90_twice",
+      "transform": "ROT90_twice",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "NOP"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_041_FLIP_X_then_ROT90",
+      "transform": "FLIP_X_then_ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_X"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_042_INVERT_then_FLIP_X",
+      "transform": "INVERT_then_FLIP_X",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "SHIFT_UP",
+        "FLIP_Y"
+      ],
+      "depth": 2,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_043_ROT90_FLIP_X_ROT90",
+      "transform": "ROT90_FLIP_X_ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_044_ROT90",
+      "transform": "ROT90",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "ROT180"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_045_ROT180",
+      "transform": "ROT180",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_X"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_046_FLIP_X",
+      "transform": "FLIP_X",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "FLIP_Y"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_047_FLIP_Y",
+      "transform": "FLIP_Y",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "TRANSPOSE"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_048_TRANSPOSE",
+      "transform": "TRANSPOSE",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "INVERT"
+      ],
+      "depth": 1,
+      "solved": true
+    },
+    {
+      "task_id": "held_out_049_INVERT",
+      "transform": "INVERT",
+      "accuracy": 1.0,
+      "rule_ids": [
+        "SHIFT_UP"
+      ],
+      "depth": 1,
+      "solved": true
+    }
+  ],
+  "hd_note": "Success rate is an objective upper bound on architecture capability. No human grading. Beam search finds the correct DSL program or it doesn't."
+}
