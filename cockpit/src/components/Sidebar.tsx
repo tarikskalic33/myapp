@@ -1,6 +1,7 @@
 import { Plus, Trash2, Cpu } from 'lucide-react'
 import type { Session } from '../hooks/useSessions.js'
 import type { Provider } from '../lib/agent.js'
+import { TelemetryPanel } from './TelemetryPanel.js'
 
 const PROVIDERS: { value: Provider; label: string }[] = [
   { value: 'dashscope', label: 'DashScope (Qwen)' },
@@ -62,6 +63,8 @@ export function Sidebar({
           </div>
         ))}
       </nav>
+
+      <TelemetryPanel />
 
       <div className="p-3 border-t border-aegis-border space-y-2">
         <select
