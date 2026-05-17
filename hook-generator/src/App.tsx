@@ -5,6 +5,7 @@ import { HookCard } from './components/HookCard.js'
 import { useAsyncForm } from '@shared/hooks/useAsyncForm'
 import { ErrorAlert } from '@shared/components/ErrorAlert'
 import { LoadingSpinner } from '@shared/components/LoadingSpinner'
+import { ToolkitFooter } from '@shared/components/ToolkitFooter'
 
 const PLATFORMS: Platform[] = ['TikTok', 'YouTube Shorts', 'Instagram Reels', 'All platforms']
 const TONES: Tone[] = ['Entertaining', 'Educational', 'Controversial', 'Inspirational', 'Relatable']
@@ -198,6 +199,12 @@ export default function App() {
           </div>
         )}
       </div>
+      <ToolkitFooter
+        current="Hook Generator"
+        borderClass="border-hook-border"
+        mutedClass="text-hook-muted"
+        glowClass="text-hook-muted hover:text-hook-glow"
+      />
     </div>
   )
 }

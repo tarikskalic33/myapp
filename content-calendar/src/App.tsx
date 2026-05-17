@@ -5,6 +5,7 @@ import { WeekTable } from './components/WeekTable.js'
 import { useAsyncForm } from '@shared/hooks/useAsyncForm'
 import { ErrorAlert } from '@shared/components/ErrorAlert'
 import { LoadingSpinner } from '@shared/components/LoadingSpinner'
+import { ToolkitFooter } from '@shared/components/ToolkitFooter'
 
 const EMPTY: CalendarInput = {
   niche: '', platforms: '', frequency: '',
@@ -173,6 +174,12 @@ export default function App() {
           </div>
         )}
       </div>
+      <ToolkitFooter
+        current="Content Calendar"
+        borderClass="border-cal-border"
+        mutedClass="text-cal-muted"
+        glowClass="text-cal-muted hover:text-cal-glow"
+      />
     </div>
   )
 }

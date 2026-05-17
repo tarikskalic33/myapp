@@ -6,6 +6,7 @@ import { RadarChart } from './components/RadarChart.js'
 import { useAsyncForm } from '@shared/hooks/useAsyncForm'
 import { ErrorAlert } from '@shared/components/ErrorAlert'
 import { LoadingSpinner } from '@shared/components/LoadingSpinner'
+import { ToolkitFooter } from '@shared/components/ToolkitFooter'
 import type { PlatformRanking } from './lib/matcher.js'
 
 const FIELDS: { key: keyof MatcherInput; label: string; placeholder: string }[] = [
@@ -142,6 +143,12 @@ export default function App() {
           </div>
         )}
       </div>
+      <ToolkitFooter
+        current="Platform Picker"
+        borderClass="border-brand-border"
+        mutedClass="text-brand-muted"
+        glowClass="text-brand-muted hover:text-brand-glow"
+      />
     </div>
   )
 }
