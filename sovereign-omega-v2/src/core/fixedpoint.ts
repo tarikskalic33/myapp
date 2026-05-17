@@ -73,15 +73,20 @@ export function bernsteinLCBQ32(
   alpha: Q32_32
 ): Q32_32 {
   if (n === 0n) return -(Q_ONE << 10n) // -Infinity proxy
-  const mean = divQ32(sum, BigInt(Number(n)) << 0n)
-  const variance = n > 1n
-    ? divQ32(sumSq - divQ32(sum * sum, BigInt(Number(n))), BigInt(Number(n) - 1))
-    : Q_ZERO
-  // logTerm = ln(2/alpha) approximated as integer
+  // mean = Σq_i / n — plain integer division keeps result in Q32.32 scale
+  const mean = sum / n
+  // sample variance: s² = (Σq_i² - (Σq_i)²/n) / (n-1)
+  // sumSq is Σ(q_i²) in Q32.32; mulQ32(sum,sum) gives (Σq_i)² >> 32 in Q32.32
+  const sumSqMean = mulQ32(sum, sum) / n
+  const rawVariance = sumSq - sumSqMean
+  const variance = n > 1n && rawVariance > 0n ? rawVariance / (n - 1n) : Q_ZERO
+  // logTerm = ln(2/alpha) in Q32.32
   const logTermF = Math.log(2 / fromQ32(alpha))
+  if (!isFinite(logTermF)) throw new RangeError(`bernsteinLCBQ32: non-finite log — alpha=${fromQ32(alpha)}`)
   const logTerm = toQ32(logTermF)
   // varianceTerm = sqrt(2 * variance * logTerm / n)
   const varianceTermF = Math.sqrt(2 * fromQ32(variance) * fromQ32(logTerm) / Number(n))
+  if (!isFinite(varianceTermF)) throw new RangeError(`bernsteinLCBQ32: non-finite variance term`)
   const varianceTerm = toQ32(varianceTermF)
   // biasTerm = 2 * logTerm / (3 * n)
   const biasTerm = divQ32(2n * logTerm, 3n * BigInt(Number(n)) << 32n)
