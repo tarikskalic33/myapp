@@ -6,6 +6,7 @@
 // violate IID because future samples depend on past results.
 // Bernstein bounds remain valid under adaptive sampling.
 // Reference: Howard et al. 2020; Waudby-Smith & Ramdas 2024.
+// Filename hoeffding.ts is a legacy artifact — do not rename (referenced by risk.ts and fixedpoint.ts).
 // ============================================================
 
 import type { BoundedDelta } from '../core/types.js'
