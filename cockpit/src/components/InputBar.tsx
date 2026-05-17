@@ -34,6 +34,7 @@ export function InputBar({ value, streaming, onChange, onSend, onStop }: InputBa
         <button
           onClick={streaming ? onStop : onSend}
           disabled={!streaming && !value.trim()}
+          aria-label={streaming ? 'Stop generation' : 'Send message'}
           className="self-end text-aegis-muted hover:text-aegis-accent disabled:opacity-30 transition-colors"
         >
           {streaming ? <StopCircle size={20} /> : <Send size={18} />}

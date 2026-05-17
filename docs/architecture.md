@@ -23,7 +23,7 @@ graph TD
 
     BRIDGE --> MATRIX["🧠 CoreMatrix<br/>PGCS · TGCS · AFSE<br/>Epoch failsafe · VCG"]
 
-    SOVTS["📐 sovereign-omega-v2/<br/>TypeScript Runtime<br/>8 gates · 101 tests"]
+    SOVTS["📐 sovereign-omega-v2/<br/>TypeScript Runtime<br/>8 gates · 151 tests"]
     SOVTS --> BRIDGE
 ```
 
@@ -52,16 +52,29 @@ graph TD
 
 ```
 TypeScript Runtime (src/)          Python Core Matrix (python/)
-├── event substrate (append-only)  ├── pgcs.py   — swap I/O criterion
-├── vcg.ts   — VCG calibration     ├── tgcs.py   — variance tracking
-├── gate.ts  — Bernstein bounds    ├── afse.py   — R² estimation
-├── reducer.ts — pure reducers     ├── core_matrix.py — M1/M2/M3
-└── pipeline.ts — DecisionSchema  └── bridge.py  — HTTP port 7890
-                                        GET /telemetry → cockpit
-                                        POST /event
-                                        POST /gate_signal
-                                        GET /health
+├── core/
+│   ├── canonicalize.ts  Gate 1    ├── pgcs.py   — swap I/O criterion
+│   ├── fixedpoint.ts    Gate 6    ├── tgcs.py   — variance tracking
+│   ├── semantics.ts     Ω⁵.5     ├── afse.py   — R² estimation
+│   └── wasm-interface.ts Ω⁵.7    ├── core_matrix.py — M1/M2/M3
+├── event/                          └── bridge.py  — HTTP port 7890
+│   ├── store.ts         Gate 2          GET /telemetry → cockpit
+│   ├── workflow.ts      E5 schemas      POST /event
+│   └── workflow-recorder.ts Ω⁵.8       POST /gate_signal
+├── gate/                               GET /health
+│   ├── hoeffding.ts     Gate 6
+│   └── risk.ts          Gate 6
+├── calibration/vcg.ts   Gate 5
+├── projection/reducer.ts Gate 4
+├── pipeline/index.ts    Gate 7
+├── registry/ (22 nodes) Ω⁵
+└── runtime/             Gate 8
 ```
+
+### Semantic Particle Registry (src/registry/)
+
+22 classified T0/T1 nodes, each with: epistemic tier, gate coverage, proof coverage,
+ancestry edges, holonic scale, mutation authority. No T4/T5 entries permitted.
 
 ## Cockpit Telemetry Flow
 

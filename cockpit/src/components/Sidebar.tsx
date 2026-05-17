@@ -32,6 +32,7 @@ export function Sidebar({
       <div className="p-2">
         <button
           onClick={onNewChat}
+          aria-label="New chat"
           className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-aegis-muted hover:text-aegis-text hover:bg-aegis-border transition-colors"
         >
           <Plus size={15} />
@@ -56,6 +57,7 @@ export function Sidebar({
             <span className="flex-1 truncate">{s.title}</span>
             <button
               onClick={e => { e.stopPropagation(); onDeleteSession(s.id) }}
+              aria-label={`Delete session ${s.title}`}
               className="opacity-0 group-hover:opacity-100 text-aegis-muted hover:text-red-400 transition-all"
             >
               <Trash2 size={13} />

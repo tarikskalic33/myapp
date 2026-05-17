@@ -102,6 +102,8 @@ export default function App() {
         <div className="flex items-center justify-between px-4 py-2 border-b border-aegis-border bg-aegis-surface/50">
           <button
             onClick={() => setShowSystem(v => !v)}
+            aria-label={showSystem ? 'Hide system prompt' : 'Show system prompt'}
+            aria-expanded={showSystem}
             className="flex items-center gap-1.5 text-xs text-aegis-muted hover:text-aegis-text transition-colors"
           >
             System prompt
@@ -110,6 +112,7 @@ export default function App() {
           {messages.length > 0 && (
             <button
               onClick={handleExport}
+              aria-label="Export conversation"
               className="flex items-center gap-1.5 text-xs text-aegis-muted hover:text-aegis-text transition-colors"
             >
               <Download size={13} />
