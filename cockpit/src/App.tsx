@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
-import { Plus, Trash2, Send, StopCircle, Cpu } from 'lucide-react'
+import { Plus, Trash2, Send, StopCircle, Cpu, Download, ChevronDown } from 'lucide-react'
 import { useAgent } from './hooks/useAgent.js'
 import { useSessions } from './hooks/useSessions.js'
 import type { Provider } from './lib/agent.js'
@@ -9,9 +9,13 @@ const PROVIDERS: { value: Provider; label: string }[] = [
   { value: 'ollama', label: 'Ollama (local)' },
 ]
 
+const DEFAULT_SYSTEM = 'You are AEGIS, a sovereign intelligence assistant. Be concise, precise, and direct.'
+
 export default function App() {
   const [provider, setProvider] = useState<Provider>('dashscope')
-  const { messages, streaming, error, send, reset } = useAgent(provider)
+  const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM)
+  const [showSystem, setShowSystem] = useState(false)
+  const { messages, streaming, error, send, reset, loadMessages } = useAgent(provider)
   const { sessions, activeId, setActiveId, createSession, updateSession, deleteSession } = useSessions()
   const [input, setInput] = useState('')
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -29,7 +33,10 @@ export default function App() {
     const text = input.trim()
     if (!text || streaming) return
     setInput('')
-    await send(text)
+    const withSystem = messages.length === 0 && systemPrompt.trim()
+      ? [{ role: 'system' as const, content: systemPrompt }, ...messages]
+      : messages
+    await send(text, withSystem)
   }
 
   const handleKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -45,8 +52,20 @@ export default function App() {
   }
 
   const handleSelectSession = (id: string) => {
-    reset()
+    const session = sessions.find(s => s.id === id)
+    loadMessages(session?.messages ?? [])
     setActiveId(id)
+  }
+
+  const handleExport = () => {
+    const text = messages.map(m => `[${m.role.toUpperCase()}]\n${m.content}`).join('\n\n---\n\n')
+    const blob = new Blob([text], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `aegis-chat-${Date.now()}.txt`
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   return (
@@ -69,6 +88,9 @@ export default function App() {
         </div>
 
         <nav className="flex-1 overflow-y-auto p-2 space-y-0.5">
+          {sessions.length === 0 && (
+            <p className="text-aegis-muted text-xs px-3 py-4 text-center">No sessions yet</p>
+          )}
           {sessions.map(s => (
             <div
               key={s.id}
@@ -90,7 +112,7 @@ export default function App() {
           ))}
         </nav>
 
-        <div className="p-3 border-t border-aegis-border">
+        <div className="p-3 border-t border-aegis-border space-y-2">
           <select
             value={provider}
             onChange={e => setProvider(e.target.value as Provider)}
@@ -100,21 +122,55 @@ export default function App() {
               <option key={p.value} value={p.value}>{p.label}</option>
             ))}
           </select>
+          <p className="text-aegis-muted text-xs text-center opacity-50">sovereign-runtime v0.5.3</p>
         </div>
       </aside>
 
       {/* Chat area */}
       <div className="flex-1 flex flex-col min-w-0">
+        {/* Toolbar */}
+        <div className="flex items-center justify-between px-4 py-2 border-b border-aegis-border bg-aegis-surface/50">
+          <button
+            onClick={() => setShowSystem(v => !v)}
+            className="flex items-center gap-1.5 text-xs text-aegis-muted hover:text-aegis-text transition-colors"
+          >
+            System prompt
+            <ChevronDown size={13} className={`transition-transform ${showSystem ? 'rotate-180' : ''}`} />
+          </button>
+          {messages.length > 0 && (
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-1.5 text-xs text-aegis-muted hover:text-aegis-text transition-colors"
+            >
+              <Download size={13} />
+              Export
+            </button>
+          )}
+        </div>
+
+        {showSystem && (
+          <div className="px-4 py-2 border-b border-aegis-border bg-aegis-surface/30">
+            <textarea
+              value={systemPrompt}
+              onChange={e => setSystemPrompt(e.target.value)}
+              rows={2}
+              className="w-full bg-transparent text-xs text-aegis-muted placeholder-aegis-muted/50 resize-none focus:outline-none"
+              placeholder="System prompt…"
+            />
+          </div>
+        )}
+
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
-          {messages.length === 0 && (
+          {messages.filter(m => m.role !== 'system').length === 0 && (
             <div className="flex flex-col items-center justify-center h-full gap-3 text-aegis-muted">
               <Cpu size={40} className="text-aegis-border" />
               <p className="text-sm">Start a conversation</p>
+              <p className="text-xs opacity-50">Shift+Enter for newline · Enter to send</p>
             </div>
           )}
 
-          {messages.map((m, i) => (
+          {messages.filter(m => m.role !== 'system').map((m, i) => (
             <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
                 className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
@@ -124,7 +180,7 @@ export default function App() {
                 }`}
               >
                 {m.content}
-                {streaming && i === messages.length - 1 && m.role === 'assistant' && (
+                {streaming && i === messages.filter(x => x.role !== 'system').length - 1 && m.role === 'assistant' && (
                   <span className="inline-block w-1.5 h-4 ml-0.5 bg-aegis-accent animate-pulse rounded-sm align-middle" />
                 )}
               </div>
@@ -148,10 +204,9 @@ export default function App() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKey}
-              placeholder="Message AEGIS… (Shift+Enter for newline)"
+              placeholder="Message AEGIS…"
               rows={1}
               className="flex-1 bg-transparent text-sm text-aegis-text placeholder-aegis-muted resize-none focus:outline-none max-h-32 overflow-y-auto"
-              style={{ fieldSizing: 'content' } as React.CSSProperties}
             />
             <button
               onClick={streaming ? reset : () => void handleSend()}
@@ -161,9 +216,6 @@ export default function App() {
               {streaming ? <StopCircle size={20} /> : <Send size={18} />}
             </button>
           </div>
-          <p className="text-aegis-muted text-xs mt-2 text-center">
-            sovereign-runtime v0.5.3 · {provider === 'ollama' ? 'Ollama local' : 'DashScope cloud'}
-          </p>
         </div>
       </div>
     </div>

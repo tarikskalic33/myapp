@@ -5,8 +5,9 @@ export interface UseAgentReturn {
   messages: ChatMessage[]
   streaming: boolean
   error: string | null
-  send: (text: string) => Promise<void>
+  send: (text: string, contextOverride?: ChatMessage[]) => Promise<void>
   reset: () => void
+  loadMessages: (msgs: ChatMessage[]) => void
 }
 
 export function useAgent(provider?: Provider): UseAgentReturn {
@@ -15,14 +16,15 @@ export function useAgent(provider?: Provider): UseAgentReturn {
   const [error, setError] = useState<string | null>(null)
   const abortRef = useRef<AbortController | null>(null)
 
-  const send = useCallback(async (text: string) => {
+  const send = useCallback(async (text: string, contextOverride?: ChatMessage[]) => {
     if (streaming) return
 
     abortRef.current?.abort()
     const controller = new AbortController()
     abortRef.current = controller
 
-    const next: ChatMessage[] = [...messages, { role: 'user', content: text }]
+    const base = contextOverride ?? messages
+    const next: ChatMessage[] = [...base, { role: 'user', content: text }]
     setMessages(next)
     setStreaming(true)
     setError(null)
@@ -56,5 +58,12 @@ export function useAgent(provider?: Provider): UseAgentReturn {
     setError(null)
   }, [])
 
-  return { messages, streaming, error, send, reset }
+  const loadMessages = useCallback((msgs: ChatMessage[]) => {
+    abortRef.current?.abort()
+    setMessages(msgs)
+    setStreaming(false)
+    setError(null)
+  }, [])
+
+  return { messages, streaming, error, send, reset, loadMessages }
 }

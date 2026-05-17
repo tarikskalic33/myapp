@@ -1,73 +1,43 @@
-# React + TypeScript + Vite
+# Platform Picker — AI Short-Form Video Platform Recommender
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tell the AI about your content. Get a ranked list of TikTok, YouTube Shorts, Instagram Reels, and Snapchat Spotlight — with scores and reasons tailored to your niche.
 
-Currently, two official plugins are available:
+## Setup (3 steps)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 1. Get a DashScope API key (free tier available)
+1. Go to dashscope.aliyuncs.com and sign up
+2. Navigate to **API Keys** → **Create API Key**
+3. Copy the key (starts with `sk-`)
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 2. Configure your key
+Rename `.env.example` to `.env` and paste your key:
+```
+VITE_DASHSCOPE_API_KEY=sk-your-key-here
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 3. Run the app
+```bash
+npm install
+npm run dev
 ```
+Open http://localhost:5173
+
+## Deploy to Vercel
+1. Import repo into vercel.com — set **Root Directory** to `platform-picker`
+2. Add environment variable: `VITE_DASHSCOPE_API_KEY` = your key
+3. Deploy
+
+## Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| "VITE_DASHSCOPE_API_KEY is not configured" | Rename `.env.example` to `.env` and add your key |
+| 401 Unauthorized | Key is invalid or expired — regenerate at dashscope.aliyuncs.com |
+| Blank results / parse error | Rare model issue — hit "Try another profile" and retry |
+| CORS error in browser | Expected — DashScope supports direct browser calls |
+
+## How it works
+Sends your creator profile to Alibaba Cloud's Qwen model via DashScope API. The model scores and ranks the 4 platforms based on your niche, style, and goals. All AI calls are client-side — no backend, no data stored. Buyer supplies their own API key.
+
+## Stack
+React 18 · TypeScript · Vite · Tailwind CSS · DashScope (qwen-plus)
