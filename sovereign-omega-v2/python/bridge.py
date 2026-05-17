@@ -61,6 +61,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
 def run_bridge(port=None):
     port = port or int(os.environ.get('SOVEREIGN_BRIDGE_PORT', '7890'))
     matrix.start()
+    if not matrix.wait_ready(timeout=5.0):
+        print(json.dumps({'event_type': 'BRIDGE_START_TIMEOUT', 'port': port}), flush=True)
     server = HTTPServer(('127.0.0.1', port), BridgeHandler)
     print(json.dumps({'event_type': 'BRIDGE_READY', 'port': port}), flush=True)
     try:

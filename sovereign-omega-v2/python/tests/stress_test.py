@@ -32,6 +32,7 @@ from core_matrix import CoreMatrix
 from epoch_failsafe import EpochFailsafeController
 from gradient_anchor import GradientAnchorCalibrator, DEFAULT_ANCHOR_TOKENS
 from hardware_config import STRESS_TEST_DURATION_H, CRASH_LOOP_COUNT, detect_hardware
+from tgcs_afse import AFSEController
 
 
 @dataclass
@@ -79,6 +80,7 @@ def run_stress_test(duration_s: float, crash_loops: int) -> StressTestResult:
     matrix = CoreMatrix(event_callback=on_event)
     calibrator = GradientAnchorCalibrator(DEFAULT_ANCHOR_TOKENS)
     failsafe = EpochFailsafeController(event_callback=on_event)
+    afse_ctrl = AFSEController()
 
     matrix.start()
     start_time = time.monotonic()
@@ -95,6 +97,7 @@ def run_stress_test(duration_s: float, crash_loops: int) -> StressTestResult:
                 context = payload[:64]
 
                 result = matrix.process_event(payload, verifier_result, context)
+                afse_ctrl.record_event(sequence)
                 sequence += 1
 
                 # Calibrate every 100 events
@@ -135,8 +138,8 @@ def run_stress_test(duration_s: float, crash_loops: int) -> StressTestResult:
     drift_index = calibrator.compute_drift_index()
     calibrator_passes = calibrator.passes_criterion(min(100_000, sequence // 100))
 
-    # AFSE R² — simplified for test: check if throughput is stable
-    afse_r2 = 0.98 if sequence > 1000 else 0.0
+    # AFSE R² — actual computation from the AFSEController (not hardcoded)
+    afse_r2 = afse_ctrl.get_r2()
 
     result = StressTestResult(
         duration_s=elapsed,

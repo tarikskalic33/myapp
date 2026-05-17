@@ -99,15 +99,16 @@ def M1(state: memoryview, payload: bytes, sequence: int) -> Tuple[int, bytes]:
     return sequence + 1, chain_hash
 
 
-def M2(state: memoryview, verifier_result: bytes, confidence_fixed: int) -> Tuple[int, int]:
+def M2(state: memoryview, verifier_result: bytes, confidence_fixed: int, sequence: int = 0) -> Tuple[int, int]:
     """
     M2: Calibration and gate data function.
     Transforms the calibration region of the byte array.
-    Receives: M2 region view, verifier result bytes, Q16.16 confidence value.
+    Receives: M2 region view, verifier result bytes, Q16.16 confidence value, sequence number.
     Returns: (vcg_error_fixed, gate_lcb_fixed) — both Q16.16 fixed-point.
 
     INVARIANT: confidence_fixed must be in [0, INT_SCALE] (representing [0.0, 1.0]).
     INVARIANT: Pure function — no side effects.
+    INVARIANT: sequence must be included in offset to prevent same-length collision.
     """
     # Clamp confidence to valid range
     confidence_fixed = fixed_clamp(confidence_fixed, 0, INT_SCALE)
@@ -126,8 +127,9 @@ def M2(state: memoryview, verifier_result: bytes, confidence_fixed: int) -> Tupl
     lcb_adjustment = (2 * vcg_error_fixed) >> 1
     gate_lcb_fixed = max(0, confidence_fixed - lcb_adjustment)
 
-    # Write to M2 region
-    offset = len(verifier_result) % (len(state) // 8)
+    # Write to M2 region — offset incorporates sequence to prevent collision when
+    # different events produce verifier_result bytes of equal length.
+    offset = (sequence * 8 + len(verifier_result)) % (len(state) // 8)
     if offset + 8 <= len(state):
         state[offset:offset + 4] = vcg_error_fixed.to_bytes(4, 'little', signed=False)
         state[offset + 4:offset + 8] = gate_lcb_fixed.to_bytes(4, 'little', signed=False)
@@ -211,6 +213,7 @@ class CoreMatrix:
         self._epoch: int = 0
         self._running = False
         self._lock = threading.RLock()
+        self._ready = threading.Event()
 
         # Performance metrics (fixed-point for determinism)
         self._total_vcg_error_fixed: int = 0
@@ -220,12 +223,17 @@ class CoreMatrix:
         """Start the core matrix and all subsystems."""
         self._pgcs.start()
         self._running = True
+        self._ready.set()
         if self._event_cb:
             self._event_cb('CORE_MATRIX_STARTED', {
                 'hardware': self._hw.platform,
                 'is_target_hardware': self._hw.is_target_hardware,
                 'array_bytes': ARRAY_TOTAL_BYTES,
             })
+
+    def wait_ready(self, timeout: float = 5.0) -> bool:
+        """Block until start() has completed. Returns True if ready within timeout."""
+        return self._ready.wait(timeout)
 
     def stop(self) -> None:
         """Stop the core matrix and all subsystems."""
@@ -264,7 +272,7 @@ class CoreMatrix:
             # confidence_fixed derived from verifier result
             confidence_fixed = INT_SCALE if verifier_result and verifier_result[0] else INT_SCALE // 2
             vcg_error_fixed, gate_lcb_fixed = M2(
-                self._m2_region, verifier_result, confidence_fixed
+                self._m2_region, verifier_result, confidence_fixed, self._sequence
             )
 
             # M3: context projection with current W_scale
@@ -306,7 +314,7 @@ class CoreMatrix:
         """
         with self._lock:
             signal_byte = b'\x01' if accepted else b'\x00'
-            M2(self._m2_region, signal_byte, INT_SCALE if accepted else 0)
+            M2(self._m2_region, signal_byte, INT_SCALE if accepted else 0, sequence)
 
     def emit_vcg_telemetry(self) -> Dict[str, object]:
         """

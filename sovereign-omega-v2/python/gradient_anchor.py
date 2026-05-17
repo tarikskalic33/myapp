@@ -159,8 +159,15 @@ class GradientAnchorCalibrator:
             hi = expected + anchor.tolerance_fixed
             new_w_scale = max(lo, min(hi, new_w_scale))
 
-            # Zero-tolerance anchors: always snap to expected
+            # Zero-tolerance anchors: any deviation is a hard abort, never silent correction.
+            # Enforces CLAUDE.md invariant: "Version mismatch = hard abort, never fallback."
             if anchor.tolerance_fixed == 0:
+                if drift_fixed > 0:
+                    raise RuntimeError(
+                        f"Hard abort: zero-tolerance anchor '{token_id}' has drifted "
+                        f"(measured={measured}, expected={expected}). "
+                        "This invariant permits no correction."
+                    )
                 new_w_scale = expected
 
             self._state.w_scales[token_id] = new_w_scale

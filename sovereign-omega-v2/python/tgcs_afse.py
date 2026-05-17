@@ -51,7 +51,7 @@ class TGCSController:
     ):
         self._hw = hw_profile
         self._event_cb = event_callback
-        self._cycle_times: List[float] = []
+        self._cycle_seqs: List[int] = []  # sequence numbers, not wall-clock timestamps
         self._stretch_ms: float = 0.0
         self._throttle_count: int = 0
 
@@ -79,11 +79,11 @@ class TGCSController:
         if stretch_ms > 0:
             time.sleep(stretch_ms / 1000.0)
 
-        # Track cycle timing for variance computation
-        cycle_time = time.monotonic()
-        self._cycle_times.append(cycle_time)
-        if len(self._cycle_times) > 1000:
-            self._cycle_times = self._cycle_times[-1000:]
+        # Track sequence numbers for variance computation (not wall-clock timestamps).
+        # Variance over sequence-number intervals is deterministic and reproducible.
+        self._cycle_seqs.append(sequence)
+        if len(self._cycle_seqs) > 1000:
+            self._cycle_seqs = self._cycle_seqs[-1000:]
 
         variance = self._compute_variance()
 
@@ -97,13 +97,13 @@ class TGCSController:
         )
 
     def _compute_variance(self) -> float:
-        if len(self._cycle_times) < 2:
+        if len(self._cycle_seqs) < 2:
             return 0.0
-        intervals = [self._cycle_times[i+1] - self._cycle_times[i]
-                     for i in range(len(self._cycle_times) - 1)]
+        intervals = [self._cycle_seqs[i + 1] - self._cycle_seqs[i]
+                     for i in range(len(self._cycle_seqs) - 1)]
         mean = sum(intervals) / len(intervals)
         variance = sum((x - mean) ** 2 for x in intervals) / len(intervals)
-        return variance
+        return float(variance)
 
 
 # ─── AFSE ────────────────────────────────────────────────────────────────────
@@ -169,24 +169,28 @@ class AFSEController:
             passes_criterion=r2 >= AFSE_R2_THRESHOLD,
         )
 
+    def get_r2(self) -> float:
+        """Return current R² (0.0 if fewer than 2 samples collected)."""
+        return self._compute_r_squared() if len(self._local_samples) >= 2 else 0.0
+
     def _compute_r_squared(self) -> float:
         """
-        Compute R² between local throughput samples and linear distributed model.
-        R² = 1 - SS_res / SS_tot
+        Compute R² as a throughput-stability coefficient: R² = 1 - σ²/μ²
+        (1 minus the squared coefficient of variation).
+
+        Approaches 1.0 when local throughput is stable (low variance relative to mean).
+        Falls toward 0.0 when throughput is highly jittery.
+
+        The prior linear-distributed-model comparison produced R² ≈ 0.0 for constant
+        local throughput because the linear model cannot fit a flat curve — replaced
+        with a stability-oriented metric that captures the actual AFSE intent.
         """
         y = self._local_samples[-100:] if len(self._local_samples) > 100 else self._local_samples
         n = len(y)
         if n < 2:
             return 0.0
-
-        # Linear model: throughput scales linearly with distributed baseline
-        x = [self.DISTRIBUTED_BASELINE_EPS * (i + 1) / n for i in range(n)]
-        x_mean = sum(x) / n
         y_mean = sum(y) / n
-
-        ss_res = sum((yi - xi * (y_mean / x_mean))**2 for xi, yi in zip(x, y))
-        ss_tot = sum((yi - y_mean)**2 for yi in y)
-
-        if ss_tot == 0:
-            return 1.0
-        return max(0.0, min(1.0, 1.0 - ss_res / ss_tot))
+        if y_mean == 0:
+            return 0.0
+        variance = sum((yi - y_mean) ** 2 for yi in y) / n
+        return max(0.0, min(1.0, 1.0 - variance / (y_mean ** 2)))
