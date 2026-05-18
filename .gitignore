@@ -33,7 +33,19 @@ extracted_text.txt
 # ── Godot editor cache ──────────────────────────────────────────
 game/.godot/
 
+# ── Product builds / secrets ────────────────────────────────────
+cockpit/dist/
+cockpit/.env
+platform-picker/dist/
+platform-picker/.env
+hook-generator/dist/
+hook-generator/.env
+
 # ── OS / build ──────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 *.log
+content-calendar/dist/
+content-calendar/.env
+hub/dist/
+hub/.env
