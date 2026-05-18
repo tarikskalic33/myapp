@@ -335,19 +335,30 @@ class CoreMatrix:
         """
         Emit VCG-eligible telemetry for the TypeScript E2 calibration layer.
         This data will be fed into VCGTracker.addResult() in the TypeScript layer.
+        Lock acquired so the caller sees a consistent epoch/sequence/vcg snapshot
+        and not a torn view mid-process_event() execution (H-02).
         """
-        pgcs_snap = self._pgcs.snapshot(self._sequence)
-        return {
-            'sequence': self._sequence,
-            'epoch': self._epoch,
-            'avg_vcg_error': from_fixed(
+        with self._lock:
+            seq = self._sequence
+            epoch = self._epoch
+            avg_vcg_error = from_fixed(
                 self._total_vcg_error_fixed // max(1, self._total_processed)
-            ),
-            'drift_index': self._calibrator.compute_drift_index(),
+            )
+            drift_index = self._calibrator.compute_drift_index()
+            failsafe_state = self._failsafe.state.value
+            corruption_count = self._failsafe.corruption_count
+            calibrator_ok = self._calibrator.passes_criterion(100_000)
+        # pgcs.snapshot() reads psutil/disk — safe outside the lock
+        pgcs_snap = self._pgcs.snapshot(seq)
+        return {
+            'sequence': seq,
+            'epoch': epoch,
+            'avg_vcg_error': avg_vcg_error,
+            'drift_index': drift_index,
             'pgcs_passes': pgcs_snap.passes_criterion,
-            'failsafe_state': self._failsafe.state.value,
-            'corruption_count': self._failsafe.corruption_count,
-            'calibrator_passes_100k': self._calibrator.passes_criterion(100_000),
+            'failsafe_state': failsafe_state,
+            'corruption_count': corruption_count,
+            'calibrator_passes_100k': calibrator_ok,
         }
 
     def get_epoch_snapshot(self) -> Optional[bytes]:
@@ -356,11 +367,14 @@ class CoreMatrix:
         Samples 256 bytes from four evenly-spaced positions across the 2GB M1 region
         rather than only the first 1KB, which is not representative after the first
         25 events fill the initial write window.
+        Lock acquired so the snapshot captures M1 state consistent with the
+        sequence/era counters — no torn read mid-process_event() (H-02).
         """
-        region_len = len(self._m1_region)
-        chunk = 256
-        positions = [0, region_len // 4, region_len // 2, (3 * region_len) // 4]
-        parts = [bytes(self._m1_region[p:p + chunk]) for p in positions]
-        seq_bytes = self._sequence.to_bytes(8, 'little')
-        era_bytes = self._era.to_bytes(4, 'little')
+        with self._lock:
+            region_len = len(self._m1_region)
+            chunk = 256
+            positions = [0, region_len // 4, region_len // 2, (3 * region_len) // 4]
+            parts = [bytes(self._m1_region[p:p + chunk]) for p in positions]
+            seq_bytes = self._sequence.to_bytes(8, 'little')
+            era_bytes = self._era.to_bytes(4, 'little')
         return b''.join(parts) + seq_bytes + era_bytes  # 4×256 + 12 = 1036 bytes

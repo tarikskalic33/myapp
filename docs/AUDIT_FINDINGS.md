@@ -147,10 +147,14 @@ They reference a "Game Bible" and GameState autoload not present in the AEGIS mo
   P2 crash-loop validation: 629k events, 1000 crash simulations, all 5 criteria PASS.
 **Status:** ✅ RESOLVED — this commit
 
-### H-02 · No transaction atomicity between M1, M2, M3 in CoreMatrix
-M1/M2/M3 are called sequentially under `_lock`, but the memoryview regions have no
-transactional isolation. A concurrent read of M1 during M2 execution sees torn state.
-The lock protects the write sequence but not read consistency.
+### ~~H-02 · No transaction atomicity between M1, M2, M3 in CoreMatrix~~
+M1/M2/M3 are called sequentially under `_lock`, but the memoryview regions had no
+transactional isolation. A concurrent read of M1 during M2 execution saw torn state.
+**Fix applied:** `emit_vcg_telemetry()` and `get_epoch_snapshot()` now acquire `self._lock`
+before reading `_m1_region`, `_sequence`, `_epoch`, and related counters. Lock is released
+before the `pgcs.snapshot()` call (which reads psutil/disk and must not hold the write lock).
+RLock is used throughout so the fix is deadlock-safe. P1 smoke test: 5.15M events, PASS.
+**Status:** ✅ RESOLVED — this commit
 
 ### ~~H-03 · `gate/hoeffding.ts` implements Bernstein, not Hoeffding~~
 File name is a historical artifact from v1. The implementation is correct (Bernstein
