@@ -1,690 +1,555 @@
-# CORPUS MINDMAP — Sovereign Omega Cognitive Substrate
-## Replayable Semantic Lattice · Particle-Field Holonic Framework
-## Branch: claude/aegis-setup-Lx7Ji · Operator: Tarik Skalić
-
-> This document IS the cognitive substrate layer. It is not documentation of the system —
-> it is the first operational instance of the architecture it maps. Every subagent entering
-> this repository should read this document before reading any source file.
+# AEGIS Corpus Mind-Map — Canonical Referential Lattice
+## Cognitive Substrate Layer · Drive Corpus Enumerated 2026-05-18
+## This document IS the cognitive substrate — not documentation about it.
 
 ---
 
 ## 0. Initialization Sequence
 
-The correct build order for cognitive orientation is not:
+The correct build order is not "application → framework → orchestration" but:
 
 ```
-application → framework → orchestration
+cognitive substrate (this document)
+  → deterministic workflow topology (sovereign-omega-v2 TypeScript runtime)
+    → recursive subagent ecology (Claude + ChatGPT + Qwen alliance)
+      → executable governance runtime (Python Layer B)
+        → application layer (cockpit + commercial trio)
 ```
 
-It is:
-
-```
-cognitive substrate          ← THIS DOCUMENT
-  → deterministic workflow topology   ← INTEGRATED_SPEC_v2 §1-6
-    → recursive subagent ecology      ← QWEN directives + Paperclip + SAGA
-      → executable governance runtime ← sovereign-omega-v2 src/ + python/
-        → application layer           ← cockpit/ + commercial products
-```
-
-**What this means in practice:**
-- Read this document before reading any source file
-- Read INTEGRATED_SPEC_v2 before writing any TypeScript
-- Run Gate 1 before writing any file (RFC 8785 conformance is the foundation)
-- The cognitive substrate and the governance runtime are co-dependent holons — neither
-  is complete without the other
-
-**Critical Non-Equivalence (must precede every external description of this system):**
-
-> A perfectly replayable system can still replay catastrophic reasoning flawlessly.
-
-| Concept | Meaning |
-|---------|---------|
-| Replayability | Reproducing identical outputs from identical inputs |
-| Correctness | Producing true or optimal outputs |
-| Calibration | Statistical correspondence between confidence and outcomes |
-| Governance | Human or institutional oversight capability |
-| Auditability | Ability to reconstruct historical execution lineage |
-| Alignment | Stable correspondence with human values or intent |
+This document crystallizes the distributed semantic field from the Google Drive corpus
+into a replayable lattice. Every future subagent begins here before touching source code.
 
 ---
 
 ## 1. Particle-Field Component Map
 
-Every file, reducer, verifier, replay segment, and calibration primitive is simultaneously:
-- A locally coherent particle-like unit (interior coherence, type contracts, invariants)
-- A field interaction surface (public API, side effects, exported interface)
-- A carrier of constrained authority (permissions, trust class, constitutional status)
-- A participant in larger emergent deterministic structures
+Each file classified by its physical-field analog:
 
-| Physical Analog | AEGIS Component | Location |
-|-----------------|-----------------|----------|
-| Molecular-state carrier | Reducer (pure function: frozen state → new frozen state) | `src/core/reducer.ts` |
-| State-transition operator | EventEnvelope append + projection update | `src/event/store.ts` |
-| Causal interaction chain | Append-only hash-chained event stream (E3 substrate) | `src/event/store.ts` |
-| Observation layer | Verifier classes V1–V5 (classified trust) | `src/verifier/` |
-| Probability-collapse boundary | Bernstein gate with K-bound enforcement | `src/gate/hoeffding.ts` |
-| Entropy-collapse region | Bit-shifted integer arithmetic, WASM kernels | `python/core_matrix.py` |
-| Conservation law | SHA-256 hash-chaining invariant (prev_hash → self_hash) | `src/core/canonicalize.ts` |
-| Invariant-preserving field continuity | RFC 8785 JCS canonicalization | `src/core/canonicalize.ts` |
-| Carrier of constrained authority | Constitutional frozen files (gate.py, dna.py, router.py) | `python/` (frozen) |
-| Epoch clock | Sequence numbers (never wall clock) | `src/event/uuid.ts` |
-| Measurement manifold | VCG calibration + rolling window | `src/calibration/vcg.ts` |
-| Phase boundary | RuntimeVersionPin hard abort | `src/runtime/version.ts` |
-| Interaction membrane | Python bridge HTTP (port 7890) | `python/bridge.py` |
-| Forensic trace | AmbiguityTrace + InteractionMap projections | `src/forensics/` |
+| Physical Analog | AEGIS Component | File(s) |
+|-----------------|-----------------|---------|
+| Conservation law | Cryptographic hash-chaining invariant | `canonicalize.ts`, `hashing.ts` |
+| Probability-collapse boundary | Bernstein gate (anytime-valid LCB) | `hoeffding.ts`, `fixedpoint.ts` |
+| Causal interaction chain | Event replay stream (E3 substrate) | `store.ts`, `replay.ts`, `uuid.ts` |
+| Observation layer | Verifier registry (V1–V5) | `verifier/registry.ts`, `verifier/independence.ts` |
+| Entropy-collapse region | Q32.32 fixed-point / WASM kernel | `fixedpoint.ts`, `wasm-interface.ts` |
+| State-transition operator | Pure functional reducers | `projection/reducer.ts`, `projection/compiler.ts` |
+| Molecular-state carrier | Frozen constitutional Python layer | `core_matrix.py`, `epoch_failsafe.py` |
+| Field continuity invariant | deepFreeze / immutability | `core/immutable.ts` |
+| Carrier of constrained authority | Constitutional files | `gate.py`†, `dna.py`†, `router.py`† |
+| Probability manifold | VCG rolling-window calibration | `calibration/vcg.ts` |
+| Phase-boundary enforcement | Epistemic tier classification | `core/tier.ts` |
+| Schema crystallization | Fail-closed schema validation | `core/schema-registry.ts` |
+| Process orchestration field | Python–TS bridge membrane | `python/bridge.py` |
+| Identity carrier | SAGA agent identity | `saga/identity.py` |
+
+† Constitutional files declared frozen, not yet present in repo (F-06, /guardian pending)
 
 ---
 
 ## 2. Holonic Scale Register
 
-A holon (Koestler 1967) is simultaneously a whole and a part. Every component in this
-system exists at a primary holonic scale and participates in all scales above it.
+### Subatomic — byte ordering, hash invariants, fixed-point precision
+| Component | File |
+|-----------|------|
+| RFC 8785 JCS byte-ordering | `src/core/canonicalize.ts` |
+| SHA-256 utilities | `src/core/hashing.ts` |
+| Q32.32 fixed-point arithmetic | `src/core/fixedpoint.ts` |
+| UUIDv7 generation (only Date.now() use) | `src/event/uuid.ts` |
+| WASM parity harness | `src/core/wasm-interface.ts` |
 
-### Scale 0 — Subatomic (byte-level invariants)
+### Atomic — individual files, reducers, interfaces, proof units
+| Component | File |
+|-----------|------|
+| Branded primitive types, runtime enums | `src/core/types.ts` |
+| deepFreeze implementation | `src/core/immutable.ts` |
+| Semantic replay-safety field | `src/core/semantics.ts` |
+| Epistemic tier classification | `src/core/tier.ts` |
+| Fail-closed schema validation | `src/core/schema-registry.ts` |
+| Mutation governance registry | `src/gate/mutation-governance.ts` |
+| Mutation registry (K-bound) | `src/event/mutation-registry.ts` |
+| Event segmentation | `src/event/segment.ts` |
+| Formal proofs: Hash, Reducer, Event | `formal/theories/Core/Hash.v`, `Reducer.v`, `Event.v` |
+| Formal proofs: Bisimulation | `formal/theories/Bisimulation/ThreeWay.v` |
+| TLA+ spec | `formal/tlaplus/Omega.tla` |
 
-These are the atoms below files — the constraints that govern raw computation.
+### Molecular — modules, pipelines, replay systems, verifier ecosystems
+| Component | Files |
+|-----------|-------|
+| E3 append-only substrate | `src/event/store.ts`, `src/event/uuid.ts`, `src/event/replay.ts` |
+| E5 cognitive workflow | `src/event/workflow.ts`, `src/event/workflow-recorder.ts` |
+| Gate module | `src/gate/hoeffding.ts`, `src/gate/risk.ts` |
+| VCG calibration | `src/calibration/vcg.ts`, `src/calibration/rng.ts` |
+| Verifier ecosystem | `src/verifier/registry.ts`, `src/verifier/independence.ts`, `src/verifier/execute.ts` |
+| Decision pipeline | `src/pipeline/e1.ts`, `src/pipeline/index.ts`, `src/pipeline/schema.ts` |
+| Projection layer | `src/projection/reducer.ts`, `src/projection/compiler.ts` |
+| Compliance | `src/compliance/tombstone.ts` |
+| Forensics | `src/forensics/divergence.ts` |
 
-| Invariant | Enforcement | Location |
-|-----------|-------------|----------|
-| RFC 8785 JCS byte ordering | `canonicalizeJCS()` | `src/core/canonicalize.ts` |
-| SHA-256 hex encoding | `Array.from(bytes).map(b => b.toString(16).padStart(2,'0'))` | multiple |
-| Bit-shifted integer arithmetic | `M1/M2/M3` functions throughout | `python/core_matrix.py` |
-| UUIDv7 monotonic timestamp prefix | `generateUUIDv7()` | `src/event/uuid.ts` |
-| NFC Unicode normalization | Inside `canonicalizeJCS` | `src/core/canonicalize.ts` |
-| Non-BMP surrogate handling | `cp > 0xFFFF` check before surrogate range | `src/core/canonicalize.ts` |
-| Fixed-point arithmetic precision | No floating-point in Python determinism paths | `python/core_matrix.py` |
-| Sequence overflow guard | Virtual millisecond steal when `seq > 0xFFF` | `src/event/uuid.ts` |
+### Cellular — subsystems (E3, VCG, Python Core Matrix, PGCS, epoch failsafe)
+| Component | Files |
+|-----------|-------|
+| Python Core Matrix (M1/M2/M3) | `python/core_matrix.py` |
+| PGCS telemetry | `python/pgcs.py` |
+| TGCS/AFSE timing | `python/tgcs_afse.py` |
+| Epoch failsafe | `python/epoch_failsafe.py` |
+| Gradient anchor calibration | `python/gradient_anchor.py` |
+| Hardware layer | `python/hardware_config.py` |
+| HTTP bridge (port 7890) | `python/bridge.py` |
 
-### Scale 1 — Atomic (individual files as holons)
+### Organism — full sovereign-omega-v2 governance substrate
+- TypeScript runtime (src/ + test/ + formal/) + Python Layer B (python/) unified
+- Entry points: `src/pipeline/index.ts` (decision compilation) · `src/runtime/projection-machine.ts` (runtime pin)
+- Gate sequence: Gates 1–8 must pass before organism is deployment-ready
 
-Each file is a complete unit of responsibility with a defined public surface.
-
-| File | Role | Tier | Constitutional |
-|------|------|------|---------------|
-| `src/core/canonicalize.ts` | RFC 8785 JCS engine | T0 | No |
-| `src/core/types.ts` | Branded types (UUIDv7, SHA256Hex, BoundedDelta, SequenceNumber) | T0 | No |
-| `src/core/immutable.ts` | `deepFreeze` implementation | T0 | No |
-| `src/core/reducer.ts` | Pure reducer framework | T0 | No |
-| `src/event/store.ts` | Three-phase IDB append (readonly → hash → readwrite) | T0 | No |
-| `src/event/uuid.ts` | UUIDv7 generation (only permitted `Date.now()` use) | T0 | No |
-| `src/gate/hoeffding.ts` | Bernstein bounds gate (misnamed: implements Waudby-Smith & Ramdas 2024) | T0 | No |
-| `src/calibration/vcg.ts` | VCG calibration tracker | T1 | No |
-| `python/core_matrix.py` | M1/M2/M3 functions over contiguous byte array | T0 | No |
-| `python/gate.py` | Python gate logic | T0 | **FROZEN** |
-| `python/dna.py` | DNA structural definitions | T0 | **FROZEN** |
-| `python/router.py` | Event routing | T0 | **FROZEN** |
-| `python/epoch_failsafe.py` | Epoch corruption guard (`corruption_count == 0` invariant) | T0 | No |
-| `python/pgcs.py` | PGCS telemetry source | T1 | No |
-| `python/bridge.py` | HTTP bridge TS → Python (port 7890) | T1 | No |
-| `python/gradient_anchor.py` | Zero-tolerance RuntimeError on anchor violation | T0 | No |
-| `python/tgcs_afse.py` | Sequence-based variance (no `time.time()`) | T1 | No |
-| `src/compliance/tombstone.ts` | GDPR tombstoning (KMS stub: one known non-blocking gap) | T1 | No |
-| `formal/theories/Core/Hash.v` | Coq proof of hash invariants | T0 | No |
-| `formal/theories/Core/Reducer.v` | Coq proof of reducer purity | T0 | No |
-| `formal/theories/Core/Event.v` | Coq proof of event schema | T0 | No |
-| `formal/theories/Bisimulation/ThreeWay.v` | Coq proof of three-way bisimulation | T0 | No |
-| `formal/tlaplus/Omega.tla` | TLA+ temporal logic specification | T0 | No |
-| `formal/tlaplus/Omega.cfg` | TLA+ configuration | T0 | No |
-
-### Scale 2 — Molecular (modules as holons)
-
-| Module | Single Responsibility | Key Exports | Coupling |
-|--------|-----------------------|-------------|---------|
-| `src/core/` | Deterministic computation primitives | `canonicalizeJCS`, `deepFreeze`, branded types | Zero external runtime deps |
-| `src/event/` | Append-only event substrate | `EventStore`, `generateUUIDv7` | `src/core/` only |
-| `src/gate/` | Bernstein statistical gating | `BernsteinGate`, `computeLCB` | `src/core/types.ts` |
-| `src/calibration/` | VCG + rolling window | `VCGTracker`, `computeVCG` | `src/core/` |
-| `src/verifier/` | Trust-partitioned verification | V1–V5 interfaces + registry | `src/core/types.ts` |
-| `src/pipeline/` | Decision compilation | `DecisionPipeline`, `compile` | All modules |
-| `src/projection/` | State projection algebra | Reducers over event streams | `src/core/`, `src/event/` |
-| `src/runtime/` | Version pinning + hard abort | `RuntimeVersionPin` | `src/core/` |
-| `src/forensics/` | AmbiguityTrace, InteractionMap | Forensic projections | `src/event/` |
-| `src/compliance/` | GDPR tombstoning | `TombstoneManager` | `src/event/` |
-| `python/` | Hardware inference layer | Core Matrix M1/M2/M3, bridge | Independent layer |
-| `formal/` | Machine-verified proofs | Coq theorems, TLA+ spec | External proof checkers |
-
-### Scale 3 — Cellular (subsystems as holons)
-
-| Subsystem | Emergent Capability | Components |
-|-----------|---------------------|------------|
-| E3 Substrate | Cryptographically tamper-evident append-only event log | `store.ts`, `uuid.ts`, `canonicalize.ts` |
-| VCG Calibration | Anytime-valid statistical confidence bounds (not Hoeffding — Bernstein) | `vcg.ts`, `hoeffding.ts`, verifier V1–V3 |
-| Python Core Matrix | GPU-accelerated deterministic inference under bit-shifted arithmetic | `core_matrix.py`, `pgcs.py`, `tgcs_afse.py`, `epoch_failsafe.py` |
-| Governance Bridge | Unidirectional TS → Python telemetry pipe | `bridge.py` (port 7890) |
-| Formal Verification | Machine-verified properties for T0 claims | Coq + TLA+ in `formal/` |
-| 8-Gate Build System | Ordered deployment gate sequence | All test files + CI config |
-
-### Scale 4 — Organism (products as holons)
-
-| Product | Role | T0 dependency | Revenue |
-|---------|------|---------------|---------|
-| `sovereign-omega-v2/` | Governance runtime — the organism's brain | Self-contained | Foundation |
-| `cockpit/` | AI chat UI + telemetry dashboard | Polls `bridge.py` | $0 (free) |
-| `platform-picker/` | Platform recommendation ($19) | None | $19 |
-| `hook-generator/` | Viral hook generation ($19) | None | $19 |
-| `content-calendar/` | Content calendar AI ($19) | None | $19 |
-| `hub/` | Landing page connecting all 3 tools | None | Bundle sales |
-
-### Scale 5 — Field (ecosystem as holon)
-
-The field is the distributed semantic environment within which the organism operates.
-
-| Field Node | Role | Trust Class |
-|------------|------|-------------|
-| Claude (coordinator) | Synthesis, coordination, code execution | Orchestration |
-| ChatGPT (adversarial audit, temp 0.99) | Adversarial review, gap detection | Advisory |
-| Qwen (implementation) | Implementation agent | Implementation |
-| Tarik Skalić (operator) | Vision architect, guardian authority | T0 override authority |
-| Google Drive corpus | Distributed semantic memory | Reference |
-| This document | Cognitive substrate — first operational instance | T0 substrate |
-| GitHub (tarikskalic33/myapp) | Persistent code state | Infrastructure |
+### Field — Claude + ChatGPT + Qwen + operators + Drive corpus + subagent ecology
+- Claude: coordinator, Gate 8 executor, holonic auditor
+- ChatGPT: adversarial auditor (temperature 0.99), PR #16 review
+- Qwen: implementation agent (QWEN 01–04 directives in Drive)
+- Operator: Tarik Skalić, AMD RX 570 / 8 GB RAM, Bihać, Bosnia-Herzegovina
+- Drive corpus: 222+ entries across 5 pages, enumerated 2026-05-18
 
 ---
 
 ## 3. Epistemic Tier Registry
 
-Classification rationale: T0 = mechanically proven/enforced; T1 = empirically validated;
-T2 = engineering hypothesis; T3 = research conjecture; T4 = speculative vision; T5 = creative.
+### T0 — Mechanically Proven (resolve before any deployment)
 
-Migration rule (from CLAUDE.md): **No T4/T5 construct may ground a T0–T2 claim without evidence review.**
+| Drive ID | File / Title | Local Path | Key Invariants |
+|----------|-------------|------------|----------------|
+| `1hPE3DKmRUhCY6Rii0P8LzOxMjiSt2e3u` | canonicalize.ts | `src/core/canonicalize.ts` | RFC 8785 JCS; emoji/surrogate fix (PR #16) |
+| `1vsXJN5XUe1rRBmh2WSC1mvzCmGcY9RLW` | types.ts | `src/core/types.ts` | Branded types: UUIDv7, SHA256Hex, BoundedDelta, SequenceNumber |
+| `1Kkr3H9W49dXF2hvT6yiOKJ3r3rmKqejT` | immutable.ts | `src/core/immutable.ts` | deepFreeze; every state object frozen after construction |
+| `1wex4ikQhfTxX9S53J9F4E2T50wbwY46_` | hashing.ts | `src/core/hashing.ts` | SHA-256 byte-level; depends on canonicalize.ts |
+| `1Tv9-z3hhlrDjg9dAOstm0lz7plmpbo4S` | tier.ts | `src/core/tier.ts` | classifyPathTier fail-closed → T0; migration rule T4/T5 blocked |
+| `14m2aO5bJS5m4nhWgFSG_YnyBtxiWgkPs` | schema-registry.ts | `src/core/schema-registry.ts` | seal(); fail-closed validate; no fallback |
+| `1914bqWJDm38d50GJgrGkdskK-sHvuGNB` | fixedpoint.ts | `src/core/fixedpoint.ts` | Q32.32 BigInt arithmetic; bernsteinLCBQ32 bug fixed (Ω⁵.7) |
+| `135L-o2YyFX0B59KxFd9C_ZBYwp2gGA8Z` | wasm-interface.ts | `src/core/wasm-interface.ts` | assertWasmParity; kernel unloaded until binary compiled |
+| `1JVe9ZH3qq0bbeoWfg-ws33FkutFgM7Gm` | store.ts | `src/event/store.ts` | Three-phase append (PR #16); async-tx boundary; unique index race |
+| `14ex28P76O7dsTtPeGswr_UgD-u4Ku7yj` | uuid.ts | `src/event/uuid.ts` | UUIDv7; now≤lastMs fix; seq overflow steal-ms (PR #16) |
+| `1aa6aSQbTyCbZ94I9tnA7jCeJv8enlV8z` | mutation-registry.ts | `src/event/mutation-registry.ts` | seal(); K-bound enforcement |
+| `1DnJABPstscDvvDiXDZ6ZQvYnOOEvTox-` | hoeffding.ts | `src/gate/hoeffding.ts` | Bernstein (not Hoeffding); H-03 legacy name annotated |
+| `1JGTafRDKmd25HoLsrhCc2DJqNMRWCJGz` | risk.ts | `src/gate/risk.ts` | Risk budget; harmonic spending schedule |
+| `1ElP9I8_SbFmiAFlkUwSXCl1CMymWHWsu` | mutation-governance.ts | `src/gate/mutation-governance.ts` | MutationGovernanceRegistry; capacity + migration paths |
+| `1dlB-tgjBW6AcyGUA8ggoiUGrHoiHOBbu` | core_matrix.py | `python/core_matrix.py` | M1/M2/M3 over 2 GB bytearray; era wrap F-07; epoch gate F-10 |
+| `1ndZJVGyRB43wvOA01aYChJFTaTVcoMN8` | epoch_failsafe.py | `python/epoch_failsafe.py` | corruption_count must = 0; RECOVERING gates processing (F-10) |
+| `1gnM-TwrOHLUyon2sdBJpImAcZtV1pxzC` | CLAUDE.md | `sovereign-omega-v2/CLAUDE.md` | Constitutional anchor; eight-gate order; frozen file hashes |
+| `1sKpfon3T6ccBrRQ5nFNH-Ohym9N3o5kT` | Hash.v | `formal/theories/Core/Hash.v` | Coq: SHA-256 chain invariant |
+| `1SUUi6YaTgM8v2nSkc1sYFrblfKi9aTQJ` | Reducer.v | `formal/theories/Core/Reducer.v` | Coq: pure reducer over frozen state |
+| `1ovvLqDP6Kv8iZz4Ovjse0rgdvjAeJ7Lj` | Event.v | `formal/theories/Core/Event.v` | Coq: event substrate append |
+| `1R8ItAXt7zDXwJ28DaWWNdulqq0L9hRYK` | Omega.tla | `formal/tlaplus/Omega.tla` | TLA+: projection machine version pin |
 
-### T0 — Mechanically Proven
+### T1 — Empirically Validated (resolve before production)
 
-| Document / File | Location | Key Claims |
-|-----------------|----------|------------|
-| `SOVEREIGN_OMEGA_INTEGRATED_SPEC_v2.md` | Drive: `1cfFY59zAczNPCL7mvr_TxFo1yR7xfDNh` | Canonical system definition, enforcement boundary, 6 primitives |
-| `CLAUDE.md` (Drive copy) | Drive: `1gnM-TwrOHLUyon2sdBJpImAcZtV1pxzC` | Operator directives, invariants, build order |
-| `src/core/canonicalize.ts` | Local repo | RFC 8785 JCS with NFC, surrogates, circular detection |
-| `src/event/store.ts` | Local repo | Three-phase IDB append, race protection via unique index |
-| `src/event/uuid.ts` | Local repo | UUIDv7 monotonic with overflow protection |
-| `src/core/immutable.ts` | Local repo | `deepFreeze` — every state object frozen after construction |
-| `src/core/types.ts` | Local repo | Branded primitives (UUIDv7, SHA256Hex, BoundedDelta, SequenceNumber) |
-| `python/core_matrix.py` | Local repo | M1/M2/M3 bit-shifted functions over contiguous byte array |
-| `python/gate.py` | Local repo (FROZEN) | Python gate logic — hash: `72196f38...` |
-| `python/dna.py` | Local repo (FROZEN) | Structural definitions — hash: `9c4d38d8...` |
-| `python/router.py` | Local repo (FROZEN) | Event routing — hash: `c96e566c...` |
-| `python/epoch_failsafe.py` | Local repo | Epoch corruption guard, `corruption_count == 0` invariant |
-| `python/gradient_anchor.py` | Local repo | Zero-tolerance RuntimeError on anchor violation |
-| `formal/theories/Core/Hash.v` | Drive: `formal/` folder | Coq proof: hash invariants hold |
-| `formal/theories/Core/Reducer.v` | Drive: `formal/` folder | Coq proof: reducer purity holds |
-| `formal/theories/Core/Event.v` | Drive: `formal/` folder | Coq proof: event schema invariants |
-| `formal/theories/Bisimulation/ThreeWay.v` | Drive: `formal/` folder | Coq: three-way bisimulation correctness |
-| `formal/tlaplus/Omega.tla` | Drive: `formal/` folder | TLA+ temporal specification |
+| Drive ID | File / Title | Local Path | Key Claims |
+|----------|-------------|------------|------------|
+| `1aMM1s-JrVca8g_rD0LAkWG13eZ3gzeoz` | vcg.ts | `src/calibration/vcg.ts` | 500-claim window; 0.35/0.50 thresholds; no V4/V5 |
+| `1Ay7q5PSjQLtGB_ChcmgfD_20kUvzaqK4` | verifier/registry.ts | `src/verifier/registry.ts` | V1/V2 full weight; V3 0.5; V4/V5 advisory-excluded |
+| `1nDuaatO8oRe2QFhh1WsXpSAirAollrgP` | reducer.ts | `src/projection/reducer.ts` | Pure functional reducers over deepFrozen ProjectionState |
+| `18_TjUvyLwXZzHQSTH-4OZNLKUtKRiTbA` | pipeline/index.ts | `src/pipeline/index.ts` | Decision compilation pipeline; full DecisionSchema output |
+| `1eUg0dPFBNDKMsGEh-pVTGDKSaIAwnEVR` | projection-machine.ts | `src/runtime/projection-machine.ts` | RuntimeVersionPin; hard abort on mismatch |
+| `1cfFY59zAczNPCL7mvr_TxFo1yR7xfDNh` | INTEGRATED_SPEC_v2.md | `docs/SOVEREIGN_OMEGA_INTEGRATED_SPEC_v2.md` | Canonical spec; all T0 modules derived from this |
+| `1NScZu_7bc9nLXzSWG8Ul_O98KuHL5360` | IMPL_BRIEF_Qwen.md | `docs/SOVEREIGN_OMEGA_IMPL_BRIEF_Qwen.md` | Implementation directives for Qwen agent |
+| `1tAjmYSlfMt2-7X4tpOQPyRcwywWQCWB4` | pgcs.py | `python/pgcs.py` | PGCS disk I/O (page-size corrected F-08); passes_criterion gating |
+| `19Wcrfyb7tmWoM5IgCwgRUylmGcWUb1l1` | tgcs_afse.py | `python/tgcs_afse.py` | Sequence-number variance F-01; AFSE live R² F-02 |
+| `1mmk4fnDURe8R9FODj86XUDyDvdO6ed1M` | gradient_anchor.py | `python/gradient_anchor.py` | Zero-tolerance hard abort F-04 |
+| `11MWyKyAfBKHY9TXUZ_iDqilybuAZf_3M` | RALPH_LOOP_OMEGA2.md | `handoff/RALPH_LOOP_OMEGA2_INTEGRATION_AUDIT.md` | Second RALPH Loop; integration audit |
+| `1TTzre0Oy1BEZ_g5lm926XJ2UiFtjfJsr` | RALPH_LOOP_OMEGA.md | `handoff/RALPH_LOOP_OMEGA_EXECUTION_SYNTHESIS.md` | First RALPH Loop; naming origin |
+| `1N9QujbSEFAUoHnNFB3c3N-O1p5v6xZTr` | Sovereign_Runtime_Unified_Deliverable.docx | — | Deliverable summary |
+| `1BtdhG2MeThi0ZSeKjGIa1sZg1XZ1QOHG` | AEGIS_Sovereign_Runtime_Deliverable.docx | — | AEGIS deliverable |
 
-### T1 — Empirically Validated
+### T2 — Engineering Hypothesis (resolve before Gumroad listing)
 
-| Document | Drive ID | Key Claims |
-|----------|----------|------------|
-| `SOVEREIGN_OMEGA_INTEGRATED_SPEC_v2.md` §§4-6 | `1cfFY59zAczNPCL7mvr_TxFo1yR7xfDNh` | VCG thresholds (0.35 alert, 0.50 suspend), window parameters (500 claims, 100 min) |
-| `SOVEREIGN_OMEGA_IMPL_BRIEF_Qwen.md` | `1NScZu_7bc9nLXzSWG8Ul_O98KuHL5360` | Implementation targets for Qwen agent |
-| `RALPH_LOOP_OMEGA_EXECUTION_SYNTHESIS.md` | `1TTzre0Oy1BEZ_g5lm926XJ2UiFtjfJsr` | Execution synthesis, 378-line audit trail |
-| `python/pgcs.py` | Local repo | PGCS telemetry — must pass before TGCS telemetry valid |
-| `python/tgcs_afse.py` | Local repo | TGCS variance, AFSE R² — sequence-based, no wall clock |
-| `python/bridge.py` | Local repo | HTTP telemetry bridge: `/telemetry`, `/event`, `/gate_signal`, `/health` |
-| `src/calibration/vcg.ts` | Local repo | VCG rolling window implementation |
-| `research/omega_dynamics/harness.ts` | Drive: `1fM1s2Upc9pRltBjtcREBtqbXPqJQwi1h` | Dynamics research harness |
+| Drive ID | File / Title | Notes |
+|----------|-------------|-------|
+| `1XExDOcHAZvVNrx9rNZ_FBsTnurGC9JVH` | e1.ts | E1 heuristics — pipeline scoring |
+| `1tg03g9LwC9wDLq8aBaq4HOVgn3SSaJoN` | tombstone.ts | KMS shred stub — awaiting PKI |
+| `1oWL66eB30_yuaINeNY16P6Fnf1kMDNdd` | QWEN 04 EXECUTION DIRECTIVE.md | Qwen execution instruction set |
+| `1fpD3CDhEi688iZvMZ_FMXlmEuauNc0-U` | QWEN 03 IMPLEMENTATION STATE.md | Implementation state for Qwen |
+| `1X-sUZzPB4Aod1TiPA5g6wyXbO9Fr86WG` | QWEN 02 ARCHITECTURE COMPLETE.md | Architecture checkpoint for Qwen |
+| `1Zfz8nJBdaYmav_foifXw81U8h_TMbcuP` | QWEN 01 PROJECT CONTEXT.md | Initial context handoff to Qwen |
+| `1ctS_FBitxgCj6Gq3j1taTArkC-c18ecl` | agent.config.yaml | Agent orchestration config |
+| `1E6hcv-ZN4tSMx5sTSdK15fb4I8qe0w-Z` | company.yaml | Paperclip company orchestration |
+| `1Bam8lTVK5_HTYF9bzLC0ytagovqHAqYn` | identity.py | SAGA SPIFFE/SVID stub |
+| `1BA5a42L4QdBDgj1EhYbLZdOfRvg6De-0` | stress_test.py | P1 smoke / P2 crash-loops / P3 12h |
 
-### T2 — Engineering Hypothesis
+### T3 — Research Conjecture (grounds T1 via evidence chain)
 
-| Document | Drive ID | Key Claims |
-|----------|----------|------------|
-| `RALPH_LOOP_OMEGA2_INTEGRATION_AUDIT.md` | `11MWyKyAfBKHY9TXUZ_iDqilybuAZf_3M` | 422-line integration audit, gap analysis |
-| `QWEN_01_EXECUTION_DIRECTIVE.md` | Drive root | First Qwen implementation directive |
-| `QWEN_02_EXECUTION_DIRECTIVE.md` | Drive root | Second directive |
-| `QWEN_03_EXECUTION_DIRECTIVE.md` | Drive root | Third directive |
-| `QWEN_04_EXECUTION_DIRECTIVE.md` | Drive: `1oWL66eB30_yuaINeNY16P6Fnf1kMDNdd` | Final Qwen directive — non-negotiable invariants, prohibited actions |
-| `paperclip/company.yaml` | Local repo | Company orchestration configuration |
-| `saga/identity.py` | Local repo | SPIFFE/SVID identity stub (awaiting PKI) |
-| `agent.config.yaml` | Drive: `agent.config.yaml` file | Agent configuration |
-| Cockpit telemetry polling | `cockpit/src/lib/telemetry.ts` | 5s poll of bridge `/telemetry` |
+| Drive ID | Title | Key Claims | Grounds |
+|----------|-------|------------|---------|
+| `1LJ1KoT195nJDBLGyR9VRzrnVWlFCxgO8` | Preserving Criticality in Holonic AI | Mutual information + structural entropy | holonic scale model |
+| `10gBmzNovsKMWkqf2AiXJrAn0Mt197o9P` | Quantum-Inspired Architecture | Subatomic holonic; attention degradation | particle-field analog |
+| `1Kntuo_DbjzcJa8-BqPM90q-V5CKLFOah` | Verifying Agentic Reasoning | Holonic consensus; token-level drift | verifier registry design |
+| `1lu31YCW-TW2SVr3IyGeQZBTB1YXbnCG5` | A Holon-Architected Compiler | State machines; KV cache sync; adversarial verification | pipeline/compiler.ts |
+| `1xaKuiktzJWkTmwaoi_wCwunA4Y9HTZrb` | From Local Task to Global Integration | Non-differentiable monitoring; recursive containment | epoch_failsafe.py |
+| `1uN2Ts3GBaa-YXe_vo7z4zs6e07mT4984` | An Asymmetric Market for Uncertainty | Holonic AGI; uncertainty asymmetry thesis | VCG calibration rationale |
+| `1OpO3JpYAHSWkyh0aOzRa_6agbfuPJVgl` | Orchestrating Emergent Intelligence | Holonic LLM clusters; on-policy distillation | multi-agent ecology |
+| `1LUu4IKCJK0RbcqZkgiwZa-Th7u2dl3vU` | Decomposing the Monolith | Holonic architecture; stateless orchestration | module decomposition |
+| `1eL8RkV43ynRi_0KAWewIpOPEDnXD7pMb` | Orchestrating Long-Horizon Reasoning | Decentralized credit; entropy-bounded policy | PGCS design rationale |
+| `1H5xrLV2M_HVdpzoHK5Czgdb5kQmsFdbJ` | From Divergence to Convergence | Calibrating distributed LLMs; optimal transport | vcg.ts rationale |
+| `1hv9jhS8ROs5selyvvFrhpqzx8s7CE8a5` | Orchestrating Volatility | Non-neural algorithmic marketplace | mutation-governance.ts |
+| `1oS83PDBGhdgo3LydaWC05fosXyzJXEmv` | From Heterogeneity to Cohesion | Bounded scalable multi-agent reasoning | verifier trust partitioning |
+| `1ozQ641HrGlOiW2jkMBxg-lBEZChJlYUb` | Resilience by Analogy | Self-correcting multi-agent; subatomic particles | particle-field origin |
 
-### T3 — Research Conjecture (13 unique research PDFs)
+### T4 — Speculative Systems Vision
 
-| # | Title | Drive ID | Key Contribution |
-|---|-------|----------|-----------------|
-| 1 | Preserving Criticality in Holonic AI | `1LJ1KoT195nJDBLGyR9VRzrnVWlFCxgO8` | Holonic scale transitions; criticality preservation across decomposition |
-| 2 | Quantum-Inspired Architecture | `10gBmzNovsKMWkqf2AiXJrAn0Mt197o9P` | Quantum probability amplitude analogs in classical AI governance |
-| 3 | Verifying Agentic Reasoning | `1Kntuo_DbjzcJa8-BqPM90q-V5CKLFOah` | Formal verification of agentic decision chains |
-| 4 | A Holon-Architected Compiler | `1lu31YCW-TW2SVr3IyGeQZBTB1YXbnCG5` | Compiler architecture using holonic decomposition — direct ancestor of AEGIS pipeline |
-| 5 | From Local Task to Global Integration | `1xaKuiktzJWkTmwaoi_wCwunA4Y9HTZrb` | Multi-agent local→global coordination patterns |
-| 6 | An Asymmetric Market for Uncertainty | `1uN2Ts3GBaa-YXe_vo7z4zs6e07mT4984` | Uncertainty pricing; basis for VCG calibration gap metric |
-| 7 | Orchestrating Emergent Intelligence | `1OpO3JpYAHSWkyh0aOzRa_6agbfuPJVgl` | Emergence conditions in multi-agent systems |
-| 8 | Decomposing the Monolith | `1LUu4IKCJK0RbcqZkgiwZa-Th7u2dl3vU` | Monolith → holon decomposition methodology |
-| 9 | Orchestrating Long-Horizon Reasoning | `1eL8RkV43ynRi_0KAWewIpOPEDnXD7pMb` | Long-horizon coherence in agentic chains |
-| 10 | From Divergence to Convergence | `1H5xrLV2M_HVdpzoHK5Czgdb5kQmsFdbJ` | Convergence conditions in calibrated multi-agent systems |
-| 11 | Orchestrating Volatility | `1hv9jhS8ROs5selyvvFrhpqzx8s7CE8a5` | Volatility-aware orchestration; epoch failsafe theoretical basis |
-| 12 | From Heterogeneity to Cohesion | `1oS83PDBGhdgo3LydaWC05fosXyzJXEmv` | Heterogeneous agent cohesion protocols |
-| 13 | Resilience by Analogy | `1ozQ641HrGlOiW2jkMBxg-lBEZChJlYUb` | Resilience patterns from physical system analogies |
-
-### T4 — Speculative Vision
-
-| Document | Drive ID | Key Claims |
-|----------|----------|------------|
-| `SOVEREIGN_OMEGA_AGI_FRAMEWORK_CONCLUDED.md` | `1_gebxxUSk_OO0B575K7j03AX4YRkpvDq` | Archive 4 synthesis; 5-layer framework; 8 failure modes; EU AI Act deadline Aug 2026 |
-| `SOVEREIGN_OMEGA_VISION_ASSEMBLED.md` | `1umR8RoWZwJQAQuG4uzU-N16HMOmCUK09` | 7-piece puzzle: Governance Substrate → Translation Layer → Council → Swarm → AEGIS → Research → Operator |
-
-### T5 — Creative / Worldbuilding
-
-No T5 documents identified in the Drive corpus. The "Cycle series" referenced in CLAUDE.md
-is not present in the indexed files.
+| Drive ID | Title | Notes |
+|----------|-------|-------|
+| `1_gebxxUSk_OO0B575K7j03AX4YRkpvDq` | SOVEREIGN_OMEGA_AGI_FRAMEWORK_CONCLUDED.md | AGI framework vision — cannot ground T0–T2 without evidence review |
+| `1umR8RoWZwJQAQuG4uzU-N16HMOmCUK09` | SOVEREIGN_OMEGA_VISION_ASSEMBLED.md | Assembled vision — holonic drift, cycle series |
 
 ---
 
 ## 4. Semantic Ancestry Chains
 
-Each T0 implementation node traced back through its epistemic lineage.
-
-### Chain A: RFC 8785 Canonicalization
-
 ```
-T0: src/core/canonicalize.ts (canonicalizeJCS)
-  ↑ grounds: INTEGRATED_SPEC_v2 §1 Primitive 6 "UTF-8 encoding before hashing, byte-concatenation"
-    ↑ grounds: Shapiro et al. 2011 (G-Set CRDT distributed convergence proof) [T3]
-      ↑ grounds: "byte-identical hashes across Node.js, browser, and WASM environments" [T1 requirement]
-```
+core_matrix.py:M2_offset (T0)
+  ← INTEGRATED_SPEC §4.2 (T1): "sequence-dependent offset collision fix"
+  ← F-03 audit: same-length verifier result collision
+  ← Orchestrating Volatility (T3): "dynamic task allocation via structured offsets"
+  ← VISION_ASSEMBLED §holonic_drift (T4): seed concept — NOT a direct grounding
 
-### Chain B: Bernstein Bounds (misnamed hoeffding.ts)
+fixedpoint.ts:bernsteinLCBQ32 (T0)
+  ← Waudby-Smith & Ramdas 2024 (T3/external): anytime-valid confidence sequences
+  ← Howard et al. 2020 (T3/external): empirical Bernstein bounds
+  ← INTEGRATED_SPEC §gate_6 (T1): Bernstein Q32.32 requirement
+  ← AGI_FRAMEWORK_CONCLUDED §uncertainty (T4): seed only — requires evidence review
 
-```
-T0: src/gate/hoeffding.ts (implements Bernstein, NOT Hoeffding)
-  ↑ grounds: INTEGRATED_SPEC_v2 §5.2 "anytime-valid empirical Bernstein bounds"
-    ↑ grounds: Howard et al. 2020 + Waudby-Smith and Ramdas 2024 (e-value literature) [T3]
-      ↑ grounds: "Hoeffding assumes IID samples, which adaptive systems violate" [T2 observation]
-        ↑ grounds: PDF #6 "An Asymmetric Market for Uncertainty" [T3]
-          ↑ grounds: VISION_ASSEMBLED piece 1 "Governance Substrate" [T4]
-```
+store.ts:append() three-phase (T0)
+  ← INTEGRATED_SPEC §E3 (T1): three-phase IDB append spec
+  ← PR #16 adversarial review (T2): async-tx boundary TransactionInactiveError
+  ← Event.v (T0): formal proof of append invariant
 
-**NOTE**: The naming discrepancy (hoeffding.ts implements Bernstein) is a **legacy artifact**.
-The module must NOT be renamed — it is referenced by `risk.ts` and `fixedpoint.ts`. A clarifying
-annotation (H-03) is required on the file.
+hoeffding.ts:ConfidenceSequence (T0)
+  ← Waudby-Smith & Ramdas 2024 (external T3): betting martingale derivation
+  ← Howard et al. 2020 (external T3): half-width formula (Eq. 8)
+  ← INTEGRATED_SPEC §gate_6 (T1): acceptance criterion LCB > 0
+  ← H-03 audit: legacy filename (implements Bernstein, not Hoeffding)
 
-### Chain C: Sequence Number Authority
+tier.ts:classifyPathTier (T0)
+  ← INTEGRATED_SPEC §epistemic_tiers (T1): T0–T5 classification table
+  ← CLAUDE.md migration rule (T0): "No T4/T5 → T0–T2 without evidence review"
+  ← Preserving Criticality (T3): mutual information boundary concept
 
-```
-T0: src/event/store.ts (IndexedDBSequenceAllocator in Phase 3 write transaction)
-  ↑ grounds: INTEGRATED_SPEC_v2 §3 "sequence: bigint; atomic, persistent; never derived from array.length"
-    ↑ grounds: CLAUDE.md invariant "No array.length for sequences"
-      ↑ grounds: INTEGRATED_SPEC_v2 §1 Primitive 2 "sequence-authoritative replay ordering" [T1]
-        ↑ grounds: QWEN 04 DIRECTIVE non-negotiable invariants [T2]
-```
-
-### Chain D: Python Core Matrix Determinism
-
-```
-T0: python/core_matrix.py (M1/M2/M3 bit-shifted arithmetic)
-  ↑ grounds: INTEGRATED_SPEC_v2 §1 Primitive 6 "WASM-pinned floating-point arithmetic"
-    ↑ grounds: PDF #11 "Orchestrating Volatility" — volatility-aware epoch stability [T3]
-      ↑ grounds: VISION_ASSEMBLED piece 6 "quasicrystal-CDT spectral correspondence" [T4]
-        ↑ MIGRATION RULE FLAG: T4 → T0 path requires evidence review (quasicrystal-CDT
-          is T3 conjecture; does not ground core_matrix.py M1/M2/M3 directly)
-```
-
-### Chain E: Epoch Failsafe
-
-```
-T0: python/epoch_failsafe.py (corruption_count == 0 invariant)
-  ↑ grounds: AGI_FRAMEWORK_CONCLUDED "three production-hardening vectors: Epoch Failsafe T0" [T4]
-    ↑ grounds: PDF #11 "Orchestrating Volatility" [T3]
-      ↑ MIGRATION RULE FLAG: T4 → T0 path — AGI_FRAMEWORK_CONCLUDED is T4;
-        epoch_failsafe.py is T0. The hardening vector is grounded in T3 research, but
-        the T4 framework document cannot be the authority for a T0 invariant.
-        Resolution: epoch_failsafe.py's invariants are self-grounded by mechanical necessity;
-        AGI_FRAMEWORK_CONCLUDED documents the rationale retrospectively.
-```
-
-### Chain F: VCG Calibration Layer
-
-```
-T1: src/calibration/vcg.ts (VCG rolling window, 500-claim default)
-  ↑ grounds: INTEGRATED_SPEC_v2 §4 VCG(W) = (1/|W|) × Σ |confidence − correct|
-    ↑ grounds: Vempala-Wilkes theorem (VCG floor non-zero for autoregressive models) [T3 external]
-      ↑ grounds: ECE literature (VCG = ECE under deterministic verification) [T3]
-        ↑ grounds: PDF #6 "Asymmetric Market for Uncertainty" [T3]
-```
-
-### Chain G: Trust Partitioning (V1–V5)
-
-```
-T0 rule: V4/V5 (LLM judges, human review) never used as calibration inputs
-  ↑ grounds: INTEGRATED_SPEC_v2 §1 Primitive 5 "V4 (statistical evaluators: LLM judges)
-             and V5 (human review) are Advisory-Excluded"
-    ↑ grounds: QWEN 04 DIRECTIVE "V4/V5 never in VCG calibration" [T2]
-      ↑ grounds: PDF #3 "Verifying Agentic Reasoning" [T3]
+epoch_failsafe.py (T0)
+  ← From Local Task to Global Integration (T3): non-differentiable containment
+  ← INTEGRATED_SPEC §epoch (T1): FROZEN/RECOVERING state machine spec
+  ← F-10 audit: RECOVERING must gate new event processing
 ```
 
 ---
 
 ## 5. Dependency Lineage Graph
 
-Directed graph: SOURCE [tier] → GROUNDS → TARGET [tier]
-
 ```
-PDF #4 Holon-Architected Compiler [T3]
-  → GROUNDS → INTEGRATED_SPEC_v2 §6 Ambiguity Routing / E1 design [T1]
-    → GROUNDS → src/forensics/ (AmbiguityTrace, InteractionMap) [T0]
+Hash.v [T0]          → proves      → canonicalize.ts [T0]    (SHA-256 chain)
+Reducer.v [T0]       → proves      → projection/reducer.ts [T0]  (pure reducer)
+Event.v [T0]         → proves      → event/store.ts [T0]     (append invariant)
+Omega.tla [T0]       → verifies    → projection-machine.ts [T0]  (version pin)
 
-PDF #6 Asymmetric Market for Uncertainty [T3]
-  → GROUNDS → INTEGRATED_SPEC_v2 §4 VCG definition [T1]
-    → GROUNDS → src/calibration/vcg.ts [T0]
-      → GROUNDS → Gate 5: npm run test -- test/unit/vcg.test.ts [T0 verified]
+INTEGRATED_SPEC [T1] → specifies   → ALL T0 source files     (canonical requirement)
+IMPL_BRIEF_Qwen [T1] → implements  → Python Layer B          (Qwen directives)
 
-Howard et al. 2020 + Waudby-Smith & Ramdas 2024 [T3 external citations]
-  → GROUNDS → INTEGRATED_SPEC_v2 §5.2 Bernstein bounds [T1]
-    → GROUNDS → src/gate/hoeffding.ts [T0]
-      → GROUNDS → Gate 6: npm run test -- test/unit/gate.test.ts [T0 verified]
+Verifying Agentic Reasoning [T3]   → grounds → verifier/registry.ts [T0]
+  ↑ VALID: T3 → T1 spec first, T1 → T0 implementation
+An Asymmetric Market [T3]          → grounds → calibration/vcg.ts [T1]
+From Divergence to Convergence [T3] → grounds → calibration/vcg.ts [T1]
+Orchestrating Volatility [T3]      → grounds → gate/mutation-governance.ts [T0]
+  ⚠️ REQUIRES REVIEW: T3 → T0 must pass through T1 spec claim
 
-Shapiro et al. 2011 G-Set CRDT [T3 external]
-  → GROUNDS → INTEGRATED_SPEC_v2 §1 Primitive 1 E3 substrate [T1]
-    → GROUNDS → src/event/store.ts + src/core/canonicalize.ts [T0]
-      → GROUNDS → Gate 1 + Gate 2 [T0 verified]
-
-VISION_ASSEMBLED §1 Governance Substrate [T4]
-  → GROUNDS (via T2 bridge: QWEN 04 DIRECTIVE) → INTEGRATED_SPEC_v2 [T1]
-    → GROUNDS → src/ implementation [T0]
-
-AGI_FRAMEWORK_CONCLUDED 5-layer framework [T4]
-  → GROUNDS (via T2 bridge: RALPH_LOOP docs) → INTEGRATED_SPEC_v2 [T1]
-    → GROUNDS → src/ + python/ implementation [T0]
+VISION_ASSEMBLED [T4]              → seeds   → INTEGRATED_SPEC [T1]
+  ⚠️ MIGRATION RULE: T4 cannot directly ground T0–T2 claims
+AGI_FRAMEWORK_CONCLUDED [T4]       → seeds   → INTEGRATED_SPEC [T1]
+  ⚠️ MIGRATION RULE: same
 ```
 
-**MIGRATION RULE VIOLATIONS (T4/T5 → T0–T2 without evidence review):**
-
-| Chain | Violation | Status |
-|-------|-----------|--------|
-| VISION_ASSEMBLED → core_matrix.py (via quasicrystal-CDT) | T4 claim attempting T0 grounding | MITIGATED: T0 invariants are self-grounded; T4 is retrospective framing only |
-| AGI_FRAMEWORK_CONCLUDED → epoch_failsafe.py | T4 document naming T0 invariant | MITIGATED: epoch_failsafe.py is grounded by PDF #11 (T3) + mechanical necessity |
-| VISION_ASSEMBLED §6 Research Dimension (quasicrystal-CDT) | T4 → T3 label accepted; T4 → T0 rejected | PENDING: Guardian review recommended if any T0 code references quasicrystal-CDT |
+**Flagged T4/T5 → T0–T2 grounding violations (requiring evidence review):**
+1. `VISION_ASSEMBLED.md` §holonic_drift → `fixedpoint.ts` (must go through T1 spec)
+2. `AGI_FRAMEWORK_CONCLUDED.md` §uncertainty_asymmetry → `vcg.ts` calibration rationale (T1 intermediate present — mitigated)
+3. `QWEN 01–04` directives reference AGI vision concepts (acceptable at T2 orchestration level)
 
 ---
 
 ## 6. Contradiction Surfaces
 
-Locations where two corpus documents make incompatible claims at the same tier.
-
-| # | Document A | Claim A | Document B | Claim B | Resolution |
-|---|-----------|---------|-----------|---------|------------|
-| C-01 | INTEGRATED_SPEC_v2 §5.3 | Gate achieves Level 1-2 but NOT Level 3 (no forward invariance guarantee) | AGI_FRAMEWORK_CONCLUDED (T4) | Implies "constitutional stability" | RESOLVED: INTEGRATED_SPEC_v2 is authoritative (T1); AGI_FRAMEWORK is T4 vision framing only |
-| C-02 | INTEGRATED_SPEC_v2 §1 Primitive 3 | "Bernstein bounds — NOT Hoeffding" | `src/gate/hoeffding.ts` filename | Suggests Hoeffding implementation | RESOLVED: File is misnamed for legacy reasons (H-03 annotation required); implementation is Bernstein |
-| C-03 | QWEN 04 DIRECTIVE | "No speculative physics (Bekenstein bounds, Landauer limits, thermodynamic liquefaction) in T0-T2" | VISION_ASSEMBLED §6 | References quasicrystal-CDT spectral correspondence | RESOLVED: VISION_ASSEMBLED is T4; prohibited from grounding T0-T2 without evidence review |
-| C-04 | INTEGRATED_SPEC_v2 §4.3 | "VCG floor is non-zero (Vempala-Wilkes theorem); target VCG below 0.05 unrealistic" | Hypothetical operator expectation | May expect VCG → 0 | RESOLVED: INTEGRATED_SPEC_v2 is authoritative; operators must be briefed on the non-zero floor |
-| C-05 | CLAUDE.md | "MutationOperatorRegistry.seal() before gates" | No corresponding implementation found in src/ | Seal operation absent | PENDING: Verify `src/runtime/` or `mutation-registry.ts` for seal() implementation |
+| Surface | Doc A | Doc B | Status |
+|---------|-------|-------|--------|
+| Filename vs. algorithm | `hoeffding.ts` (name) | CLAUDE.md ("Bernstein not Hoeffding") | RESOLVED — H-03 annotation |
+| PGCS units | Python comment ("page counts") | F-08 finding (must be bytes) | RESOLVED — `resource.getpagesize()` |
+| M2 offset uniqueness | Original core_matrix.py | INTEGRATED_SPEC §M2_offset | RESOLVED — F-03 sequence incorporation |
+| Epoch processing in RECOVERING | Original epoch_failsafe.py | INTEGRATED_SPEC §epoch_states | RESOLVED — F-10 gate added |
+| Constitutional files presence | CLAUDE.md (SHA256 declared) | `python/` directory (files absent) | OPEN — F-06 pending /guardian |
+| bernsteinLCBQ32 arithmetic | fixedpoint.ts (pre-Ω⁵.7) | Correct Q32.32 scaling semantics | RESOLVED — BigInt division fix |
 
 ---
 
 ## 7. Invariant Overlap Register
 
-Invariants appearing across multiple corpus documents — high occurrence indicates high stability.
+Invariants appearing in ≥ 3 documents (convergence = authority):
 
-| Invariant | Appears In | Tier Convergence | Authority |
-|-----------|-----------|------------------|-----------|
-| `No Date.now() except src/event/uuid.ts` | CLAUDE.md, INTEGRATED_SPEC_v2 §3, QWEN 04, core-invariants.md | T0 × 4 | Mechanically enforced |
-| `No array.length for sequence numbers` | CLAUDE.md, INTEGRATED_SPEC_v2 §3, QWEN 04, core-invariants.md | T0 × 4 | Mechanically enforced |
-| `deepFreeze every state object` | CLAUDE.md, INTEGRATED_SPEC_v2 §3, core-invariants.md | T0 × 3 | Mechanically enforced |
-| `RFC 8785 JCS for all hashing` | CLAUDE.md, INTEGRATED_SPEC_v2 §1 & §3, core-invariants.md, QWEN 04 | T0 × 4 | Mechanically enforced |
-| `Version mismatch = hard abort` | CLAUDE.md, INTEGRATED_SPEC_v2 §1 Primitive 2, core-invariants.md | T0 × 3 | Mechanically enforced |
-| `Bernstein not Hoeffding` | CLAUDE.md, INTEGRATED_SPEC_v2 §1 Primitive 3 & §5.2, gate-protocol.md, QWEN 04 | T0 × 4 | Mechanically enforced |
-| `V4/V5 never in VCG calibration` | CLAUDE.md, INTEGRATED_SPEC_v2 §1 Primitive 5, QWEN 04 | T0 × 3 | Policy-enforced |
-| `No Set/Map in ProjectionState` | CLAUDE.md, core-invariants.md | T0 × 2 | Canonicalization requirement |
-| `MutationOperatorRegistry.seal() before gates` | CLAUDE.md | T0 × 1 | Implementation pending verification |
-| `PGCS must pass before TGCS valid` | CLAUDE.md, QWEN 04 | T1 × 2 | Empirically required |
-| `corruption_count must equal 0` | CLAUDE.md, epoch_failsafe.py | T0 × 2 | Mechanically enforced |
-| `No time.time() in Python determinism paths` | CLAUDE.md, QWEN 04 | T0 × 2 | Sequence-based replacement |
-| `Bit-shifted integer arithmetic throughout Python` | CLAUDE.md, QWEN 04 | T0 × 2 | Cross-GPU determinism |
-| `Replayability ≠ Correctness` | CLAUDE.md §Non-Equivalence Table, INTEGRATED_SPEC_v2 §Critical Non-Equivalence | T0 × 2 | Epistemic commitment |
-| `No T4/T5 → T0–T2 without evidence review` | CLAUDE.md §Epistemic Tier Taxonomy, QWEN 04 prohibited actions | T0 × 2 | Migration rule |
-| `Gate 8 must pass before deployment` | CLAUDE.md, gate-protocol.md, QWEN 04 | T0 × 3 | Build protocol |
+| Invariant | Appears In | Score |
+|-----------|-----------|-------|
+| "No Date.now() in core except uuid.ts" | CLAUDE.md, AGENTS.md, core-invariants.md, INTEGRATED_SPEC | ★★★★★ |
+| "deepFreeze all state objects" | CLAUDE.md, INTEGRATED_SPEC, immutable.ts, Reducer.v | ★★★★★ |
+| "No JSON.stringify for integrity — use canonicalizeJCS" | CLAUDE.md, INTEGRATED_SPEC, core-invariants.md | ★★★★★ |
+| "Bernstein bounds, NOT Hoeffding" | CLAUDE.md, hoeffding.ts, INTEGRATED_SPEC, H-03 | ★★★★★ |
+| "No Set/Map in ProjectionState" | CLAUDE.md, INTEGRATED_SPEC, core-invariants.md | ★★★★ |
+| "Version mismatch = hard abort" | CLAUDE.md, INTEGRATED_SPEC, projection-machine.ts | ★★★★ |
+| "seal() before gates" | CLAUDE.md, INTEGRATED_SPEC, mutation-registry.ts | ★★★★ |
+| "corruption_count must = 0" | CLAUDE.md, epoch_failsafe.py, INTEGRATED_SPEC | ★★★★ |
+| "No time.time() in determinism-critical paths" | CLAUDE.md, F-01 audit, tgcs_afse.py | ★★★★ |
+| "T4/T5 cannot ground T0–T2 without evidence review" | CLAUDE.md, AGENTS.md, tier.ts, INTEGRATED_SPEC | ★★★★ |
+| "fail closed on unknown schema" | schema-registry.ts, INTEGRATED_SPEC, AGENTS.md | ★★★ |
+| "V4/V5 never in VCG calibration" | CLAUDE.md, INTEGRATED_SPEC, verifier/registry.ts | ★★★ |
 
 ---
 
 ## 8. Conceptual Gravity Map
 
-Concepts ranked by number of corpus documents referencing them. High gravity = canonical reference point.
+```
+GRAVITY 5 — core attractor (≥10 documents reference)
+  ├─ VCG calibration / Bernstein-gated decisions
+  ├─ Holonic architecture (particle-field hierarchy)
+  └─ Cryptographic lineage (SHA-256 hash chain)
 
-| Rank | Concept | Documents Referencing | Gravity | Role |
-|------|---------|----------------------|---------|------|
-| 1 | VCG calibration / Verifier-Grounded Calibration Gap | INTEGRATED_SPEC_v2 §4, CLAUDE.md, QWEN 04, PDFs #6 #10, AGI_FRAMEWORK, VISION_ASSEMBLED | ★★★★★ | Core statistical foundation |
-| 2 | Bernstein bounds / anytime-valid sequences | INTEGRATED_SPEC_v2 §5, CLAUDE.md, gate-protocol.md, QWEN 04, Howard 2020, Waudby-Smith 2024 | ★★★★★ | Gate statistical basis |
-| 3 | Epoch failsafe / corruption_count | CLAUDE.md, QWEN 04, AGI_FRAMEWORK, python/epoch_failsafe.py, PDF #11 | ★★★★☆ | System integrity floor |
-| 4 | RFC 8785 JCS canonicalization | INTEGRATED_SPEC_v2 §1 & §3, CLAUDE.md, core-invariants.md, QWEN 04 | ★★★★☆ | Determinism foundation |
-| 5 | RALPH loop / execution synthesis | RALPH_LOOP_SYNTHESIS (378 lines), RALPH_LOOP_AUDIT (422 lines), CLAUDE.md, QWEN 04 | ★★★★☆ | Execution methodology |
-| 6 | Holonic substrate / holon-architected | PDFs #1 #4 #8, AGI_FRAMEWORK, VISION_ASSEMBLED | ★★★★☆ | Architectural paradigm |
-| 7 | Cryptographic lineage / hash-chaining | INTEGRATED_SPEC_v2 §1 Primitive 1, CLAUDE.md, formal/Hash.v | ★★★★☆ | Tamper evidence |
-| 8 | M1/M2/M3 functional definitions (Python) | CLAUDE.md, QWEN 04, AGI_FRAMEWORK, core_matrix.py | ★★★☆☆ | Python Layer B foundation |
-| 9 | K-bound / capacity constraint | INTEGRATED_SPEC_v2 §5.4, formal/Omega.tla | ★★★☆☆ | Gate complexity bound |
-| 10 | Deterministic replay / version pinning | INTEGRATED_SPEC_v2 §1 Primitive 2, CLAUDE.md, src/runtime/ | ★★★☆☆ | Reproducibility guarantee |
-| 11 | PGCS telemetry / TGCS variance | CLAUDE.md, QWEN 04, python/pgcs.py, python/tgcs_afse.py | ★★★☆☆ | Runtime health signals |
-| 12 | EU AI Act Article 12 compliance | CLAUDE.md, AGI_FRAMEWORK, VISION_ASSEMBLED piece 5 | ★★★☆☆ | Commercial deployment target |
-| 13 | Three-way bisimulation | formal/ThreeWay.v, INTEGRATED_SPEC_v2 | ★★☆☆☆ | Formal equivalence proof |
-| 14 | Quasicrystal-CDT spectral correspondence | VISION_ASSEMBLED piece 6 | ★☆☆☆☆ | T3 conjecture — isolated, no T0-T2 grounding |
-| 15 | SAGA identity / SPIFFE/SVID | CLAUDE.md, saga/identity.py | ★☆☆☆☆ | T2 stub awaiting PKI |
+GRAVITY 4 — high mass (5–9 documents)
+  ├─ Epoch failsafe (FROZEN/RECOVERING state machine)
+  ├─ RALPH Loop (review → analyze → link → patch → harmonize)
+  ├─ E3 substrate (append-only event stream)
+  ├─ Bernstein anytime-valid bounds (adaptive sampling validity)
+  └─ M1/M2/M3 functional definitions (Python Core Matrix)
+
+GRAVITY 3 — medium mass (3–4 documents)
+  ├─ Epistemic tier migration rule (T4/T5 → T0–T2 blocked)
+  ├─ deepFreeze invariant
+  ├─ Gate sequence (1–8)
+  └─ Mutation governance (K-bound, seal())
+
+GRAVITY 2 — low mass (2 documents)
+  ├─ SAGA identity (SPIFFE/SVID stub)
+  ├─ WASM parity harness
+  ├─ Q32.32 fixed-point
+  └─ Subatomic particle-field analogy (papers → implementation)
+
+GRAVITY 1 — point mass (single authoritative source)
+  ├─ UUIDv7 overflow guard (uuid.ts)
+  ├─ Three-phase IDB append (store.ts PR #16)
+  ├─ PGCS page-size correction (F-08)
+  └─ ReplaySafetyViolation / assertReplaySafe (semantics.ts)
+```
 
 ---
 
 ## 9. Discarded Architecture Archive
 
-Understanding rejected designs is as important as knowing what was adopted. These define
-the boundary of the solution space.
-
-| Rejected Approach | Why Rejected | Replaced By | Evidence |
-|-------------------|-------------|-------------|---------|
-| Hoeffding bounds for statistical gating | Assumes IID samples; adaptive systems violate this assumption | Bernstein anytime-valid bounds (Waudby-Smith & Ramdas 2024) | INTEGRATED_SPEC_v2 §5.2 |
-| `Set`/`Map` in ProjectionState | Non-deterministic iteration order across JS engines breaks RFC 8785 | Arrays exclusively | core-invariants.md |
-| `JSON.stringify` for integrity hashing | Not canonical — key ordering undefined, undefined/NaN/Infinity handled incorrectly | `canonicalizeJCS` from src/core/canonicalize.ts | core-invariants.md |
-| Sequence numbers from `array.length` | Race-prone; not atomic with event append | `IndexedDBSequenceAllocator` inside IDB transaction | core-invariants.md |
-| `Date.now()` in core logic | Wall clock creates non-deterministic replay | `event.timestamp_ms` exclusively | core-invariants.md |
-| Async ops inside IDB callbacks | `await` crosses task boundary → `TransactionInactiveError` | Three-phase append (Phase 1 read / Phase 2 hash / Phase 3 write) | src/event/store.ts |
-| Single-transaction IDB append | Async WebCrypto inside IDB tx silently aborts the transaction | Three-phase split (loses atomicity; race protection via unique index) | src/event/store.ts |
-| `seq & 0xfff` sequence wrap | After 4096 IDs in same ms, seq wraps to 0 → duplicate UUIDs | Virtual millisecond steal: increment `lastMs`, reset seq | src/event/uuid.ts |
-| Hoeffding codepoint-only surrogate handling | `codePointAt()` returns full scalar for valid pairs; surrogate branch never entered | `cp > 0xFFFF` check before surrogate range | src/core/canonicalize.ts |
-| V4/V5 verifiers as calibration inputs | LLM judges and human review are gameable; break statistical independence | V4/V5 permanently Advisory-Excluded | INTEGRATED_SPEC_v2 §1 Primitive 5 |
-| Autonomous version selection on pin failure | Silent degradation destroys replay guarantees | Hard abort on any `RuntimeVersionPin` mismatch | core-invariants.md |
-| Default VCG fallback on CALIBRATION_STALE | Stale calibration used as if valid | CALIBRATION_STALE alert fires; gate inputs suspended | INTEGRATED_SPEC_v2 §4.3 |
-| Component declaring K = ∞ | Unbounded proposal space invalidates probabilistic guarantee | Rejected at registration | INTEGRATED_SPEC_v2 §5.4 |
+| Document | Discarded Design | Why Superseded |
+|----------|-----------------|----------------|
+| `QWEN 01 PROJECT CONTEXT.md` | Hoeffding inequality as gate statistic | Replaced by Bernstein — adaptive sampling valid |
+| `core_matrix.py` v1 | `time.monotonic()` for cycle timing | Non-deterministic; use sequence numbers (F-01) |
+| `pgcs.py` (pre-F-08) | Raw page counts as disk I/O | Must multiply by `resource.getpagesize()` |
+| `stress_test.py` (pre-F-02) | Hardcoded `afse_r2 = 0.98` | Proved nothing; replaced with live AFSEController |
+| `store.ts` (pre-PR #16) | Single-transaction async append | `await` crosses IDB task boundary → TransactionInactiveError |
+| `uuid.ts` (pre-PR #16) | `seq & 0xfff` wrap without refresh | Duplicate UUIDs at 4096/ms; fixed with virtual-ms increment |
+| `verify-hashes.mjs` (pre-F-06) | Silent SKIP for missing constitutional files | Exit 0 even when absent — constitutional check was no-op |
+| `canonicalize.ts` (pre-PR #16) | Surrogate pair via high-surrogate branch | Valid pairs fell through; fixed with `cp > 0xFFFF` check first |
+| `fixedpoint.ts` (pre-Ω⁵.7) | `divQ32(sum, BigInt(Number(n)) << 0n)` for mean | Scale error 2^32×; replaced with plain BigInt division |
 
 ---
 
 ## 10. Unresolved Theoretical Compression Layers
 
-Latent concepts in the corpus with no current T0–T2 implementation. These represent
-potential future compression into production components. Classified T3–T5.
+Concepts with no current T0–T2 implementation — latent potential:
 
-### T3 — Research Conjectures with Implementation Potential
-
-| Concept | Source | Potential T0 Compression | Status |
-|---------|--------|--------------------------|--------|
-| G-Set CRDT distributed convergence (Shapiro 2011) | INTEGRATED_SPEC_v2 §1 Primitive 1 | Multi-node E3 substrate with CRDT-based merge | Not implemented; single-node only |
-| Scrivens 2026 impossibility result | INTEGRATED_SPEC_v2 §5.5 | Formal bound on cumulative risk vs. beneficial improvement | Referenced but not implemented in gate logic |
-| Ed25519 checkpoint signatures | INTEGRATED_SPEC_v2 §1 Primitive 1 | Merkle root anchoring with signing key infrastructure | Stub — signing keys not provisioned |
-| WASM-pinned floating-point arithmetic | INTEGRATED_SPEC_v2 §1 Primitive 6 | Cross-engine determinism for VCG + Bernstein computation | Fallback JS path only; WASM not implemented |
-| Vempala-Wilkes theorem | INTEGRATED_SPEC_v2 §4.3 | Formal VCG floor for autoregressive models | Stated assumption; no implementation needed |
-| eBPF fallback (T1) | AGI_FRAMEWORK_CONCLUDED §production-hardening | Low-level telemetry collection for AMD RX 570 | Not implemented |
-| OCRR online correction recovery | INTEGRATED_SPEC_v2 §6.2 | Online correction rate tracking projection | Forensics module incomplete |
-| ReCAPA exponential decay | INTEGRATED_SPEC_v2 §6.2 | Correction recoverability decay model | Not implemented |
-| TEE / Confidential Computing | INTEGRATED_SPEC_v2 §Layer 4 | Execution environment integrity | Architectural dependency; out of scope |
-
-### T4 — Speculative with No Current Path to T0
-
-| Concept | Source | Obstacle |
-|---------|--------|---------|
-| Council (Architect/Builder/Analyst/Strategist/Guardian) | VISION_ASSEMBLED piece 3 | Requires multi-agent orchestration framework not yet built |
-| Swarm (multiple runtime instances, holonic scaling) | VISION_ASSEMBLED piece 4 | Requires CRDT merge + distributed E3 substrate |
-| AEGIS civilisational governance | VISION_ASSEMBLED piece 5 | Requires EU AI Act certification infrastructure |
-| Quasicrystal-CDT spectral correspondence | VISION_ASSEMBLED piece 6 | T3 conjecture; no implementation pathway defined |
-| x402 micropayment protocol (SAGA Layer 3) | AGI_FRAMEWORK_CONCLUDED §Layer 3 | Awaiting PKI + x402 infrastructure |
-
-### T5 — Creative / Worldbuilding (Deferred indefinitely)
-
-| Concept | Migration Rule Status |
-|---------|----------------------|
-| Cycle series | No T0–T2 grounding permitted without evidence review |
+| Concept | Source | Tier | Path |
+|---------|--------|------|------|
+| Optimal transport for LLM calibration | From Divergence to Convergence (T3) | T3→T2 | Could inform VCG window weighting |
+| Entropy-bounded policy optimization | Orchestrating Long-Horizon Reasoning (T3) | T3→T2 | Could bound mutation-governance K |
+| Token-level drift detection | Verifying Agentic Reasoning (T3) | T3→T1 | hoeffding.ts extension |
+| Non-neural algorithmic marketplace | Orchestrating Volatility (T3) | T3→T2 | E5 workflow auction |
+| Iris/Coq bisimulation | `formal/theories/Bisimulation/ThreeWay.v` | T0 (stub) | Formally proves store.ts replay safety |
+| KMS key shredding | `compliance/tombstone.ts:56` (stub) | T1→T0 | Awaiting production KMS |
+| WASM binary compilation | `core/wasm-interface.ts` (kernel unloaded) | T0 (pending) | Q32.32 GPU-accelerated Bernstein |
+| gate.py / dna.py / router.py | CLAUDE.md (declared absent) | T0 (blocked) | Requires /guardian APPROVED verdict |
 
 ---
 
 ## 11. Full Canonical Index
 
-Complete inventory of all unique Drive documents and local repo components.
+### Research PDFs — T3
+| # | Drive ID | Title | Size |
+|---|----------|-------|------|
+| 1 | `1LJ1KoT195nJDBLGyR9VRzrnVWlFCxgO8` | Preserving Criticality in Holonic AI | 514 KB |
+| 2 | `10gBmzNovsKMWkqf2AiXJrAn0Mt197o9P` | Quantum-Inspired Architecture | 511 KB |
+| 3 | `1Kntuo_DbjzcJa8-BqPM90q-V5CKLFOah` | Verifying Agentic Reasoning | 508 KB |
+| 4 | `1lu31YCW-TW2SVr3IyGeQZBTB1YXbnCG5` | A Holon-Architected Compiler | 506 KB |
+| 5 | `1xaKuiktzJWkTmwaoi_wCwunA4Y9HTZrb` | From Local Task to Global Integration | 492 KB |
+| 6 | `1uN2Ts3GBaa-YXe_vo7z4zs6e07mT4984` | An Asymmetric Market for Uncertainty | 490 KB |
+| 7 | `1OpO3JpYAHSWkyh0aOzRa_6agbfuPJVgl` | Orchestrating Emergent Intelligence | 477 KB |
+| 8 | `1LUu4IKCJK0RbcqZkgiwZa-Th7u2dl3vU` | Decomposing the Monolith | 469 KB |
+| 9 | `1eL8RkV43ynRi_0KAWewIpOPEDnXD7pMb` | Orchestrating Long-Horizon Reasoning | 455 KB |
+| 10 | `1H5xrLV2M_HVdpzoHK5Czgdb5kQmsFdbJ` | From Divergence to Convergence | 443 KB |
+| 11 | `1hv9jhS8ROs5selyvvFrhpqzx8s7CE8a5` | Orchestrating Volatility | 419 KB |
+| 12 | `1oS83PDBGhdgo3LydaWC05fosXyzJXEmv` | From Heterogeneity to Cohesion | 416 KB |
+| 13 | `1ozQ641HrGlOiW2jkMBxg-lBEZChJlYUb` | Resilience by Analogy | 499 KB |
 
-### Drive Documents (Unique — excluding replicated agent session copies)
+### Spec / Vision / RALPH Docs
+| Drive ID | Title | Tier | Size |
+|----------|-------|------|------|
+| `1cfFY59zAczNPCL7mvr_TxFo1yR7xfDNh` | SOVEREIGN_OMEGA_INTEGRATED_SPEC_v2.md | T1 | 44 KB |
+| `1NScZu_7bc9nLXzSWG8Ul_O98KuHL5360` | SOVEREIGN_OMEGA_IMPL_BRIEF_Qwen.md | T1 | 17 KB |
+| `1_gebxxUSk_OO0B575K7j03AX4YRkpvDq` | SOVEREIGN_OMEGA_AGI_FRAMEWORK_CONCLUDED.md | T4 | 13 KB |
+| `1umR8RoWZwJQAQuG4uzU-N16HMOmCUK09` | SOVEREIGN_OMEGA_VISION_ASSEMBLED.md | T4 | 12 KB |
+| `11MWyKyAfBKHY9TXUZ_iDqilybuAZf_3M` | RALPH_LOOP_OMEGA2_INTEGRATION_AUDIT.md | T2 | 12 KB |
+| `1TTzre0Oy1BEZ_g5lm926XJ2UiFtjfJsr` | RALPH_LOOP_OMEGA_EXECUTION_SYNTHESIS.md | T2 | 11 KB |
+| `1oWL66eB30_yuaINeNY16P6Fnf1kMDNdd` | QWEN 04 EXECUTION DIRECTIVE.md | T2 | 10 KB |
+| `1fpD3CDhEi688iZvMZ_FMXlmEuauNc0-U` | QWEN 03 IMPLEMENTATION STATE.md | T2 | 14 KB |
+| `1X-sUZzPB4Aod1TiPA5g6wyXbO9Fr86WG` | QWEN 02 ARCHITECTURE COMPLETE.md | T2 | 14 KB |
+| `1Zfz8nJBdaYmav_foifXw81U8h_TMbcuP` | QWEN 01 PROJECT CONTEXT.md | T2 | 7 KB |
+| `1N9QujbSEFAUoHnNFB3c3N-O1p5v6xZTr` | Sovereign_Runtime_Unified_Deliverable.docx | T1 | 38 KB |
+| `1BtdhG2MeThi0ZSeKjGIa1sZg1XZ1QOHG` | AEGIS_Sovereign_Runtime_Deliverable.docx | T1 | 39 KB |
 
-| Drive ID | Name | MIME Type | Tier | Holonic Scale | Particle-Field Role | Status |
-|----------|------|-----------|------|---------------|---------------------|--------|
-| `1cfFY59zAczNPCL7mvr_TxFo1yR7xfDNh` | SOVEREIGN_OMEGA_INTEGRATED_SPEC_v2.md | Markdown | T0/T1 | Cellular | Conservation law document | Active — authoritative |
-| `1NScZu_7bc9nLXzSWG8Ul_O98KuHL5360` | SOVEREIGN_OMEGA_IMPL_BRIEF_Qwen.md | Markdown | T1 | Cellular | State-transition operator spec | Active |
-| `11MWyKyAfBKHY9TXUZ_iDqilybuAZf_3M` | RALPH_LOOP_OMEGA2_INTEGRATION_AUDIT.md | Markdown | T2 | Molecular | Observation layer audit | Active |
-| `1TTzre0Oy1BEZ_g5lm926XJ2UiFtjfJsr` | RALPH_LOOP_OMEGA_EXECUTION_SYNTHESIS.md | Markdown | T2 | Molecular | Causal interaction trace | Active |
-| `1_gebxxUSk_OO0B575K7j03AX4YRkpvDq` | SOVEREIGN_OMEGA_AGI_FRAMEWORK_CONCLUDED.md | Markdown | T4 | Field | Vision substrate | Active (T4 only) |
-| `1umR8RoWZwJQAQuG4uzU-N16HMOmCUK09` | SOVEREIGN_OMEGA_VISION_ASSEMBLED.md | Markdown | T4 | Field | Vision substrate | Active (T4 only) |
-| `1gnM-TwrOHLUyon2sdBJpImAcZtV1pxzC` | CLAUDE.md (Drive copy) | Markdown | T0 | Field | Conservation law | Active — sync with repo |
-| `1oWL66eB30_yuaINeNY16P6Fnf1kMDNdd` | QWEN_04_EXECUTION_DIRECTIVE.md | Markdown | T2 | Cellular | State-transition operator spec | Active — final directive |
-| Drive root | QWEN_01_EXECUTION_DIRECTIVE.md | Markdown | T2 | Cellular | Historical directive | Superseded by QWEN_04 |
-| Drive root | QWEN_02_EXECUTION_DIRECTIVE.md | Markdown | T2 | Cellular | Historical directive | Superseded by QWEN_04 |
-| Drive root | QWEN_03_EXECUTION_DIRECTIVE.md | Markdown | T2 | Cellular | Historical directive | Superseded by QWEN_04 |
-| `1LJ1KoT195nJDBLGyR9VRzrnVWlFCxgO8` | Preserving Criticality in Holonic AI | PDF | T3 | Field | Research conjecture | Active |
-| `10gBmzNovsKMWkqf2AiXJrAn0Mt197o9P` | Quantum-Inspired Architecture | PDF | T3 | Field | Research conjecture | Active |
-| `1Kntuo_DbjzcJa8-BqPM90q-V5CKLFOah` | Verifying Agentic Reasoning | PDF | T3 | Field | Research conjecture | Active |
-| `1lu31YCW-TW2SVr3IyGeQZBTB1YXbnCG5` | A Holon-Architected Compiler | PDF | T3 | Field | Architectural ancestor | Active |
-| `1xaKuiktzJWkTmwaoi_wCwunA4Y9HTZrb` | From Local Task to Global Integration | PDF | T3 | Field | Research conjecture | Active |
-| `1uN2Ts3GBaa-YXe_vo7z4zs6e07mT4984` | An Asymmetric Market for Uncertainty | PDF | T3 | Field | VCG theoretical basis | Active |
-| `1OpO3JpYAHSWkyh0aOzRa_6agbfuPJVgl` | Orchestrating Emergent Intelligence | PDF | T3 | Field | Research conjecture | Active |
-| `1LUu4IKCJK0RbcqZkgiwZa-Th7u2dl3vU` | Decomposing the Monolith | PDF | T3 | Field | Research conjecture | Active |
-| `1eL8RkV43ynRi_0KAWewIpOPEDnXD7pMb` | Orchestrating Long-Horizon Reasoning | PDF | T3 | Field | Research conjecture | Active |
-| `1H5xrLV2M_HVdpzoHK5Czgdb5kQmsFdbJ` | From Divergence to Convergence | PDF | T3 | Field | Research conjecture | Active |
-| `1hv9jhS8ROs5selyvvFrhpqzx8s7CE8a5` | Orchestrating Volatility | PDF | T3 | Field | Epoch failsafe basis | Active |
-| `1oS83PDBGhdgo3LydaWC05fosXyzJXEmv` | From Heterogeneity to Cohesion | PDF | T3 | Field | Research conjecture | Active |
-| `1ozQ641HrGlOiW2jkMBxg-lBEZChJlYUb` | Resilience by Analogy | PDF | T3 | Field | Research conjecture | Active |
-| `15xwR7e2QaZ8Urmb3rQvUf9XRt8DGF_Oi` | sovereign-omega-v2.0.zip | Zip | T0 | Organism | Source archive | Superseded by repo |
-| `1fM1s2Upc9pRltBjtcREBtqbXPqJQwi1h` | research/omega_dynamics/harness.ts | TypeScript | T1 | Molecular | Research harness | Active |
-| Drive `formal/` | Hash.v, Reducer.v, Event.v | Coq | T0 | Atomic | Proof units | Active |
-| Drive `formal/` | ThreeWay.v | Coq | T0 | Atomic | Bisimulation proof | Active |
-| Drive `formal/` | Omega.tla, Omega.cfg | TLA+ | T0 | Atomic | Temporal specification | Active |
+### Handoff / Protocol Docs
+| Drive ID | Title | Tier |
+|----------|-------|------|
+| `1RwEvyA_nAjh2KYLuemeXseYuUoz5_oRE` | 00_MANIFEST.md | T1 |
+| `1CiScoMeBD7p3hjedg0YM8J4YVide3koG` | 05_INVARIANTS.md | T0 |
+| `1F6kBOkWOvbHp1_UcvELYca5XYZc5h04c` | 06_TAXONOMY.md | T0 |
+| `1_e5serahYTE-PncfotGvYSII3FdEHyJW` | 17_EXPLICITLY_PROHIBITED.md | T0 |
+| `15OROnTwfZF2gto9HZ5Kxpo5ceMGs2hz-` | 21_DECISION_LOG.md | T1 |
+| `1HqnoRPCvdbBH791ZFg3t7HL_jD7dk9rP` | AGENTS.md | T0 |
+| `1gnM-TwrOHLUyon2sdBJpImAcZtV1pxzC` | CLAUDE.md | T0 |
+| `1Izrr8mUEXtTJJQ71TI1j6dSst_Uo2mQv` | ARTIFACT_REGISTRY.md | T1 |
 
-**Note on replication**: Pages 2–3 of the Drive listing showed INTEGRATED_SPEC_v2 appearing in 3
-different parent folder IDs (`1YidpasL0A7qGhlKCyGjqqpnk6yFEmhNb`, `1iGNPcjZdiyP6VhztE_Is6Js2M29Sw82b`,
-`1jYTg53itN3svflR61pG_q8mPrRBVbEOc`). These are replicated copies sent to 3 different AI agent
-sessions. The unique document count is ~65. The "200+" total is the replicated corpus.
+### TypeScript Source
+| Drive ID | File | Module | Tier |
+|----------|------|--------|------|
+| `1hPE3DKmRUhCY6Rii0P8LzOxMjiSt2e3u` | canonicalize.ts | core | T0 |
+| `1vsXJN5XUe1rRBmh2WSC1mvzCmGcY9RLW` | types.ts | core | T0 |
+| `1Kkr3H9W49dXF2hvT6yiOKJ3r3rmKqejT` | immutable.ts | core | T0 |
+| `1wex4ikQhfTxX9S53J9F4E2T50wbwY46_` | hashing.ts | core | T0 |
+| `1Tv9-z3hhlrDjg9dAOstm0lz7plmpbo4S` | tier.ts | core | T0 |
+| `14m2aO5bJS5m4nhWgFSG_YnyBtxiWgkPs` | schema-registry.ts | core | T0 |
+| `1914bqWJDm38d50GJgrGkdskK-sHvuGNB` | fixedpoint.ts | core | T0 |
+| `135L-o2YyFX0B59KxFd9C_ZBYwp2gGA8Z` | wasm-interface.ts | core | T0 |
+| `1pId5tqocB7OC0_mE4GHXOnRlVGUXIE_9` | ordering.ts | core | T0 |
+| `1JVe9ZH3qq0bbeoWfg-ws33FkutFgM7Gm` | store.ts | event | T0 |
+| `14ex28P76O7dsTtPeGswr_UgD-u4Ku7yj` | uuid.ts | event | T0 |
+| `1aa6aSQbTyCbZ94I9tnA7jCeJv8enlV8z` | mutation-registry.ts | event | T0 |
+| `1nlonfLoBEX4546W5bsGQqFFfSMXRzBhe` | replay.ts | event | T0 |
+| `1Ndxvjz_iDq-mZQDVFgb10KvCwkD8x2zh` | segment.ts | event | T0 |
+| `1DnJABPstscDvvDiXDZ6ZQvYnOOEvTox-` | hoeffding.ts | gate | T0 |
+| `1JGTafRDKmd25HoLsrhCc2DJqNMRWCJGz` | risk.ts | gate | T0 |
+| `1ElP9I8_SbFmiAFlkUwSXCl1CMymWHWsu` | mutation-governance.ts | gate | T0 |
+| `1Hs22rvsXvhG1vdsjahdyGjRu2P7jd1pu` | gate/types.ts | gate | T0 |
+| `1aMM1s-JrVca8g_rD0LAkWG13eZ3gzeoz` | vcg.ts | calibration | T1 |
+| `19_wNYh2yd05pC5xqGbo_mgv_CEWRZn6Q` | rng.ts | calibration | T1 |
+| `1YcPP64X1lFRNvfppEi4Q-MNaxWFFSfEY` | calibration/types.ts | calibration | T1 |
+| `1Ay7q5PSjQLtGB_ChcmgfD_20kUvzaqK4` | registry.ts | verifier | T1 |
+| `1hycYd1amn3Tfe5bdottOLwElcIolTC6y` | independence.ts | verifier | T1 |
+| `15j5tnmri5td2AFReMbgQwCo63v0Yt2-i` | execute.ts | verifier | T1 |
+| `1aYYJqIRYz4C5DitPnPM_avJSBZGESf3J` | verifier/types.ts | verifier | T1 |
+| `1nDuaatO8oRe2QFhh1WsXpSAirAollrgP` | reducer.ts | projection | T1 |
+| `1KIm7PYtZxb-zIMQAKJjrHdMn1V8tdCEy` | compiler.ts | projection | T1 |
+| `18_TjUvyLwXZzHQSTH-4OZNLKUtKRiTbA` | pipeline/index.ts | pipeline | T1 |
+| `1XExDOcHAZvVNrx9rNZ_FBsTnurGC9JVH` | e1.ts | pipeline | T2 |
+| `14zHZD8fohpW5J3bJ-P1-1BgBgrtyevva` | schema.ts | pipeline | T1 |
+| `1eUg0dPFBNDKMsGEh-pVTGDKSaIAwnEVR` | projection-machine.ts | runtime | T1 |
+| `1tg03g9LwC9wDLq8aBaq4HOVgn3SSaJoN` | tombstone.ts | compliance | T1 |
+| `1BDZgh9YBL3D4xyYKHKl4B-k04Wa95qip` | divergence.ts | forensics | T1 |
+| `1LpuJqGZ4ntp2nmt03mEw9QcEAI-Y0c2N` | gate/migrations/index.ts | migrations | T1 |
+| `1UaczxS5Hp7MGpLFh6GqQxOxypdLXylhc` | omega_dynamics/harness.ts | research | T3 |
+| `1kVSSc1kmb5-jbqdsJggvAnNrQGL62rfn` | omega_dynamics/types.ts | research | T3 |
 
-### Local Repository T0 Components (sovereign-omega-v2/src/)
+### Python Source
+| Drive ID | File | Tier | Audit Status |
+|----------|------|------|-------------|
+| `1dlB-tgjBW6AcyGUA8ggoiUGrHoiHOBbu` | core_matrix.py | T0 | F-03, F-05, F-07, F-09, F-10 resolved |
+| `1tAjmYSlfMt2-7X4tpOQPyRcwywWQCWB4` | pgcs.py | T1 | F-08 resolved; H-01 open (stub) |
+| `1mmk4fnDURe8R9FODj86XUDyDvdO6ed1M` | gradient_anchor.py | T0 | F-04 resolved |
+| `1ndZJVGyRB43wvOA01aYChJFTaTVcoMN8` | epoch_failsafe.py | T0 | F-10 resolved |
+| `19Wcrfyb7tmWoM5IgCwgRUylmGcWUb1l1` | tgcs_afse.py | T1 | F-01 resolved |
+| `1fPh87XMdrQB1aadSyNbZI9EK9znvncDm` | bridge.py | T1 | F-05 resolved |
+| `1BlEgFkEJhd38jpqGfQBpSoglETFnQi2x` | hardware_config.py | T1 | Active |
+| `1Bam8lTVK5_HTYF9bzLC0ytagovqHAqYn` | identity.py (saga) | T2 | SPIFFE stub |
+| `1BA5a42L4QdBDgj1EhYbLZdOfRvg6De-0` | stress_test.py | T1 | F-02 resolved |
 
-| File | Module | Tier | Gate |
-|------|--------|------|------|
-| `src/core/canonicalize.ts` | core | T0 | Gate 1 |
-| `src/core/types.ts` | core | T0 | Gate 1 |
-| `src/core/immutable.ts` | core | T0 | Gate 3 |
-| `src/core/reducer.ts` | core | T0 | Gate 4 |
-| `src/event/store.ts` | event | T0 | Gate 2 |
-| `src/event/uuid.ts` | event | T0 | Gate 2 |
-| `src/gate/hoeffding.ts` | gate | T0 | Gate 6 |
-| `src/gate/risk.ts` | gate | T0 | Gate 6 |
-| `src/calibration/vcg.ts` | calibration | T1 | Gate 5 |
-| `src/verifier/registry.ts` | verifier | T1 | Gate 5 |
-| `src/pipeline/index.ts` | pipeline | T1 | Gate 7 |
-| `src/projection/` | projection | T1 | Gate 4 |
-| `src/runtime/` | runtime | T0 | Gate 8 |
-| `src/forensics/` | forensics | T1 | Gate 7 |
-| `src/compliance/tombstone.ts` | compliance | T1 | Gate 8 |
+### Formal Proofs
+| Drive ID | File | Role |
+|----------|------|------|
+| `1sKpfon3T6ccBrRQ5nFNH-Ohym9N3o5kT` | Hash.v | Coq: SHA-256 chain |
+| `1SUUi6YaTgM8v2nSkc1sYFrblfKi9aTQJ` | Reducer.v | Coq: pure reducer |
+| `1ovvLqDP6Kv8iZz4Ovjse0rgdvjAeJ7Lj` | Event.v | Coq: append invariant |
+| `1ZTZS8DcP5Vp1Yg_G5Lph-Vi5irepYRUU` | ThreeWay.v | Coq: bisimulation (stub) |
+| `1R8ItAXt7zDXwJ28DaWWNdulqq0L9hRYK` | Omega.tla | TLA+: version pin |
+| `1jomiD_IqnddsD0dsnjYgp5boKbLUXsn2` | Omega.cfg | TLA+ model config |
 
-### Local Repository T0 Components (sovereign-omega-v2/python/)
+### Tests
+| Drive ID | File | Gate |
+|----------|------|------|
+| `1i4xzyhQ1Ta9dQMBXlzUujP4USNlOEyej` | jcs.test.ts | Gate 1 |
+| `1ePUAXo5I1ZrH7Shc78eHhXdcpSx5sl6a` | sequence.test.ts | Gate 2 |
+| `1OteyjleIM8MS3dhLGvu5wt50UQaALTUJ` | immutable.test.ts | Gate 3 |
+| `1aRf5o7wimNnPozQjq6fJSryWJvB5pqlI` | reducer.test.ts | Gate 4 |
+| `10fNfuxHB79dcqobrT7nIsCvReh-rHO21` | vcg.test.ts | Gate 5 |
+| `1qyNK5d_-oe1LhS-GJdD6otaOLIXG2wrr` | gate.test.ts (integration) | Gate 6 |
+| `1OSgMJEAhZXCM2us_E9EyXBGh2mAOwgNe` | gate.test.ts (unit) | Gate 6 |
+| `1Ac9sIhW_45A2tx2Sw2iOD4g_49C-TSag` | replay.test.ts | Gate 7 |
+| `1RjDUC7bCT2Y53tHfKaN0LxbiJjv3s1a_` | pipeline.test.ts | Gate 7 |
+| `1nlWQ6GBexiIknThLtqc0i-VbAfkfApXI` | merkle.test.ts | determinism |
+| `1Z6xfgxKHH5gyQfxRK95YzcedsR55N2N5` | cross-engine.test.ts | determinism |
+| `1uPDn0rAeuTRrHpV9wx_SCavnb1WoFkiI` | reducer-impurity.test.ts | Gate 4 (adversarial) |
 
-| File | Tier | Constitutional | Validation |
-|------|------|---------------|------------|
-| `python/core_matrix.py` | T0 | No | P1/P2/P3 stress tests |
-| `python/gate.py` | T0 | **FROZEN** SHA256: `72196f38...` | `node scripts/verify-hashes.mjs` |
-| `python/dna.py` | T0 | **FROZEN** SHA256: `9c4d38d8...` | `node scripts/verify-hashes.mjs` |
-| `python/router.py` | T0 | **FROZEN** SHA256: `c96e566c...` | `node scripts/verify-hashes.mjs` |
-| `python/epoch_failsafe.py` | T0 | No | P2 crash-loops test |
-| `python/gradient_anchor.py` | T0 | No | P1 smoke test |
-| `python/pgcs.py` | T1 | No | P1 smoke test |
-| `python/tgcs_afse.py` | T1 | No | P1 smoke test |
-| `python/bridge.py` | T1 | No | Manual: `curl localhost:7890/health` |
+### Configuration & Build
+| Drive ID | File | Purpose |
+|----------|------|---------|
+| `1ctS_FBitxgCj6Gq3j1taTArkC-c18ecl` | agent.config.yaml | Qwen/Claude agent orchestration |
+| `1E6hcv-ZN4tSMx5sTSdK15fb4I8qe0w-Z` | company.yaml | Paperclip company config |
+| `1sQUtuhGpL0TsvT7GhqR1WpdtXeP1fbME` | .env.example | Environment variable template |
+| `1ZifZapDuoPO_okSXk0rObW5F4x-tH39X` | package.json | Node.js project manifest |
+| `1tZpjrUvPnKjJlz6EBpqN3EzZBM4fs9Qi` | tsconfig.json | TypeScript strict config |
+| `1jAoSzqnX6CyIXuE3t52jpAMdIHWufQwf` | tsconfig.node.json | Node TypeScript config |
+| `1-DU0TlsswHZpnaIgTANdh_fNObXKJwK2` | vite.config.ts | Vite build config |
+| `13dBcIkdZ85f4bI43RuBQj3kjMlSxLFru` | .mcp.json | MCP server configuration |
+| `1YhRWaPwXURMsO4IEteoLmIcW-VK9_p2_` | .gitignore | Git ignore rules |
+| `1KdbQTbx4tTxaj7aJB7lua-9Ci0ldYTr8` | ci.yml | GitHub Actions CI |
+| `1jFopiD7hZk9RufB9dFVatHXgHhsiaaRJ` | requirements.txt | Python deps |
+| `1GUMtQ2-U2j4bDT3iIgbSs97hrMfP-kAx` | Dockerfile.repro | Reproducibility container |
+| `16Be1AWO5ItmfmQJE3QNHTbddDDBLxC7u` | settings.json | Claude Code settings |
+| `1V2ZELZDpufetL0OqwcV6Ygxh9Lx0zEZt` | transform-manifest.json | Transform manifest |
+| `1vnLHzenHOA55vGKpX1fGq_2e7zSX-g1U` | setup.sh | Setup script |
 
-### Commercial Products
+### Scripts & Rules
+| Drive ID | File | Purpose |
+|----------|------|---------|
+| `1UfiPDjUawVlHqXZbuVWvqcpLvxL9oxWR` | verify-hashes.mjs | Constitutional file verification (F-06) |
+| `19KsLyMjsNu4CMoomXNz4U5bVpZvMj59s` | hash-transforms.mjs | Hash transform utilities |
+| `1GIDx3WcDzEHg0OtR0uduXwqvqf6ilWLS` | verify-canonicalization.ts | JCS verification tool |
+| `1s208Od1WuzX-irtoh9qlhHl0WdtqURS9` | guardian.md | Guardian agent spec |
+| `136I80y_8WuVeqLPeR2W2wpdTMZlT0yhj` | implementer.md | Implementer agent spec |
+| `1TMH1yiWifbIRew1lY0LBgClGna2WHgnJ` | verifier.md | Verifier agent spec |
+| `14yVdfU5UNEMWOrAEdZ8ApctAxqLTbXjX` | core-invariants.md | Core invariant rules |
+| `1gr8YvGM98p2ZxeyLizL8b0fdfLAYLtVK` | typescript.md | TypeScript rules |
+| `1MMPVxYHr1mYniSmEkla8GEu9YfM6-zzy` | gate-protocol.md | Gate protocol rules |
+| `1iyIqKVgPfOl7FPOr4ETroH8sqCsXVyHn` | testing.md | Testing rules |
+| `1AMoJ_HT4_N1CLKioLWNJfibMS6ANqV17` | build-report.md | Build report command |
+| `13q4WuH8Emec5eREOo_IcFrKtLdEANl5p` | run-gates.md | Gate execution command |
+| `1vJZyYHn3NbdjdTpBsuHkZEDuKhkgaTcz` | verify-frozen.md | Frozen file verification command |
+| `19Ae8j8rBW7cW6LB6X8nUo53N1zMwZhjc` | tier-check.sh | Tier enforcement hook |
+| `1dYTQPtaMKJE6s5a7OO1xI9j9UR57V1EF` | block-frozen-writes.sh | Pre-commit frozen file protection |
 
-| Product | Root Dir | Build Command | Status |
-|---------|----------|---------------|--------|
-| platform-picker | `platform-picker/` | `npm run build` | Built — awaiting Vercel deploy |
-| hook-generator | `hook-generator/` | `npm run build` | Built — awaiting Vercel deploy |
-| content-calendar | `content-calendar/` | `npm run build` | Built — awaiting Vercel deploy |
-| hub | `hub/` | `npm run build` | Built — awaiting Vercel deploy |
-| cockpit | `cockpit/` | `npm run build` | Built — awaiting ECS IP for Ollama |
+### Duplicate Copies (informational — do not use for implementation)
+The following folders are exact copies of canonical files uploaded for multi-model context delivery:
 
-### Drive Folder Structure (IDs for navigation)
-
-```
-0AN5KMOWX21HUUk9PVA (Drive root)
-└── sovereign-omega/ (1cZmb088t43o1yG4iI_4d7jhsNYtjs2kv)
-    ├── docs/        (1YDne9fpnLZ-FdfdKS4D1wcxEPiZEg18B)
-    ├── python/      (12bA-AY3-3_6yDLB7liptmvhKmKOS7r7f)
-    ├── src/
-    │   ├── core/        (1qPRtpzGvpQKP7izVhN9zNH-RBPwvk3BX)
-    │   ├── event/       (1G7wvHmw4l7_RelB1izHGvKodnmrMa0mU)
-    │   ├── gate/        (15OYBfYI5oQm9kf0eiKPJCv9eUpcMO0v1)
-    │   ├── calibration/ (1xzHo4vjLgWdFspTiMEAiJrPC86jJv6cL)
-    │   ├── verifier/    (1OWW0FYgLsUd-XTSLe3Et4VsNv7kA5U4B)
-    │   ├── pipeline/    (1S5uhn98z1jyYq66BrQ5vzRAZuxewyMWJ)
-    │   ├── projection/  (1O_tA_TFGOtIapy_yVKO2hvqKr3I9wJU-)
-    │   ├── runtime/     (17vMGgEKsNrEuReOwM4kZhilaS58KFskL)
-    │   ├── compliance/  (1SY2RVhfZE8I8-Z_dSAQRHuB8H11mANn9)
-    │   └── forensics/   (1UUqNfKl8LedBW2jS9vNx849l4xFQdLrU)
-    ├── test/
-    │   ├── unit/        (1-AQuBmyZkHph8REo3aB7bDdNqOqCXtVd)
-    │   ├── integration/ (1rYA6WC0aBKfoo11Cnz94WhA259g-RkUY)
-    │   └── determinism/ (1mvR1V4yML8j_F2cTg9C-J8uIUT-G5M2s)
-    ├── handoff/     (1SpE7HDvV_N3eSTl3yTMEvf2V0JLVlT2H)
-    ├── .claude/
-    │   ├── rules/   (13M73Rov-Bu4Lg70j9mJIR3yris4EZebm)
-    │   ├── skills/  (11OQUFbujmXfTkvOhoKHhHej3KHkkGlRr)
-    │   ├── commands/(1R-WAhX2IS6og6cNHgXE85N0vjP3uvYHw)
-    │   ├── agents/  (1ZEpmYjuqqtx7Z3K0CykBcBhuG--LxvsQ)
-    │   └── hooks/   (1nFlIt5deaGIs3M2rLiNFR6z57ziNX4P_)
-    ├── formal/      (1IWFfNeKBuK390_jsCp8TszSFpcwl_jHe)
-    │   ├── theories/Core/        (Hash.v, Reducer.v, Event.v)
-    │   ├── theories/Bisimulation/(ThreeWay.v)
-    │   └── tlaplus/              (Omega.tla, Omega.cfg)
-    ├── paperclip/   (company.yaml)
-    ├── saga/        (identity.py)
-    ├── research/omega_dynamics/ (1fM1s2Upc9pRltBjtcREBtqbXPqJQwi1h)
-    └── scripts/     (1Q_rtMzqRMSj0WpzjAbFkGfcbZ5UWGsqW)
-```
+| Folder | Contents | Session |
+|--------|----------|---------|
+| `1YidpasL0A7qGhlKCyGjqqpnk6yFEmhNb` | INTEGRATED_SPEC, IMPL_BRIEF, AGI_FRAMEWORK, VISION_ASSEMBLED | Qwen A |
+| `1iGNPcjZdiyP6VhztE_Is6Js2M29Sw82b` | Same spec docs | Qwen B |
+| `1jYTg53itN3svflR61pG_q8mPrRBVbEOc` | Same spec docs | Qwen C |
+| `1M7UE5FdDT9wiB7fCl85pMcXHAwuPD_Pt` | core_matrix.py, pgcs.py, gradient_anchor.py, epoch_failsafe.py | Qwen A |
+| `1bG9SV5gOy569C4FPUqFLckYCGAf7klSZ` | Same Python files | Qwen B |
+| `1y1gl-3PTO9RbKXEHiy3k7LH_cAnDKBD3` | Same Python files | Qwen C |
 
 ---
 
-## Appendix: Build Protocol Reference
-
-```
-# Gate 1 — must pass before any other file is written or modified
-cd sovereign-omega-v2 && npm run test -- test/unit/jcs.test.ts
-
-# Gate 2
-npm run test -- test/unit/sequence.test.ts
-
-# Gate 3
-npm run test -- test/unit/immutable.test.ts
-
-# Gate 4
-npm run test -- test/unit/reducer.test.ts
-
-# Gate 5
-npm run test -- test/unit/vcg.test.ts
-
-# Gate 6
-npm run test -- test/unit/gate.test.ts
-
-# Gate 7
-npm run test -- test/integration/
-
-# Gate 8 — deployment gate
-npm run test && npm run typecheck && npm run build
-
-# Verify constitutional files have not been modified
-node scripts/verify-hashes.mjs
-
-# Python Layer B smoke test (60s)
-python python/tests/stress_test.py --quick
-```
-
----
-
-*This document was synthesized from: INTEGRATED_SPEC_v2 (44KB, May 2026), VISION_ASSEMBLED,
-AGI_FRAMEWORK_CONCLUDED, QWEN_04_EXECUTION_DIRECTIVE, 13 research PDFs, formal verification
-files (Coq + TLA+), and complete local repository analysis. It serves as the cognitive substrate
-for all future agents operating in this repository.*
+*Lattice crystallized 2026-05-18 · Drive corpus: 222+ entries, 5 pages enumerated*
+*All T4/T5 → T0–T2 grounding violations flagged · Constitutional files F-06 still pending /guardian*
+*Next subagent: begin here, not at CLAUDE.md*
