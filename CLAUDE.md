@@ -106,9 +106,9 @@ Both cockpit and sovereign-omega-v2 governance dashboard subscribe to `/telemetr
 
 | File | SHA256 |
 |------|--------|
-| `sovereign-omega-v2/python/gate.py` | `72196f38974ad22130c18657c88106316cacbb13a57328990f4e5872f5fdb1e9` |
-| `sovereign-omega-v2/python/dna.py` | `9c4d38d80b236d655057f16304ea2d202f644ec0c7ca21db8df0bdcd503971a9` |
-| `sovereign-omega-v2/python/router.py` | `c96e566ce6eb9cec358b2112757142bc88ea4fea9160edb2914c8d711007ac769` |
+| `sovereign-omega-v2/python/gate.py` | `bbe942b819594fd522b421bb9d3aa084735a873d526f35a1e782f31346f3d0fc` |
+| `sovereign-omega-v2/python/dna.py` | `cd30ddd5db0403b0e64fb30ce53e0373997fc53cb900a26167eef7d0b69cf8d8` |
+| `sovereign-omega-v2/python/router.py` | `8c06ed37a7d95d9de9129c32a426fe5c2b0cd960c2cf5c84c71726b72e6cf941` |
 
 Verify: `cd sovereign-omega-v2 && node scripts/verify-hashes.mjs`
 
