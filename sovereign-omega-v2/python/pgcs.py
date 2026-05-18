@@ -294,11 +294,40 @@ class PGCSController:
                     })
             time.sleep(0.1)
 
-    def _trigger_compression(self):
-        """Compress the least-recently-used memory segments."""
-        # Implementation compresses based on available segment registry
-        # Full implementation requires integration with context window manager
+    def _trigger_compression(self) -> int:
+        """
+        Reduce memory working set to prevent disk swapping.
+
+        Strategy:
+        1. Full GC collection (frees cyclic garbage Python cannot auto-collect).
+        2. malloc_trim(0): releases freed heap pages back to the OS on Linux,
+           immediately reducing RSS before the kernel decides to swap.
+        3. Writes a compression-marker to the ring buffer so the audit trail
+           remains continuous even when no external data is available to compress.
+
+        Returns: number of Python objects freed by GC.
+        """
+        import gc
+
+        # Full collection across all three generations
+        collected = gc.collect(2)
+
+        # Return freed malloc pages to OS — reduces RSS before swap pressure
+        try:
+            ctypes.CDLL('libc.so.6').malloc_trim(0)
+        except OSError:
+            pass  # non-Linux or libc unavailable — GC alone still helps
+
+        # Write a typed marker to the ring buffer for audit continuity.
+        # Format: 0xC0 (compression-event) | compressions_so_far (4B LE) | objects_freed (4B LE)
+        n = max(0, collected)
+        marker = b'\xc0' + self._compressions.to_bytes(4, 'little') + n.to_bytes(4, 'little')
+        compressed_marker = self._compress_fn(marker)
+        self._ring.write(compressed_marker)
+        self._bytes_compressed += len(marker)
+
         self._compressions += 1
+        return collected
 
     def _read_disk_io(self) -> tuple:
         """Read memory swap counters as bytes (page-ins/page-outs to disk).
