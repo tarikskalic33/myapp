@@ -204,9 +204,9 @@ Test count after Gate 14: ~470 tests (28 files → 28+ files)
 ```
 [Subatomic]  byte invariants, hash chaining, fixed-point arithmetic
 [Atomic]     individual files — each a complete holon with declared invariants
-[Molecular]  modules: core/, event/, gate/, calibration/, agents/, ide/, sitr/, aoie/, constitutional/, enforcement/, frame/
-[Cellular]   subsystems: Agent Ecology, SITR Immunity, AOIE Oracle, Constitutional Assembly, Frame Kernel
-[Organism]   sovereign-omega-v2 governance runtime (Gates 1–14)
+[Molecular]  modules: core/, event/, gate/, calibration/, agents/, ide/, sitr/, aoie/, constitutional/, enforcement/, frame/, shp/, ledger/
+[Cellular]   subsystems: Agent Ecology, SITR Immunity, AOIE Oracle, Constitutional Assembly, Frame Kernel, Merkle Replay Ledger
+[Organism]   sovereign-omega-v2 governance runtime (Gates 1–18)
 [FIELD]      AOIE + Claude + ChatGPT + Qwen + Drive corpus + operators
 ```
 
@@ -253,3 +253,47 @@ Field presence contract (enforced at factory construction + runtime guard):
 - `commitHash` must be non-empty (INV-SHP-08)
 
 Test count after Gate 15: **471 tests, 29 files**
+
+---
+
+## Layer M — Merkle Replay Ledger (Gate 17)
+
+**Epistemic Tier: T0 (cryptographic replay integrity)**
+
+Gate 17 introduces an append-only hash-chained ledger for full replay integrity.
+Every frame that commits through the LOCK boundary produces a `LedgerEntry` whose
+`previous_hash` is the SHA-256 of the preceding entry. `verifyChain()` proves the
+chain is tamper-evident; `captureCheckpoint()` produces a frozen Merkle snapshot.
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/ledger/types.ts` | T0 | 17 | LedgerEntry, LedgerSnapshot, LedgerConstraintError, GENESIS_HASH |
+| `src/ledger/chain.ts` | T0 | 17 | LedgerChain — append-only immutable chain; throws on non-monotonic sequence |
+| `src/ledger/checkpoint.ts` | T0 | 17 | captureCheckpoint() — frozen Merkle snapshot (JCS + SHA-256 per leaf) |
+| `src/ledger/verify.ts` | T0 | 17 | verifyChain() async (full hash chain); verifySequences() sync (structural) |
+
+Invariants:
+- `entry[0].previous_hash === GENESIS_HASH` ('0'.repeat(64))
+- `entry[i].previous_hash === sha256(entry[i-1])` for i > 0
+- Sequence numbers are strictly monotonically increasing
+- All snapshots are `deepFreeze`-d; Merkle root is byte-identical to Rust WASM output
+
+Test count after Gate 17: **518 tests, 31 files**
+
+---
+
+## Layer N — TLA+ Extended Formal Model (Gate 18)
+
+**Epistemic Tier: T0 (mechanically specified formal model)**
+
+Gate 18 extends the TLA+ formal specification to cover the LOCK commitment boundary
+and the SITR/AOIE phase separation invariants proven in Layers H, I, and L.
+
+| Spec | Gate | Properties proven |
+|------|------|-------------------|
+| `formal/tlaplus/Omega.tla` | 18 | `LOCK_INVARIANT`: locked ⇒ UNCHANGED <<state>>; `AOIE_POST_COMMIT`: phase ∈ POST_COMMIT_PHASES ⇒ locked |
+| `formal/tlaplus/SHP.tla` | 18 | `SITR_AOIE_SEPARATION`: PreLockPhases ∩ PostLockPhases = ∅; `COMMIT_HASH_INVARIANT`: commit_hash ≠ "" ⟺ locked; `SEQUENCE_MONOTONE`: sequence' ≥ sequence |
+
+SHP.tla models the full 5-phase cycle (READ→ASSESS→LOCK→PROPAGATE→HARMONIZE) with
+the commitment boundary as the sole irreversible transition (INV-SHP-02).
+HarmonizeToRead resets `locked` and increments `sequence`, beginning a new frame.
