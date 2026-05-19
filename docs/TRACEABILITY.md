@@ -193,4 +193,71 @@ governance throughput, not implementation throughput."
 Threshold: < 1/1000 cycles per sequence unit → governance falling behind event production.
 
 **All provenance gaps are now closed. The system has full epistemic traceability.**
-Gate 8: **215 tests**, 20 test files, all passing.
+Gate 8: **287 tests**, 22 test files, all passing.
+
+---
+
+## Layer D — Environment Adaptation Layer (TypeScript)
+
+### src/environment/types.ts — 9 runtime types
+`EnvironmentState | EnvironmentBinding | HostCapability | WorkspaceSnapshot | ReplayFrame |
+EnvironmentMutation | CapabilityGrant | GovernedWorkspace | ToolInvocationRecord` →
+**T1** → docs/ENVIRONMENT_CONSTITUTION.md RULE-01..07 (self-grounding constitutional spec)
+→ "The runtime may adapt to its host environment, but no adaptation may violate replay
+   determinism, ontology integrity, provenance continuity, or constitutional invariants."
+
+### src/environment/kernel/capability_guard.ts — security boundary
+`CapabilityGuard.register() / grant() / revoke() / isAuthorized()` →
+**T0** → docs/ENVIRONMENT_CONSTITUTION.md RULE-02
+→ "Every host capability must have provenance source, ontology registration, and explicit
+   admissibility reason." T0–T2 provenance tier enforced mechanically at registration.
+
+### src/environment/workspace/introspection.ts — deterministic workspace detection
+`canonicalizePath / deterministicWorkspaceId / deterministicPathId / detectInstallationContext` →
+**T1** → docs/HOST_ADAPTATION_SPEC.md §Workspace Introspection
+→ Pure functions — identical input produces identical output (RULE-04 canonicalization).
+FNV-1a 32-bit hash for deterministic IDs; no cryptographic dependency.
+
+### src/environment/memory/mutation_ledger.ts — append-only mutation record
+`MutationLedger.append() / verifyStructural() / filterByType()` →
+**T0** → docs/ENVIRONMENT_CONSTITUTION.md RULE-01
+→ "No environment mutation without replay persistence." Monotonic sequence enforced.
+Analog of Rust `ReplayLedger` for the environment layer.
+
+### src/environment/snapshots/snapshot.ts — schema-versioned snapshots
+`buildSnapshot / exportSnapshot / deserializeSnapshot / WORKSPACE_SNAPSHOT_SCHEMA_VERSION` →
+**T0** → docs/ENVIRONMENT_CONSTITUTION.md RULE-06 + docs/REPLAY_CONSTITUTION.md LAW-02
+→ "Environment snapshots must be schema-versioned constitutional artifacts."
+Deserializer reads version before all other fields (version-blind deserialization is violation).
+
+### src/environment/telemetry/env_telemetry.ts — new constitutional metrics
+`environment_entropy / capability_surface_area / mutation_velocity /
+replay_reconstruction_integrity / adaptation_pressure_index /
+constitutional_stability_score / environmental_drift_rate / replay_identity_integrity` →
+**T2** → docs/ECOLOGICAL_EVOLUTION_MODEL.md §Required New Metrics
+→ All T2 provisional pending P3 empirical validation for INV-* elevation.
+
+---
+
+## Layer E — Extension / Plugin Habitat (TypeScript)
+
+### src/extensions/types.ts — 5 plugin types
+`PluginManifest | CapabilityContract | SandboxBoundary | MutationReceipt | ExtensionTelemetry` →
+**T1** → docs/PLUGIN_CONSTITUTION.md RULE-01..07
+→ "Plugins are environment inhabitants, not constitutional authorities."
+
+### src/extensions/registry/registry.ts — plugin lifecycle
+`ExtensionRegistry.admit() / evict() / addContract() / telemetryFor()` →
+**T1** → docs/PLUGIN_CONSTITUTION.md §Plugin Lifecycle
+→ Admission requires: correct schema version, T0–T2 epistemic tier, is_replay_safe=true.
+
+### src/extensions/sandbox/sandbox.ts — plugin isolation enforcement
+`createSandbox / checkSandboxAllows / recordMutation / computeSandboxEntropyRatio` →
+**T0** → docs/PLUGIN_CONSTITUTION.md RULE-05 + docs/ENVIRONMENT_CONSTITUTION.md RULE-05
+→ "Plugins may not mutate constitutional primitives directly." All mutations bounded by
+   capability allowlist, path allowlist, mutation count, and entropy budget.
+
+### src/extensions/contracts/contract.ts — least-privilege grants
+`createContract / expireContract / isContractActive` →
+**T1** → docs/CAPABILITY_GOVERNANCE.md §Plugin Capability Contracts
+→ `is_least_privilege = true` is hardcoded at construction — no mechanism to override.
