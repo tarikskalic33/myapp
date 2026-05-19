@@ -6,3 +6,5 @@ dist/
 __pycache__/
 *.pyc
 .sovereign-build-log.json
+target/
+
