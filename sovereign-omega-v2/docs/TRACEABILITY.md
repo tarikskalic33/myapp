@@ -547,3 +547,75 @@ Closes the abstraction expansion surface: unmapped abstractions are constitution
 | `src/constitutional/reduction.ts` | T0 | 33 | `OntologyRecord`, `ReductionRegistry`, `buildOntologyRecord()`, `admitAbstraction()` |
 
 Test count after Gate 33: **804 tests, 43 files**
+
+---
+
+## Layer AD — Swarm Convergence Protocol (Gate 34)
+
+**Epistemic Tier: T2 (engineering hypothesis)**
+
+Multi-node topology_hash quorum voting. `tallyVotes()` counts votes per topology_hash, determines the quorum winner (most votes; lexicographically first hash on tie), and emits a frozen `SwarmConvergenceRecord`. Sequence must be uniform across all votes (throws `SwarmError` on mismatch). Quorum is reached when `winning_count / total_votes >= quorum_threshold` (default: 0.67). This closes the "swarm" constitutional mapping surface: `primitive_mapping: VERIFY`, `replay_mapping: LOCK`, `topology_mapping: CONSENSUS`.
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/consensus/swarm.ts` | T2 | 34 | `SwarmVote`, `SwarmConvergenceRecord`, `tallyVotes()`, `SwarmError` |
+
+Test count after Gate 34: **828 tests, 44 files**
+
+---
+
+## Layer AE — Self-Attestation Protocol (Gate 35)
+
+**Epistemic Tier: T0 (mechanically proven)**
+
+Unified `SelfAttestationRecord` composing four hash fields — `dfa_certificate_hash`, `topology_hash`, `lineage_terminal_hash`, `capsule_attestation_hash` — into a single `attestation_hash` via `hashValue()`. Null fields use sentinel strings `'genesis'`/`'none'` to ensure distinguishable serialization. `verifySelfAttestation()` recomputes and compares. This closes the "autopoietic" constitutional mapping surface: `primitive_mapping: HASH`, `replay_mapping: HARMONIZE`, `topology_mapping: DFA+LINEAGE`.
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/frame/attestation.ts` | T0 | 35 | `SelfAttestationRecord`, `buildSelfAttestation()`, `verifySelfAttestation()`, `AttestationError` |
+
+Test count after Gate 35: **849 tests, 45 files**
+
+---
+
+## Layer AF — Governance Mirror Stream (Gate 36)
+
+**Epistemic Tier: T1 (empirically validated)**
+
+Read-only observability surface. `MirrorStream.observe(topology)` snapshots a `GovernanceTopology` into a frozen `GovernanceObservation` without mutating state. Sequence is strictly monotonic (throws `MirrorError` otherwise). Each `observe()` returns a new `MirrorStream` + observation (functional update — original stream unchanged). `observation_hash = hashValue({topology_hash, sequence})`. Enables metacognitive feedback: the governance machine can observe its own topology without altering it. This closes the "metacognitive" mapping surface: `primitive_mapping: CANONICALIZE`, `replay_mapping: PROPAGATE`, `topology_mapping: all GovernanceTopology fields`.
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/frame/mirror.ts` | T1 | 36 | `GovernanceObservation`, `MirrorStream`, `MirrorError` |
+
+Test count after Gate 36: **867 tests, 46 files**
+
+---
+
+## Layer AG — Capability Evolution Protocol (Gate 37)
+
+**Epistemic Tier: T2 (engineering hypothesis)**
+
+Capsule manifests propose capability expansions through the constitutional assessment engine. `buildProposal()` creates a content-addressed `CapabilityProposal` (`proposal_id = hashValue({capsule_id, capability, dfa_cert, seq})`). `assessProposal()` applies two checks: (1) stale `dfa_certificate_hash` → REJECTED; (2) capability already registered in manifest → REJECTED. Otherwise APPROVED. APPROVED results carry no `reason` field. This closes the "all-capable / plug-and-play evolution" mapping surface: `primitive_mapping: SEQUENCE`, `replay_mapping: ASSESS`, `topology_mapping: DFA`.
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/capsule/evolution.ts` | T2 | 37 | `CapabilityProposal`, `EvolutionResult`, `buildProposal()`, `assessProposal()`, `EvolutionError` |
+
+Test count after Gate 37: **889 tests, 47 files**
+
+---
+
+## Layer AH — Adaptive Lineage (Gate 38)
+
+**Epistemic Tier: T2 (engineering hypothesis)**
+
+Unified causal chain combining `TOPOLOGY_TRANSITION` and `CAPABILITY_EVOLUTION` events into a hash-linked `AdaptiveLineage`. Each `entry_hash = hashValue({event, previous_entry_hash, sequence})`. The chain begins at `GENESIS_TOPOLOGY_HASH`. `AdaptiveLineage` is immutable (functional update; `append()` returns a new instance). `certifyAdaptiveLineage()` validates chain integrity by recomputing each `entry_hash` and verifying `previous_entry_hash` linkage. This closes the "harmoniously evolves" mapping surface: `primitive_mapping: HASH+SEQUENCE`, `replay_mapping: full R→A→L→P→H cycle`, `topology_mapping: LINEAGE`.
+
+The admission proof (`test/unit/autopoietic-admission.test.ts`) confirms that all five vision concepts — SwarmConvergenceProtocol, SelfAttestationProtocol, GovernanceMirrorStream, CapabilityEvolutionProtocol, AdaptiveLineage — now pass `admitAbstraction()`. The T4/T5 vision has been fully reduced to T0/T2 constitutional substrate.
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/frame/adaptive-lineage.ts` | T2 | 38 | `AdaptiveLineageEntry`, `AdaptiveLineage`, `certifyAdaptiveLineage()`, `AdaptiveLineageError` |
+
+Test count after Gate 38 + admission proof: **925 tests, 49 files**
