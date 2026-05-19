@@ -204,9 +204,9 @@ Test count after Gate 14: ~470 tests (28 files → 28+ files)
 ```
 [Subatomic]  byte invariants, hash chaining, fixed-point arithmetic
 [Atomic]     individual files — each a complete holon with declared invariants
-[Molecular]  modules: core/, event/, gate/, calibration/, agents/, ide/, sitr/, aoie/, constitutional/, enforcement/, frame/, shp/, ledger/, consensus/, crdt/
-[Cellular]   subsystems: Agent Ecology, SITR Immunity, AOIE Oracle, Constitutional Assembly, Frame Kernel, Merkle Replay Ledger, HotStuff Ω Consensus, CRDT Lattice, Policy Amendment Engine
-[Organism]   sovereign-omega-v2 governance runtime (Gates 1–21)
+[Molecular]  modules: core/, event/, gate/, calibration/, agents/, ide/, sitr/, aoie/, constitutional/, enforcement/, frame/, shp/, ledger/, consensus/, crdt/, network/
+[Cellular]   subsystems: Agent Ecology, SITR Immunity, AOIE Oracle, Constitutional Assembly, Frame Kernel, Merkle Replay Ledger, HotStuff Ω Consensus (Ed25519), CRDT Lattice, Policy Amendment Engine, Byzantine Transport Harness
+[Organism]   sovereign-omega-v2 governance runtime (Gates 1–26)
 [FIELD]      AOIE + Claude + ChatGPT + Qwen + Drive corpus + operators
 ```
 
@@ -361,3 +361,69 @@ Amendment invariants:
 - All amendments are `deepFreeze`-d; engine uses immutable functional update
 
 Test count after Gate 21: **593 tests, 34 files**
+
+---
+
+## Layer R — Ed25519 Cryptographic Hardening (Gate 22)
+
+**Epistemic Tier: T2 (replaces FNV-1a stub with production Ed25519)**
+
+Closes the first of five production deployment surfaces. All validator vote signatures are now RFC 8032 / FIPS 186-5 Ed25519. The `ValidatorPublicKey` is the cryptographic identity; `ValidatorId` is the human reference. `generateKeypair(seed)` is the production seam — replace seed with CSPRNG output before distributed deployment.
+
+| Change | Gate | Description |
+|--------|------|-------------|
+| `src/consensus/types.ts` | 22 | Added `ValidatorPublicKey`, `ValidatorKeyPair`, `ValidatorEntry`; updated `ValidatorSet` |
+| `src/consensus/crypto.ts` | 22 | `signVote(privKey, blockHash)` + `verifyVote(pubKey, blockHash, sig)` via @noble/ed25519 v3 |
+| `src/consensus/quorum.ts` | 22 | `collectValidVotes()` made async; public key lookup from `ValidatorEntry` |
+
+Test count after Gate 22: **595 tests, 34 files**
+
+---
+
+## Layer S — Ledger Persistence Seam (Gate 23)
+
+**Epistemic Tier: T0 (deterministic serialization contract)**
+
+`src/ledger/persistence.ts` provides the crash-safe recovery contract. It does not connect to any database — it defines the exact serialization shape that any storage backend must honour. `serializeSnapshot` is RFC 8785 deterministic; `deserializeSnapshot` validates every field including BigInt sequences, 64-char hashes, schema_version, and `is_replay_reconstructable`.
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/ledger/persistence.ts` | T0 | 23 | `serializeSnapshot`, `deserializeSnapshot`, `serializeChain`, `deserializeChain` |
+
+Test count after Gate 23: **616 tests, 35 files**
+
+---
+
+## Layer T — Byzantine Transport Interface (Gate 24)
+
+**Epistemic Tier: T2 (pure simulation harness — no actual network)**
+
+`src/network/` is the typed deterministic transport stub. All operations are pure functions over sorted message arrays. The anti-equivocation invariant (same sender+sequence, different payload → NetworkError) is mechanically enforced. Real gossip transport (libp2p/QUIC) is deployment infrastructure; this module defines the contract.
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/network/types.ts` | T2 | 24 | PeerId, MessageId, ReplayMessage, NetworkConfig, SimulationResult |
+| `src/network/queue.ts` | T2 | 24 | DeterministicMessageQueue — sorted by message_id, dedup, anti-equivocation |
+| `src/network/simulation.ts` | T2 | 24 | ByzantineSimulation — pure function, equivocation detection |
+| `src/network/kernel.ts` | T2 | 24 | broadcastVote(), computeMessageId() — FNV-1a deterministic IDs |
+
+Test count after Gate 24: **643 tests, 36 files**
+
+---
+
+## Layer U — Formal Proof Completion (Gate 25)
+
+**Epistemic Tier: T0 (TLA+ mechanically specified models)**
+
+Closes the formal verification surface with two new TLA+ modules proving the CRDT lattice laws and LOCK irreversibility theorem.
+
+| Spec | Gate | Properties proven |
+|------|------|-------------------|
+| `formal/tlaplus/CRDTLattice.tla` | 25 | `IDEMPOTENT`: Join(s,s)=s; `COMMUTATIVE`: Join(a,b)=Join(b,a); `MONOTONE`: ord(Join(a,b))≥ord(a) |
+| `formal/tlaplus/LockIrreversibility.tla` | 25 | `LOCK_ONCE_SET_STAYS_SET`: locked=TRUE cannot become FALSE within a frame; `SEQUENCE_INCREMENTS_ON_UNLOCK`: sequence strictly increases on frame reset; `PRE_POST_DISJOINT`: no phase is simultaneously pre- and post-lock |
+
+---
+
+## Layer V — README + System Documentation (Gate 26)
+
+**Gate 26**: `sovereign-omega-v2/README.md` created — full system documentation including execution stack, build protocol, invariant table, module map, tier system, production readiness index, and what is explicitly NOT implemented.
