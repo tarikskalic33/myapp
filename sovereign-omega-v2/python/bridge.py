@@ -17,8 +17,13 @@ from core_matrix import CoreMatrix
 from dna import EventClass, GateSignal
 from gate import gate
 from router import router
+from hardware_config import detect_hardware
+from tgcs_afse import TGCSController, AFSEController
 
 matrix = CoreMatrix()
+_hw = detect_hardware()
+_tgcs = TGCSController(hw_profile=_hw)
+_afse = AFSEController()
 last_ack_sequence = -1
 _lock = threading.Lock()
 
@@ -77,6 +82,12 @@ class BridgeHandler(BaseHTTPRequestHandler):
             telemetry = matrix.emit_vcg_telemetry()
             telemetry.update(gate.telemetry())
             telemetry.update(router.telemetry())
+            # Layer B extended metrics — TGCS/AFSE wired here
+            seq = int(telemetry['sequence'])
+            tgcs_snap = _tgcs.regulate_cycle(seq)
+            telemetry['tgcs_variance'] = tgcs_snap.run_variance
+            telemetry['afse_r2'] = _afse.get_r2()
+            telemetry['holonic_scaling_score'] = _afse.holonic_scaling_score()
             self._respond(200, telemetry)
 
         elif self.path == '/health':
