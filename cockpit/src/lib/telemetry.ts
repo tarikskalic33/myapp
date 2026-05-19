@@ -36,7 +36,6 @@ export type TelemetryState =
 type Listener = (s: TelemetryState) => void
 
 let abortController: AbortController | null = null
-let sseController: AbortController | null = null
 const listeners = new Set<Listener>()
 let currentState: TelemetryState = { status: 'offline' }
 
@@ -45,17 +44,16 @@ function notify(s: TelemetryState) {
   for (const l of listeners) l(s)
 }
 
-async function fetchOnce(signal: AbortSignal): Promise<void> {
+async function fetchOnce(): Promise<void> {
   try {
-    const res = await fetch(`${BRIDGE}/telemetry`, { signal, signal: AbortSignal.timeout(4000) } as RequestInit)
+    const res = await fetch(`${BRIDGE}/telemetry`, { signal: AbortSignal.timeout(4000) } as RequestInit)
     if (!res.ok) {
       notify({ status: 'error', message: `Bridge ${res.status}` })
       return
     }
     const data = (await res.json()) as TelemetrySnapshot
     notify({ status: 'online', data, streaming: false })
-  } catch (err) {
-    if ((err as Error).name === 'AbortError') return
+  } catch {
     notify({ status: 'offline' })
   }
 }
@@ -83,7 +81,7 @@ async function loop(signal: AbortSignal): Promise<void> {
     return
   }
   while (!signal.aborted) {
-    await fetchOnce(signal)
+    await fetchOnce()
     await new Promise<void>(r => {
       const t = setTimeout(r, POLL_MS)
       signal.addEventListener('abort', () => { clearTimeout(t); r() }, { once: true })
@@ -105,7 +103,6 @@ export function subscribeTelemetry(listener: Listener): () => void {
     if (listeners.size === 0 && abortController) {
       abortController.abort()
       abortController = null
-      sseController = null
     }
   }
 }

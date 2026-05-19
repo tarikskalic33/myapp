@@ -44,11 +44,11 @@ function buildCsv(weeks: WeekPlan[]): string {
       w.week,
       `"${w.theme}"`,
       DAY_NAMES[p.day] ?? `Day${p.day}`,
-      p.platform,
-      p.content_pillar,
+      p.platform ?? '',
+      p.content_pillar ?? p.pillar ?? '',
       `"${p.hook.replace(/"/g, '""')}"`,
       p.format,
-      `"${p.notes.replace(/"/g, '""')}"`,
+      `"${(p.notes ?? p.production_note ?? '').replace(/"/g, '""')}"`,
     ].join(','))
   )
   return [header, ...rows].join('\n')

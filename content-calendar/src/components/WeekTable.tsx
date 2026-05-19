@@ -44,9 +44,11 @@ export function WeekTable({ week, pillars }: WeekTableProps) {
       </div>
       <div className="divide-y divide-cal-border">
         {week.posts.map((post, i) => {
-          const pillarIdx = pillars.indexOf(post.content_pillar)
+          const pillarLabel = post.content_pillar ?? post.pillar ?? ''
+          const pillarIdx = pillars.indexOf(pillarLabel)
           const colorClass = PILLAR_COLORS[pillarIdx] ?? PILLAR_COLORS[0]
-          const copyText = `${DAY_NAMES[post.day] ?? `D${post.day}`} | ${post.platform} | ${post.content_pillar}\nHook: "${post.hook}"\nFormat: ${post.format}\n${post.notes}`
+          const note = post.notes ?? post.production_note ?? ''
+          const copyText = `${DAY_NAMES[post.day] ?? `D${post.day}`} | ${post.platform ?? ''} | ${pillarLabel}\nHook: "${post.hook}"\nFormat: ${post.format}\n${note}`
           return (
             <div key={i} className="px-5 py-3 flex flex-col gap-1.5 group">
               <div className="flex items-center gap-2 flex-wrap">
@@ -55,13 +57,13 @@ export function WeekTable({ week, pillars }: WeekTableProps) {
                 </span>
                 <span className="text-xs text-cal-muted">{post.platform}</span>
                 <span className={`text-xs border rounded-full px-2 py-0.5 ${colorClass}`}>
-                  {post.content_pillar}
+                  {pillarLabel}
                 </span>
                 <span className="text-xs text-cal-muted ml-auto">{post.format}</span>
                 <CopyButton text={copyText} />
               </div>
               <p className="text-cal-text text-sm ml-10">&ldquo;{post.hook}&rdquo;</p>
-              <p className="text-cal-muted text-xs ml-10">{post.notes}</p>
+              {note && <p className="text-cal-muted text-xs ml-10">{note}</p>}
             </div>
           )
         })}

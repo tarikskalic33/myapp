@@ -58,7 +58,7 @@ export function TelemetryPanel() {
           <span className="font-medium">Runtime</span>
           {state.status === 'online' && <StatusDot ok pulse />}
           {state.status === 'offline' && <span className="w-1.5 h-1.5 rounded-full bg-gray-600 inline-block" />}
-          {streaming && <Radio size={10} className="text-green-400" title="Live SSE stream" />}
+          {streaming && <Radio size={10} className="text-green-400" aria-label="Live SSE stream" />}
         </div>
         {open ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
       </button>
