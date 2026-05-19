@@ -619,3 +619,78 @@ The admission proof (`test/unit/autopoietic-admission.test.ts`) confirms that al
 | `src/frame/adaptive-lineage.ts` | T2 | 38 | `AdaptiveLineageEntry`, `AdaptiveLineage`, `certifyAdaptiveLineage()`, `AdaptiveLineageError` |
 
 Test count after Gate 38 + admission proof: **925 tests, 49 files**
+
+---
+
+## Layer AI — Serializer Differential Fuzzing (Gate 41)
+
+**Epistemic Tier: T0 (mechanically proven)**
+
+Proves `canonicalizeJCS()` is correct for all governance-representative inputs beyond the RFC 8785 test vectors in Gate 1. Five invariant groups: (1) **BigInt boundary correctness** — `0n`, `-1n`, `1n`, `2^32`, `±2^53`, `MAX_SAFE_INTEGER+1` all serialize as quoted decimal strings, byte-identical to their string counterparts; (2) **Key order independence** — any permutation of object keys produces identical canonical bytes, including uppercase/lowercase ASCII ordering and 10-key governance objects; (3) **Unicode stability** — combining diacritics, Arabic script, CJK, emoji flag sequences, ZWJ, RTL marks, null bytes, and high codepoints produce stable output × 3; (4) **Nesting depth determinism** — objects 1–20 levels deep produce deterministic canonical output; (5) **Error boundary stability** — `Infinity`, `NaN`, `-Infinity`, `undefined` throw correct typed errors. Uses FNV-1a 32-bit deterministic fixture generator (no `Math.random()`). Test-only gate — no `src/` changes.
+
+| File | Tier | Gate | Role |
+|------|------|------|------|
+| `test/determinism/serializer-fuzz.test.ts` | T0 | 41 | 32 differential fuzz tests across 5 invariant groups |
+
+Test count after Gate 41: **1000 tests, 52 files**
+
+---
+
+## Layer AJ — WASM Frame Hash Certification (Gate 42)
+
+**Epistemic Tier: T0 (mechanically proven)**
+
+Extends Gate 27 (WASM replay equivalence) to the frame layer introduced in Gates 28–40. Proves `H_TS(frame) = H_WASM(frame)` for all three frame hash functions — the constitutional frame layer is implementation-invariant across TypeScript and WASM runtimes. Four proof groups: (G1) topology hash parity — `computeTopologyHash(input)` matches WASM path for 5 inputs including null/non-null `consensus_qc_hash`; (G2) lineage hash parity — `computeLineageHash(topHash, prevHash, seq)` matches WASM for 4 tuples including `2^32` sequence; (G3) attestation hash parity — `buildSelfAttestation()` matches WASM for all 6 variants of null/non-null `lineage_terminal_hash` and `capsule_attestation_hash`; (G4) epoch composition proof — topology hash feeds correctly into attestation hash, end-to-end composition is stable × 5. Critical payload contract documented: `computeTopologyHash` hashes `topologyPayload()` which adds `schema_version: '1.0.0'` not present in `TopologyInput`. Uses `describe.skipIf(!WASM_READY)` for graceful CI degradation. Test-only gate — no `src/` changes.
+
+| File | Tier | Gate | Role |
+|------|------|------|------|
+| `test/determinism/frame-hash-wasm.test.ts` | T0 | 42 | 18 WASM parity assertions across 4 proof groups |
+
+Test count after Gate 42: **1018 tests, 53 files**
+
+---
+
+## Layer AK — Divergence Adversarial Simulation (Gate 43)
+
+**Epistemic Tier: T2 (engineering hypothesis)**
+
+Six multi-node adversarial scenarios that cannot be expressed in pairwise unit tests. (1) **5-node network partition** — nodes A/B/C vs D/E on different `ledger_root` produces D2; `mutationAuthorityActive([d2])` is false; D0+D2 mixed set keeps authority frozen. (2) **Cascading drift** — D0→D1 leaves authority active; D2 insertion freezes it; D0 added afterward cannot un-freeze. (3) **Severity ordering totality** — strict ordering D0<D1<D2<D3<D4 verified for all 10 consecutive pairs; antisymmetry (¬(a>b ∧ b>a)) and irreflexivity (¬(a>a)) confirmed for all 25 class pairs. (4) **Tamper-induced D1 vs D4** — constitutional verdict tamper via `buildTopology` (self-consistent hash) produces D1 with authority active; direct `topology_hash` corruption fails `verifyTopology` and produces D4 with authority inactive. (5) **Freeze law idempotency** — `mutationAuthorityActive` called × 3 on fixed report sets returns identical result. (6) **Empty-to-D4 authority progression** — each class insertion confirmed to flip authority at the D2 threshold. Test-only gate — no `src/` changes.
+
+| File | Tier | Gate | Role |
+|------|------|------|------|
+| `test/integration/divergence-sim.test.ts` | T2 | 43 | 25 adversarial divergence tests across 6 scenario groups |
+
+Test count after Gate 43: **1043 tests, 54 files**
+
+---
+
+## Layer AL — Chain Scaling Economics (Gate 44)
+
+**Epistemic Tier: T2 (engineering hypothesis)**
+
+Proves hash chains remain correct, certifiable, and deterministic at operational scale (100-entry topology/adaptive chains, 50-entry epoch chains). Confirms no O(n²) accumulation, no off-by-one in certifier functions, and no certificate collision across chain lengths. Five scale fixture groups: (1) `TopologyLineage` 100 entries → `certifyLineage` → `is_valid: true`, certificate deterministic × 3, tamper at entry 50 → `is_valid: false`; (2) `AdaptiveLineage` 100 alternating `TOPOLOGY_TRANSITION`/`CAPABILITY_EVOLUTION` entries → `certifyAdaptiveLineage` → valid, tamper detection confirmed; (3) `EpochChain` 50 entries (full DFA execution + topology per epoch) → `certifyEpochChain` → `is_valid: true`, certificate deterministic × 3, tamper at link 25 → `is_valid: false`; (4) different chain lengths (10/50/100) produce distinct `certificate_hash` values — length-sensitivity at scale; (5) epoch chain: lengths 25 and 50 produce distinct certificates. All chains built deterministically (no `Math.random()`); full runtime 789ms. Test-only gate — no `src/` changes.
+
+| File | Tier | Gate | Role |
+|------|------|------|------|
+| `test/integration/chain-scale.test.ts` | T2 | 44 | 16 scale tests across 5 fixture groups |
+
+Test count after Gate 44: **1059 tests, 55 files**
+
+---
+
+## Constitutional Implementation Stabilization — Gates 1–44
+
+Gates 1–44 form a vertically integrated constitutional replay substrate. The architecture has completed the transition from execution-organized to continuity-organized:
+
+| Property | Status |
+|----------|--------|
+| Hash-linked (every layer chains to the previous via SHA-256) | ✅ |
+| Replay-addressable (every record reconstructable deterministically) | ✅ |
+| Tamper-evident (every field participates in its containing hash) | ✅ |
+| Lineage-certifiable (every chain has a `certify*()` function) | ✅ |
+| Immutable after certification (`deepFreeze` at every boundary) | ✅ |
+| Implementation-invariant (H_TS = H_WASM for all frame functions) | ✅ |
+| Adversarially verified (6 multi-node divergence scenarios) | ✅ |
+| Scale-proven (100-entry chains certify in <800ms) | ✅ |
+
+The dominant future risks are now operational rather than architectural: serializer edge behavior, replay economics, verifier throughput, divergence handling under real network conditions, and lineage compaction at production volume.
