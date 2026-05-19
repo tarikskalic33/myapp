@@ -2,6 +2,12 @@
 ## Branch: claude/aegis-setup-Lx7Ji
 ## Operator: Tarik Skalić · Hardware: AMD RX 570, 8 GB RAM
 
+Approach every component as a recursively nested atomic-scale holon governed by
+invariant-preserving feedback loops. Each file is simultaneously a whole (with its
+own invariants) and a part (subject to the invariants of every scale above it).
+Scale hierarchy: SUBATOMIC → ATOMIC → MOLECULAR → CELLULAR → ORGANISM → FIELD.
+A T0 violation at any scale propagates upward and invalidates everything above it.
+
 ---
 
 ## Repository Layout

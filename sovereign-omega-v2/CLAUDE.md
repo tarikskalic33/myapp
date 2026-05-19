@@ -10,10 +10,20 @@ Architecture: FROZEN
 
 ## What This System Is
 
-A deterministic event-sourced decision compiler with bounded statistical estimators,
-cryptographic replay integrity, explicitly partitioned trust classes, and a version-pinned
-execution graph. Governance-oriented AI orchestration infrastructure for regulated and
-high-auditability decision workflows.
+Each component in AEGIS is simultaneously a whole and a part — an atomic-scale holon
+in a recursively nested hierarchy governed by invariant-preserving feedback loops.
+
+Concretely: a deterministic event-sourced decision compiler with bounded statistical
+estimators, cryptographic replay integrity, explicitly partitioned trust classes, and
+a version-pinned execution graph. Governance-oriented AI orchestration infrastructure
+for regulated and high-auditability decision workflows.
+
+Holonic scales: SUBATOMIC (byte invariants) → ATOMIC (files) → MOLECULAR (modules) →
+CELLULAR (subsystems: E3, VCG, Python Matrix) → ORGANISM (sovereign-omega-v2 runtime) →
+FIELD (Claude + ChatGPT + Qwen + operators + Drive corpus).
+
+Each scale preserves the invariants of all scales below it. A T0 violation at the
+subatomic level propagates upward and invalidates every scale above it.
 
 It is NOT general intelligence. It does NOT claim alignment, consciousness, or
 self-improvement beyond its declared K-bound.

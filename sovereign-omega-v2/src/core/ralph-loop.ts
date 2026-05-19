@@ -3,9 +3,10 @@
 // EPISTEMIC TIER: T1 (empirically validated iterative protocol)
 //
 // The Ralph Loop (Review → Analyze → Link → Patch → Harmonize)
-// is the recursive self-improvement protocol for AEGIS.
-// Each cycle operates at a single HolonicScale and elevates it.
-// Cycles are events in the E3 substrate — replayable and auditable.
+// treats every component as a recursively nested atomic-scale holon
+// governed by invariant-preserving feedback loops. Each cycle targets
+// one HolonicScale and elevates it without violating any scale below.
+// Cycles are first-class events in the E3 substrate — replayable and auditable.
 // ============================================================
 
 import {

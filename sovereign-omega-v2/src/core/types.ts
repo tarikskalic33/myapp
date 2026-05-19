@@ -323,17 +323,18 @@ export interface AmbiguityFlag {
   readonly resolved: boolean
 }
 
-// ─── Holonic Hierarchy Types (Cycles 21–25) ────────────────
-// Each component in AEGIS is simultaneously a whole and a part.
-// HolonicScale classifies what level of the architecture a component operates at.
+// ─── Holonic Hierarchy Types ──────────────────────────────────
+// Each component is simultaneously a whole and a part — a recursively nested holon
+// governed by invariant-preserving feedback loops.
+// A T0 violation at SUBATOMIC propagates upward and invalidates all scales above it.
 
 export enum HolonicScale {
-  SUBATOMIC = 'subatomic',   // byte ordering, hash invariants, fixed-point precision
-  ATOMIC    = 'atomic',      // individual files, functions, proof units
+  SUBATOMIC = 'subatomic',   // byte ordering, hash invariants, fixed-point arithmetic
+  ATOMIC    = 'atomic',      // files, functions, proof units — elementary holons
   MOLECULAR = 'molecular',   // modules (core/, event/, gate/, calibration/)
-  CELLULAR  = 'cellular',    // subsystems (E3 substrate, VCG, Python Core Matrix)
-  ORGANISM  = 'organism',    // full sovereign-omega-v2 runtime
-  FIELD     = 'field',       // Drive corpus + Claude + ChatGPT + Qwen + operators
+  CELLULAR  = 'cellular',    // subsystems: E3 substrate, VCG, Python Core Matrix
+  ORGANISM  = 'organism',    // full sovereign-omega-v2 governance runtime
+  FIELD     = 'field',       // Claude + ChatGPT + Qwen + operators + Drive corpus
 }
 
 export enum EpistemicTier {
