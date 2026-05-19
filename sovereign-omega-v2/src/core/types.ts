@@ -354,6 +354,11 @@ export interface HolonMetadata {
   readonly composed_of: readonly string[] // child holon IDs
   readonly invariants: readonly string[]  // human-readable invariant descriptions
   readonly interaction_surface: readonly string[] // exported API / event types
+  // Provenance: Drive document IDs that epistemically ground this holon.
+  // Every T0–T2 holon must have at least one T0–T2 source document.
+  // Absence of provenance at T0–T2 is a migration rule violation.
+  readonly provenance: readonly string[]  // Drive file IDs from the research corpus
+  readonly ontology_term: string          // canonical term from docs/ONTOLOGY.md
 }
 
 // ─── Ralph Loop State Machine (Cycles 26–30) ──────────────

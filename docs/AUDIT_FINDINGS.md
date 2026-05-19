@@ -172,6 +172,35 @@ Zero code coupling. Epistemic tiers correctly separated (T0 vs T4/T5).
 The CLAUDE.md non-equivalence table applies to their relationship:
 *Calibration is not Truthfulness. Governance is not Alignment.*
 
+### H-05 · No canonical ontology — semantic overload risk
+**Source:** ChatGPT adversarial audit (CONFIDENCE 0.95) — 2026-05-19
+**Kill vector:** Every layer introducing novel ontology → superlinear complexity growth.
+Ontology governance undisciplined → impossible for collaborators to reason about.
+Recursive architectures fail at interoperability and onboarding unless abstractions
+are aggressively normalized.
+**Fix applied:**
+  - `docs/ONTOLOGY.md` — canonical glossary: every term defined once, in one place.
+    Includes governance rules: one definition per term, provenance required at T0–T2,
+    new terms must reduce not increase conceptual entropy, interoperability by default.
+  - `docs/TRACEABILITY.md` — explicit implementation → research source chains for
+    every T0–T2 component. Open provenance gaps documented as migration rule violations.
+  - `HolonMetadata.provenance: readonly string[]` — Drive document IDs wired into the type.
+  - `HolonMetadata.ontology_term: string` — canonical term from ONTOLOGY.md required per holon.
+  - All canonical phrases updated in CLAUDE.md (root), sovereign-omega-v2/CLAUDE.md,
+    types.ts, ralph-loop.ts per audit recommendation (CONFIDENCE 0.93 + 0.95).
+**Theoretical synthesis confirmed:** Koestler holons + cybernetics + category-layered design +
+information theory + constitutional governance + recursive knowledge graphs.
+**Status:** ✅ RESOLVED — this commit
+
+### H-06 · HolonMetadata had no provenance or ontology_term fields
+**Source:** H-05 resolution audit
+**Kill vector:** HolonMetadata instances could be created with no traceability to the
+research corpus — silent provenance gap with no type-level enforcement.
+**Fix applied:** `HolonMetadata.provenance` (Drive IDs) and `HolonMetadata.ontology_term`
+(canonical ONTOLOGY.md term) added as required fields. Missing provenance is now a
+TypeScript compile error, not a documentation gap.
+**Status:** ✅ RESOLVED — this commit
+
 ---
 
 ## Summary
@@ -181,7 +210,7 @@ The CLAUDE.md non-equivalence table applies to their relationship:
 | T0 — Critical | 6 | 6 | 0 |
 | T1 — Important | 4 | 4 | 0 |
 | T2 — Pre-listing | 5 | 2 | 3 (F-13, F-14 post-deployment; F-15 informational) |
-| Holonic | 4 | 1 | 3 (H-01, H-02 open; H-04 informational) |
+| Holonic | 6 | 5 | 1 (H-04 informational) |
 
 **Layer B Python is production-ready** — all 11 fixable findings resolved.
 F-06 resolved: dna.py / gate.py / router.py authored, hashed, and verified.
