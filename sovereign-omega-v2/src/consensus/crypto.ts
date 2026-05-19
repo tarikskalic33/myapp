@@ -1,68 +1,80 @@
 // ============================================================
-// SOVEREIGN OMEGA — Consensus Stub Cryptography
-// EPISTEMIC TIER: T2 · Gate 19
+// SOVEREIGN OMEGA — Consensus Cryptography (Ed25519)
+// EPISTEMIC TIER: T2 · Gate 22
 //
-// Synchronous deterministic stub for Ed25519 vote signing.
-// Uses FNV-1a (64-bit) with four salt rounds to produce a
-// 64-hex string that is structurally compatible with SHA256Hex
-// but is NOT a real signature scheme.
+// Production Ed25519 vote signing via @noble/ed25519 (RFC 8032,
+// FIPS 186-5, ZIP215). Replaces Gate 19 FNV-1a stub.
 //
-// PRODUCTION NOTE: Replace with @noble/ed25519 before deployment.
-// The ValidatorSignature branded type is the seam point.
+// Key properties:
+//   - Async: no WebCrypto dependency (uses noble's built-in sha512)
+//   - Deterministic: same (privateKey, message) → same signature
+//   - Zero network I/O
+//   - generateKeypair(seed) → deterministic from 32-byte seed
 // ============================================================
 
+import * as ed from '@noble/ed25519'
+import { createHash } from 'node:crypto'
+import { uint8ArrayToHex, hexToUint8Array } from '../core/hashing.js'
 import type { SHA256Hex } from '../core/types.js'
-import type { ValidatorId, ValidatorSignature } from './types.js'
+import type { ValidatorPublicKey, ValidatorSignature, ValidatorKeyPair } from './types.js'
 
-// ─── FNV-1a constants (64-bit) ─────────────────────────────
+// Wire Node.js sha512 into @noble/ed25519 v3 (required outside browser).
+// The type cast is necessary because Node's Buffer.digest() is typed as
+// Uint8Array<ArrayBufferLike> while noble expects Uint8Array<ArrayBuffer>.
+;(ed.hashes as Record<string, unknown>)['sha512'] = (msg: Uint8Array): Uint8Array =>
+  Uint8Array.from(createHash('sha512').update(msg).digest())
 
-const FNV_PRIME = 1099511628211n
-const FNV_OFFSET_BASIS = 14695981039346656037n
-const U64_MASK = 0xFFFFFFFFFFFFFFFFn
+// ─── Key generation ────────────────────────────────────────
 
-// ─── Internal helpers ──────────────────────────────────────
-
-function fnv1a64(data: Uint8Array, seed: bigint = FNV_OFFSET_BASIS): bigint {
-  let hash = seed & U64_MASK
-  for (let i = 0; i < data.length; i++) {
-    hash ^= BigInt(data[i]!)
-    hash = (hash * FNV_PRIME) & U64_MASK
+/**
+ * Derive a deterministic Ed25519 keypair from a 32-byte seed.
+ * In production, seeds must come from a CSPRNG; for tests,
+ * deterministic seeds (e.g. SHA-256 of validator name) are acceptable.
+ */
+export async function generateKeypair(seed: Uint8Array): Promise<ValidatorKeyPair> {
+  if (seed.length < 32) {
+    throw new Error(`Seed must be at least 32 bytes, got ${seed.length}`)
   }
-  return hash
+  const privateKey = seed.slice(0, 32)
+  const publicKeyBytes = await ed.getPublicKey(privateKey)
+  return {
+    privateKey,
+    publicKey: uint8ArrayToHex(publicKeyBytes) as ValidatorPublicKey,
+  }
 }
 
-function bigintToHex16(n: bigint): string {
-  return n.toString(16).padStart(16, '0')
-}
-
-// ─── Public API ────────────────────────────────────────────
+// ─── Signing / Verification ────────────────────────────────
 
 /**
- * Produce a deterministic stub signature for a validator vote.
- * Synchronous — no WebCrypto, no async, no I/O.
- * Same inputs always produce the same 64-char hex output.
+ * Sign a block_hash with the given Ed25519 private key.
+ * Message is the UTF-8 encoding of the block_hash hex string.
+ * Returns a 128-char hex string (64-byte Ed25519 signature).
  */
-export function signVote(validatorId: ValidatorId, blockHash: SHA256Hex): ValidatorSignature {
-  const encoder = new TextEncoder()
-  const msg = encoder.encode(`${validatorId}:${blockHash}`)
-
-  // Four rounds with distinct salt offsets → 4 × 16 hex = 64 chars
-  const h0 = fnv1a64(msg, FNV_OFFSET_BASIS)
-  const h1 = fnv1a64(msg, FNV_OFFSET_BASIS ^ 0xDEADBEEFCAFEBABEn)
-  const h2 = fnv1a64(msg, FNV_OFFSET_BASIS ^ 0xC0FFEE0000000001n)
-  const h3 = fnv1a64(msg, FNV_OFFSET_BASIS ^ 0xFEEDFACEFEEDFACEn)
-
-  return (bigintToHex16(h0) + bigintToHex16(h1) + bigintToHex16(h2) + bigintToHex16(h3)) as ValidatorSignature
+export async function signVote(
+  privateKey: Uint8Array,
+  blockHash: SHA256Hex,
+): Promise<ValidatorSignature> {
+  const msg = new TextEncoder().encode(blockHash)
+  const sigBytes = await ed.sign(msg, privateKey)
+  return uint8ArrayToHex(sigBytes) as ValidatorSignature
 }
 
 /**
- * Verify a stub signature. Returns true iff signature matches the
- * expected FNV-1a stub output for (validatorId, blockHash).
+ * Verify a vote signature against the validator's public key.
+ * Returns true iff the signature is a valid Ed25519 signature
+ * over UTF-8(blockHash) for the given public key.
  */
-export function verifyVote(
-  validatorId: ValidatorId,
+export async function verifyVote(
+  publicKey: ValidatorPublicKey,
   blockHash: SHA256Hex,
   signature: ValidatorSignature,
-): boolean {
-  return signature === signVote(validatorId, blockHash)
+): Promise<boolean> {
+  try {
+    const msg = new TextEncoder().encode(blockHash)
+    const sigBytes = hexToUint8Array(signature)
+    const pubBytes = hexToUint8Array(publicKey)
+    return await ed.verify(sigBytes, msg, pubBytes)
+  } catch {
+    return false
+  }
 }

@@ -36,7 +36,7 @@ export async function runConsensusRound(
   validateValidatorSet(vs)
 
   const threshold = quorumThreshold(vs.f)
-  const validVotes = collectValidVotes(block, votes, vs)
+  const validVotes = await collectValidVotes(block, votes, vs)
 
   if (!isQuorum(validVotes, threshold)) {
     return deepFreeze<ConsensusResult>({

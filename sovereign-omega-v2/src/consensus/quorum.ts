@@ -1,6 +1,6 @@
 // ============================================================
 // SOVEREIGN OMEGA — HotStuff Ω Quorum Logic
-// EPISTEMIC TIER: T2 · Gate 19
+// EPISTEMIC TIER: T2 · Gate 19 / Gate 22 (Ed25519 hardening)
 //
 // Pure functions over Vote sets. No state, no side effects.
 // HotStuff safety threshold: 2f+1 votes, n ≥ 3f+1 validators.
@@ -42,26 +42,29 @@ export function validateValidatorSet(vs: ValidatorSet): void {
 
 /**
  * Filter votes to those that:
- * - Belong to a known validator in vs
+ * - Belong to a known validator in vs (by ValidatorId)
  * - Match the block's block_hash and sequence
- * - Carry a valid stub signature
+ * - Carry a valid Ed25519 signature (verified against ValidatorEntry.publicKey)
  * Returns one vote per validator (first occurrence wins if duplicated).
  */
-export function collectValidVotes(
+export async function collectValidVotes(
   block: ConsensusBlock,
   votes: readonly Vote[],
   vs: ValidatorSet,
-): readonly Vote[] {
-  const validatorSet = new Set(vs.validators)
+): Promise<readonly Vote[]> {
+  const pkMap = new Map(vs.validators.map(e => [e.id, e.publicKey]))
   const seen = new Set<string>()
   const valid: Vote[] = []
 
   for (const vote of votes) {
-    if (!validatorSet.has(vote.validator)) continue
+    const publicKey = pkMap.get(vote.validator)
+    if (publicKey === undefined) continue
     if (vote.block_hash !== block.block_hash) continue
     if (vote.sequence !== block.sequence) continue
-    if (!verifyVote(vote.validator, vote.block_hash, vote.signature)) continue
     if (seen.has(vote.validator)) continue
+
+    const ok = await verifyVote(publicKey, vote.block_hash, vote.signature)
+    if (!ok) continue
 
     seen.add(vote.validator)
     valid.push(vote)
