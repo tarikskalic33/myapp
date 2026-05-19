@@ -17,6 +17,7 @@ import { applyDirectives } from '../../src/enforcement/engine.js'
 import { capturePostEnforcementSnapshot } from '../../src/frame/snapshot.js'
 import { computeAutoDirectives } from '../../src/frame/directives.js'
 import { runFrame } from '../../src/frame/kernel.js'
+import { SHP_PHASES, SHP_LOOP, SHP_COMMITMENT_BOUNDARY, toRalphTrace } from '../../src/frame/shp.js'
 import type { SHA256Hex } from '../../src/core/types'
 
 // ─── Test helpers ──────────────────────────────────────────
@@ -316,5 +317,47 @@ describe('runFrame', () => {
     })
     expect(result.phase_trace.phase_3_directives_emitted).toBe(1)
     expect(result.phase_trace.phase_4_directives_applied).toBe(1)
+  })
+})
+
+// ─── SHP Identity ──────────────────────────────────────────
+
+describe('SHP execution identity', () => {
+  it('SHP_LOOP is the canonical R→A→L→P→H string', () => {
+    expect(SHP_LOOP).toBe('R→A→L→P→H')
+  })
+
+  it('SHP_COMMITMENT_BOUNDARY is LOCK', () => {
+    expect(SHP_COMMITMENT_BOUNDARY).toBe('LOCK')
+  })
+
+  it('ASSESS is pre-commit; PROPAGATE is post-commit', () => {
+    expect(SHP_PHASES.ASSESS.pre_commit).toBe(true)
+    expect(SHP_PHASES.ASSESS.post_commit).toBe(false)
+    expect(SHP_PHASES.PROPAGATE.pre_commit).toBe(false)
+    expect(SHP_PHASES.PROPAGATE.post_commit).toBe(true)
+  })
+
+  it('phase numbers preserve temporal order: READ < ASSESS < LOCK < PROPAGATE < HARMONIZE', () => {
+    expect(SHP_PHASES.READ.phase_number).toBeLessThan(SHP_PHASES.ASSESS.phase_number)
+    expect(SHP_PHASES.ASSESS.phase_number).toBeLessThan(SHP_PHASES.LOCK.phase_number)
+    expect(SHP_PHASES.LOCK.phase_number).toBeLessThan(SHP_PHASES.PROPAGATE.phase_number)
+    expect(SHP_PHASES.PROPAGATE.phase_number).toBeLessThan(SHP_PHASES.HARMONIZE.phase_number)
+  })
+
+  it('toRalphTrace maps clean runFrame result to correct RALPH fields', () => {
+    const result = runFrame({
+      ...BASE_FRAME_INPUT,
+      sitr: SITRRuntime.empty(),
+      constitutional: ConstitutionalRuntime.empty(),
+    })
+    const trace = toRalphTrace(result)
+    expect(trace.loop).toBe(SHP_LOOP)
+    expect(trace.READ.frame_count).toBe(1)
+    expect(trace.ASSESS.sitr_state).toBe('STABLE')
+    expect(trace.PROPAGATE.aoie_global_state).toBe('SECURE')
+    expect(trace.HARMONIZE.verdict).toBe('PERMIT')
+    expect(trace.is_replay_reconstructable).toBe(true)
+    expect(Object.isFrozen(trace)).toBe(true)
   })
 })

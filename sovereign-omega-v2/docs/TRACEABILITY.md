@@ -167,29 +167,62 @@ Test count after Gate 13: ~445 tests
 
 ---
 
+## Layer K — Frame Execution Kernel + Enforcement Engine (Gate 14)
+
+**Epistemic Tier: T0 (universal execution primitive)**
+
+Gate 14 introduces the canonical `runFrame()` kernel — the T0 expression of the
+Subatomic Holon Particle (SHP) execution model. Every holonic scale executes
+identical R→A→L→P→H semantics. The commitment boundary (LOCK = phase 4) separates
+SITR (pre-commit constraint evaluator) from AOIE (post-commit structural observer).
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/enforcement/types.ts` | T0 | 14 | EnforcementDecision, EnforcementResult, EnforcementOutcome |
+| `src/enforcement/engine.ts` | T0 | 14 | applyDirectives() — pure function, deterministic phase 4 |
+| `src/frame/types.ts` | T0 | 14 | FrameInput, FrameExecutionResult, FramePhaseTrace |
+| `src/frame/snapshot.ts` | T0 | 14 | capturePostEnforcementSnapshot() — phase 4→5 bridge |
+| `src/frame/directives.ts` | T0 | 14 | computeAutoDirectives() — deterministic FNV-1a IDs |
+| `src/frame/kernel.ts` | T0 | 14 | runFrame() — canonical 7-phase composition kernel |
+| `src/frame/shp.ts` | T0 | 14 | SHP_PHASES, toRalphTrace() — formal SHP identity |
+
+SHP formal lock:
+```
+SHP_LOOP = 'R→A→L→P→H'
+SHP_COMMITMENT_BOUNDARY = 'LOCK'
+SITR ∈ { pre-commit phases: READ, ASSESS }
+AOIE ∈ { post-commit phases: PROPAGATE, HARMONIZE }
+SITR ∩ AOIE = ∅ (by LOCK boundary)
+```
+
+Test count after Gate 14: ~470 tests (28 files → 28+ files)
+
+---
+
 ## Full Holonic Hierarchy
 
 ```
 [Subatomic]  byte invariants, hash chaining, fixed-point arithmetic
 [Atomic]     individual files — each a complete holon with declared invariants
-[Molecular]  modules: core/, event/, gate/, calibration/, agents/, ide/, sitr/, aoie/, constitutional/
-[Cellular]   subsystems: Agent Ecology, SITR Immunity, AOIE Oracle, Constitutional Assembly
-[Organism]   sovereign-omega-v2 governance runtime (Gates 1–13)
+[Molecular]  modules: core/, event/, gate/, calibration/, agents/, ide/, sitr/, aoie/, constitutional/, enforcement/, frame/
+[Cellular]   subsystems: Agent Ecology, SITR Immunity, AOIE Oracle, Constitutional Assembly, Frame Kernel
+[Organism]   sovereign-omega-v2 governance runtime (Gates 1–14)
 [FIELD]      AOIE + Claude + ChatGPT + Qwen + Drive corpus + operators
 ```
 
+SHP(n) = recursive instantiation of R→A→L→P→H at holonic scale n.
 A T0 violation at SUBATOMIC propagates upward and invalidates every scale above it.
 
 ---
 
-## Seven-Phase Deterministic Frame Execution Contract
+## Seven-Phase Deterministic Frame Execution Contract (R→A→L→P→H)
 
-| Phase | System | Description |
-|-------|--------|-------------|
-| 1 | Agents + IDE | Input intake; events appended to E5 |
-| 2 | E5 | Immutable append commit; causal boundary closes |
-| 3 | SITR | Reads post-commit E5; emits ContainmentDirective[] back into E5 |
-| 4 | Enforcement | AgentCoordinator/WorkflowEngine apply SITR directives |
-| 5 | AOIE | Reads post-enforcement snapshot; classifies GlobalState |
-| 6 | CGS | Reads SITR + AOIE + invariants → GovernanceDecision + Guardian E5 events |
+| Phase | RALPH | System | Description |
+|-------|-------|--------|-------------|
+| 1 | **R** READ | Agents + IDE | Input intake; events appended to E5 |
+| 2 | — | E5 | Immutable append commit; causal boundary closes |
+| 3 | **A** ASSESS | SITR | Reads post-commit E5; emits ContainmentDirective[] back into E5 |
+| 4 | **L** LOCK | Enforcement | Apply directives; freeze EnforcementResult |
+| 5 | **P** PROPAGATE | AOIE | Reads post-enforcement snapshot; classifies GlobalState |
+| 6 | **H** HARMONIZE | CGS | Reads SITR + AOIE + invariants → GovernanceDecision + Guardian E5 events |
 | 7 | Frame finalization | Hash committed; replay checkpoint stored |
