@@ -5,7 +5,8 @@
 // Identical inputs ALWAYS produce identical schedules.
 // ============================================================
 
-import type { AgentManifest } from '../types'
+import type { AgentManifest } from '../types.js'
+import { cumulativeFibonacci } from './fibonacci.js'
 
 export interface ScheduleEntry {
   readonly agent_id: string
@@ -27,11 +28,12 @@ export function buildSchedule(
     if (a.agent_id > b.agent_id) return 1
     return 0
   })
+  const offsets = cumulativeFibonacci(sorted.length)
   return Object.freeze(
     sorted.map((agent, idx) =>
       Object.freeze({
         agent_id: agent.agent_id,
-        sequence: startSequence + idx,
+        sequence: startSequence + (offsets[idx] ?? 0),
         priority: idx,
       })
     )

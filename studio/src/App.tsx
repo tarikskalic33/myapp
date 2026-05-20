@@ -10,9 +10,10 @@ import { OwnershipSurface } from './ownership-surface/OwnershipSurface.js'
 import { CapsuleSurface } from './capsule-surface/CapsuleSurface.js'
 import { ObservabilitySurface } from './observability-surface/ObservabilitySurface.js'
 import { GovernanceSurface } from './governance-surface/GovernanceSurface.js'
+import { SwarmSurface } from './swarm-surface/SwarmSurface.js'
 
 type Surface = 'replay' | 'epoch' | 'divergence' | 'rollback' | 'lineage' |
-  'topology' | 'ownership' | 'capsule' | 'observability' | 'governance'
+  'topology' | 'ownership' | 'capsule' | 'observability' | 'governance' | 'swarm'
 
 const NAV: Array<{ id: Surface; label: string }> = [
   { id: 'replay', label: 'Replay' },
@@ -25,6 +26,7 @@ const NAV: Array<{ id: Surface; label: string }> = [
   { id: 'capsule', label: 'Capsule' },
   { id: 'observability', label: 'Observability' },
   { id: 'governance', label: 'Governance' },
+  { id: 'swarm', label: 'Swarm' },
 ]
 
 export function App() {
@@ -74,6 +76,7 @@ export function App() {
           {active === 'capsule' && <CapsuleSurface snapshot={snapshot} />}
           {active === 'observability' && <ObservabilitySurface snapshot={snapshot} />}
           {active === 'governance' && <GovernanceSurface snapshot={snapshot} />}
+          {active === 'swarm' && <SwarmSurface snapshot={snapshot} />}
         </main>
       </div>
     </div>

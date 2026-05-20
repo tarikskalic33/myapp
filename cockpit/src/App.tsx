@@ -5,7 +5,10 @@ import { useSessions } from './hooks/useSessions.js'
 import { Sidebar } from './components/Sidebar.js'
 import { MessageList } from './components/MessageList.js'
 import { InputBar } from './components/InputBar.js'
+import { SkillMarketplace } from './components/SkillMarketplace.js'
 import type { Provider } from './lib/agent.js'
+
+type AppTab = 'chat' | 'skills'
 
 const DEFAULT_SYSTEM = `You are AEGIS, sovereign intelligence assistant of the Sovereign Omega governance runtime.
 
@@ -30,6 +33,7 @@ async function postBridgeEvent(type: string, payload: Record<string, unknown>): 
 }
 
 export default function App() {
+  const [tab, setTab] = useState<AppTab>('chat')
   const [provider, setProvider] = useState<Provider>('dashscope')
   const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM)
   const [showSystem, setShowSystem] = useState(false)
@@ -98,50 +102,72 @@ export default function App() {
       />
 
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Toolbar */}
-        <div className="flex items-center justify-between px-4 py-2 border-b border-aegis-border bg-aegis-surface/50">
+        {/* Tab bar */}
+        <div className="flex items-center border-b border-aegis-border bg-aegis-surface/50">
           <button
-            onClick={() => setShowSystem(v => !v)}
-            aria-label={showSystem ? 'Hide system prompt' : 'Show system prompt'}
-            aria-expanded={showSystem}
-            className="flex items-center gap-1.5 text-xs text-aegis-muted hover:text-aegis-text transition-colors"
+            onClick={() => setTab('chat')}
+            className={`px-4 py-2 text-xs font-mono transition-colors ${tab === 'chat' ? 'text-aegis-text border-b border-blue-500' : 'text-aegis-muted hover:text-aegis-text'}`}
           >
-            System prompt
-            <ChevronDown size={13} className={`transition-transform ${showSystem ? 'rotate-180' : ''}`} />
+            Chat
           </button>
-          {messages.length > 0 && (
-            <button
-              onClick={handleExport}
-              aria-label="Export conversation"
-              className="flex items-center gap-1.5 text-xs text-aegis-muted hover:text-aegis-text transition-colors"
-            >
-              <Download size={13} />
-              Export
-            </button>
-          )}
+          <button
+            onClick={() => setTab('skills')}
+            className={`px-4 py-2 text-xs font-mono transition-colors ${tab === 'skills' ? 'text-aegis-text border-b border-blue-500' : 'text-aegis-muted hover:text-aegis-text'}`}
+          >
+            Skills
+          </button>
         </div>
 
-        {showSystem && (
-          <div className="px-4 py-2 border-b border-aegis-border bg-aegis-surface/30">
-            <textarea
-              value={systemPrompt}
-              onChange={e => setSystemPrompt(e.target.value)}
-              rows={2}
-              className="w-full bg-transparent text-xs text-aegis-muted placeholder-aegis-muted/50 resize-none focus:outline-none"
-              placeholder="System prompt…"
+        {tab === 'skills' ? (
+          <SkillMarketplace />
+        ) : (
+          <>
+            {/* Chat toolbar */}
+            <div className="flex items-center justify-between px-4 py-2 border-b border-aegis-border bg-aegis-surface/50">
+              <button
+                onClick={() => setShowSystem(v => !v)}
+                aria-label={showSystem ? 'Hide system prompt' : 'Show system prompt'}
+                aria-expanded={showSystem}
+                className="flex items-center gap-1.5 text-xs text-aegis-muted hover:text-aegis-text transition-colors"
+              >
+                System prompt
+                <ChevronDown size={13} className={`transition-transform ${showSystem ? 'rotate-180' : ''}`} />
+              </button>
+              {messages.length > 0 && (
+                <button
+                  onClick={handleExport}
+                  aria-label="Export conversation"
+                  className="flex items-center gap-1.5 text-xs text-aegis-muted hover:text-aegis-text transition-colors"
+                >
+                  <Download size={13} />
+                  Export
+                </button>
+              )}
+            </div>
+
+            {showSystem && (
+              <div className="px-4 py-2 border-b border-aegis-border bg-aegis-surface/30">
+                <textarea
+                  value={systemPrompt}
+                  onChange={e => setSystemPrompt(e.target.value)}
+                  rows={2}
+                  className="w-full bg-transparent text-xs text-aegis-muted placeholder-aegis-muted/50 resize-none focus:outline-none"
+                  placeholder="System prompt…"
+                />
+              </div>
+            )}
+
+            <MessageList messages={messages} streaming={streaming} error={error} />
+
+            <InputBar
+              value={input}
+              streaming={streaming}
+              onChange={setInput}
+              onSend={handleSend}
+              onStop={reset}
             />
-          </div>
+          </>
         )}
-
-        <MessageList messages={messages} streaming={streaming} error={error} />
-
-        <InputBar
-          value={input}
-          streaming={streaming}
-          onChange={setInput}
-          onSend={handleSend}
-          onStop={reset}
-        />
       </div>
     </div>
   )

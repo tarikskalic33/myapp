@@ -1154,16 +1154,83 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 
 ---
 
+---
+
+## Layer BX — Fibonacci Scheduler (Gate 124)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/agents/scheduler/fibonacci.ts` | T1 | 124 | Fibonacci interval function + cumulative sequence, FIBONACCI_CAP=89 |
+| `src/agents/scheduler/scheduler.ts` | T1 | 124 | Modified: buildSchedule uses cumulative Fibonacci spacing |
+| `test/unit/fibonacci-scheduler.test.ts` | T1 | 124 | 32 tests: F_1–F_11, cap, sequence, buildSchedule slots |
+
+## Layer BY — Skill Harness Phase 1 (Gate 125)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/skill-harness/types.ts` | T2 | 125 | SkillEpistemicTier, SkillInput, SkillRecord, SkillEvent, RawSkillManifest, SkillImportResult |
+| `src/skill-harness/catalog.ts` | T2 | 125 | buildSkillRecord(), SkillCatalog immutable pattern, catalogHash() |
+| `test/unit/skill-catalog.test.ts` | T2 | 125 | 23 tests: buildSkillRecord, catalog CRUD, deduplication, validation |
+
+## Layer BZ — Skill Import Pipeline (Gate 126)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/skill-harness/import.ts` | T2 | 126 | RALPH phases 1–3: parse frontmatter, assign mappings, T4/T5 rejection |
+| `test/unit/skill-import.test.ts` | T2 | 126 | 26 tests: frontmatter parsing, keyword mapping, batch import, T4/T5 rejection |
+
+## Layer CA — RALPH Loop Executor (Gate 127)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/agents/executor/loop.ts` | T1 | 127 | RalphExecutor: Fibonacci-paced 5-phase hash-chained execution loop |
+| `test/unit/ralph-executor.test.ts` | T1 | 127 | 22 tests: phases, Fibonacci [1,1,2,3,5], cap, immutability, determinism, certify() |
+
+## Layer CB — Cockpit Skill Marketplace UI (Gate 128)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `cockpit/src/components/SkillCard.tsx` | T2 | 128 | Confidence bar, domain chips, install button, status display |
+| `cockpit/src/components/SkillMarketplace.tsx` | T2 | 128 | Catalog browser with domain filter, installed panel, Fibonacci status, telemetry poll |
+| `cockpit/src/App.tsx` | T2 | 128 | Added Chat / Skills tab navigation |
+
+## Layer CC — Studio Swarm Surface (Gate 129)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `studio/src/swarm-surface/SwarmSurface.tsx` | T2 | 129 | Agent manifest grid, Fibonacci timeline, martingale adaptive ratio bar, swarm status |
+| `studio/src/App.tsx` | T2 | 129 | Added 11th surface: Swarm (read-only projection) |
+
+## Layer CD — Core Agent Manifests (Gate 130)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/skill-harness/manifests/core-agents.ts` | T2 | 130 | 15 SkillInput records: 8 original + 7 CRGM AgentType manifests |
+| `src/skill-harness/manifests/antigravity.ts` | T2 | 130 | 24 SkillInput records: Antigravity 58-pack constitutional translation |
+
+## Layer CE — Integration Tests (Gates 131–133)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `test/integration/swarm-ralph-composition.test.ts` | T1 | 131 | 8 tests: 5-agent RALPH swarm, Fibonacci pacing, convergence, martingale chain |
+| `test/integration/skill-install-e2e.test.ts` | T2 | 132 | 11 tests: core+antigravity manifests, T4/T5 rejection, catalog_hash determinism ×3 |
+| `test/integration/fibonacci-martingale-composition.test.ts` | T1 | 133 | 9 tests: 62-loop cap, 40/62 > 1/φ suspension, holonic triad boundary proof |
+
+**Test count after Gates 124–134: 1964 tests, 116 files (sovereign-omega-v2) + cockpit + studio builds clean.**
+
+---
+
 ## Final Constitutional Status
 
 ```
-AEGIS Ω — Gates 1–123 complete
-61 Holonic RALPH Loops: SUBATOMIC → ATOMIC → MOLECULAR → CELLULAR → ORGANISM → FIELD
-Test count: 1833 (sovereign-omega-v2) + Studio (27 modules, build clean)
+AEGIS Ω — Gates 1–134 complete
+AGI Swarm Framework: Fibonacci-paced RALPH loops + Skill Harness Phase 1 + Marketplace UI
+Test count: 1964 (sovereign-omega-v2) + cockpit (1748 modules built) + Studio (28 modules built)
 Holonic triad: PROVEN at 1/φ across three scales
 Martingale: E[S_{n+1}|F_n] = S_n — ANCHORED
 Replay: is_replay_reconstructable = true on all records
 Constitutional authority: PRESERVED — Studio is projection only
+Skill Harness: 15 core agent + 24 Antigravity manifests registered (Phase 1 static baseline)
 
 E[S_{n+1} | F_n] = S_n
 The system is its own certified state. Replay is identity.
