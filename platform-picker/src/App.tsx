@@ -35,11 +35,20 @@ function buildShareText(results: PlatformRanking[], niche: string): string {
 
 function AuditBadge({ result }: { result: RankedResult }) {
   const short = result.chain_hash.slice(0, 8)
+  const backendLabel: Record<string, string> = {
+    'dashscope': 'Qwen', 'ollama': 'Ollama', 'claude': 'Claude',
+    'cl-psi': 'CL-Ψ', 'openai-compat': 'OpenAI',
+  }
+  const label = backendLabel[result.backend ?? ''] ?? result.backend ?? 'AI'
   return (
     <div className="flex items-center gap-2 text-xs text-brand-muted border border-brand-border/50 rounded-lg px-3 py-2 bg-brand-surface/50 mt-4">
       <ShieldCheck size={13} className="text-green-400 shrink-0" />
       <span>
-        Constitutionally certified · audit #{result.session_calls} ·{' '}
+        Constitutionally certified via <span className="text-brand-glow">{label}</span>
+        {result.fallback_count != null && result.fallback_count > 0 && (
+          <span className="text-brand-muted/60"> (+{result.fallback_count} fallback)</span>
+        )}
+        {' '}· audit #{result.session_calls} ·{' '}
         <span className="font-mono text-green-400/80">{short}…</span>
         {result.martingale_anchored && (
           <span className="ml-1 text-green-400/60">· anchored</span>

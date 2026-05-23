@@ -14,7 +14,15 @@
  * - is_replay_reconstructable: true on every record
  */
 
-import { callDashScope, type DashScopeCallOpts } from './dashscope.js'
+import { routeInference, type BackendType } from './inference-router.js'
+
+export type { BackendType }
+
+export interface DashScopeCallOpts {
+  systemPrompt: string
+  userMessage: string
+  defaultModel?: string
+}
 
 const SCHEMA_VERSION = '1.0.0' as const
 
@@ -39,7 +47,10 @@ export interface ConstitutionalAuditRecord {
   readonly prompt_hash: string
   readonly response_hash: string
   readonly chain_hash: string        // hash-chains to previous call
+  readonly backend: BackendType      // which inference provider was used
+  readonly fallback_count: number    // backends tried before success
   readonly model: string
+  readonly latency_ms: number
   readonly timestamp_ms: number
   readonly ccil_valid: boolean       // CCIL-Ψ constraint validation result
   readonly session_index: number     // position in this session's call chain
@@ -89,22 +100,29 @@ export async function callConstitutional<T>(
   opts: DashScopeCallOpts,
 ): Promise<ConstitutionalResult<T>> {
   const timestamp_ms = Date.now()
-  const model =
-    (import.meta.env.VITE_DASHSCOPE_MODEL as string | undefined) ?? opts.defaultModel ?? 'qwen-plus'
 
   const prompt_hash = await sha256hex(opts.systemPrompt + '\x00' + opts.userMessage)
   const call_id = await sha256hex(String(timestamp_ms) + '\x00' + prompt_hash)
 
-  const data = await callDashScope<T>(opts)
+  // Route through the multi-backend constitutional chain
+  const routed = await routeInference({
+    systemPrompt: opts.systemPrompt,
+    userMessage: opts.userMessage,
+    model: opts.defaultModel,
+  })
+
+  // Parse JSON response — same logic as callDashScope
+  let raw = routed.content.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
+  const data = JSON.parse(raw) as T
 
   const response_text = JSON.stringify(data)
   const response_hash = await sha256hex(response_text)
-
   const ccil_valid = ccilValidate(response_text)
 
-  // Chain: hash(prev_chain || call_id || response_hash || ccil_valid)
+  // Chain: hash(prev_chain || call_id || response_hash || backend || ccil_valid)
   const chain_hash = await sha256hex(
-    _session.chain_hash + '\x00' + call_id + '\x00' + response_hash + '\x00' + String(ccil_valid),
+    _session.chain_hash + '\x00' + call_id + '\x00' + response_hash +
+    '\x00' + routed.backend + '\x00' + String(ccil_valid),
   )
 
   _session.total_calls += 1
@@ -120,7 +138,10 @@ export async function callConstitutional<T>(
     prompt_hash,
     response_hash,
     chain_hash,
-    model,
+    backend: routed.backend,
+    fallback_count: routed.fallback_count,
+    model: routed.model,
+    latency_ms: routed.latency_ms,
     timestamp_ms,
     ccil_valid,
     session_index: _session.total_calls,

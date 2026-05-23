@@ -47,6 +47,9 @@ export interface RankedResult {
   call_id: string
   martingale_anchored: boolean
   session_calls: number
+  backend?: string
+  fallback_count?: number
+  latency_ms?: number
 }
 
 export async function rankPlatforms(input: MatcherInput): Promise<RankedResult> {
@@ -79,5 +82,8 @@ Current following size: ${input.current_following}
     call_id: constitutional.audit.call_id,
     martingale_anchored: constitutional.martingale_anchored,
     session_calls: constitutional.session_calls,
+    backend: constitutional.audit.backend,
+    fallback_count: constitutional.audit.fallback_count,
+    latency_ms: constitutional.audit.latency_ms,
   }
 }
