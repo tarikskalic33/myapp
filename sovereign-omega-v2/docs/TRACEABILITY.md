@@ -1405,19 +1405,73 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 
 ---
 
+## Layer CN — Multi-Backend Inference Router (Gate 170)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/inference/router.ts` | T2 | 170 | Model-agnostic governance router: Qwen/DashScope, Ollama, Claude, mock backends with latency-weighted fallback |
+| `src/inference/backends/dashscope.ts` | T2 | 170 | DashScope/Qwen backend with $200 hard cap and constitutional budget tracking |
+| `src/inference/backends/ollama.ts` | T2 | 170 | Ollama local inference backend |
+| `src/inference/backends/claude.ts` | T2 | 170 | Claude API backend (requires VITE_CLAUDE_API_KEY) |
+| `test/unit/inference-router.test.ts` | T2 | 170 | ~20 tests: fallback chain, budget cap, backend selection, mock determinism |
+
+---
+
+## Layer CO — Codebase Auto-Scanner + Idea-to-Roadmap Mapper (Gate 171)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/skill-harness/scanner/codebase-scanner.ts` | T2 | 171 | Scans src/ for SkillRecord-mappable modules; constitutional admission via admitAbstraction |
+| `src/skill-harness/mapper/roadmap-mapper.ts` | T2 | 171 | Converts natural-language ideas to constitutional SkillRecords + RALPH loop assignments |
+| `test/unit/codebase-scanner.test.ts` | T2 | 171 | Scan results are frozen, replay-reconstructable, admission-gated |
+
+---
+
+## Layer CP — BFT Synthesis Swarm (Gate 172)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/consensus/synthesis-swarm.ts` | T2 | 172 | Three-agent game-theoretic code synthesis: Alpha (implement) → Beta (adversarial challenge) → Gamma (constitutional judge). COMMITTED iff Gamma approves + structural convergence ≥ 1/φ |
+| `src/consensus/ast-normalizer.ts` | T2 | 172 | Semantic preprocessing: stripComments, hasEarlyReturn, hasLoop, hasDestructuring, semanticFunctionCount — prevents false DEADLOCKs from syntactically different but semantically equivalent code |
+| `test/unit/synthesis-swarm.test.ts` | T2 | 172 | 39 tests: COMMITTED/DEADLOCK/REJECTED verdicts, fingerprint fields, false-deadlock prevention, synthesis_hash determinism |
+| `test/unit/ast-normalizer.test.ts` | T2 | 172 | 24 tests: constants, stripComments, hasEarlyReturn, hasLoop, hasDestructuring, semanticFunctionCount, normalizedExportCount |
+
+---
+
+## Layer CQ — Cross-Repo HGT Scanner (Gate 173)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/skill-harness/hgt/hgt-scanner.ts` | T2 | 173 | Horizontal Gene Transfer: scans upstream GitHub repos for SKILL.md files, passes each through importSkillsFromManifests, computes HGTRecord with audit hash-chain |
+| `scripts/hgt-scan.ts` | T2 | 173 | CLI driver: fetches GitHub repo trees via public REST API, processes SKILL.md files, outputs HGTRecord JSON |
+| `test/unit/hgt-scanner.test.ts` | T2 | 173 | 25 tests: filterSkillFiles, processRepoFiles, buildHGTRecord aggregation, determinism, T4/T5 rejection |
+
+---
+
+## Layer CR — Depth-Bounded Section Visitor (Gate 174)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/corpus-engine/section-visitor.ts` | T2 | 174 | MAX_SECTION_DEPTH=8 (fibonacciInterval(6)); visitSections() flattens markdown into bounded section array — no unbounded recursion in document processing |
+| `src/corpus-engine/pipeline.ts` | T2 | 174 | Modified: extractDomainSignals now uses visitSections() + sectionText() instead of flat-string regex |
+| `test/unit/corpus-section-visitor.test.ts` | T2 | 174 | 24 tests: empty content, preamble, depth cap enforcement, determinism, corpus INTERPRETATION integration |
+
+---
+
 ## Final Constitutional Status
 
 ```
-AEGIS Ω — Gates 1–169 complete
+AEGIS Ω — Gates 1–174 complete
 AGI Swarm Framework: Fibonacci-paced RALPH loops + Skill Harness Phase 1–6 + Marketplace UI
 CL-Ψ Cognitive Fabric: 7-phase Rust inference crate (89 tests) for AMD RX 570
-Test count: 2158 (sovereign-omega-v2) + 89 (aegis-cl-psi Rust) + all 7 products build clean (studio, cockpit, platform-picker, hook-generator, content-calendar, hub)
-Skill Harness: Phase 1 (catalog) + Phase 2 (telemetry) + Phase 3 (inference+decay) + Phase 4 (routing) + Phase 5 (collaboration) + Phase 6 (cross-org seam)
+BFT Synthesis Swarm: three-agent game-theoretic code generation at 1/φ convergence threshold
+HGT Scanner: cross-repo constitutional skill ingestion from upstream GitHub repos
+Depth-Bounded Corpus Processing: MAX_SECTION_DEPTH=8, no unbounded recursion in RALPH pipeline
+Test count: 2270 (sovereign-omega-v2) + 89 (aegis-cl-psi Rust) + all 7 products build clean
 Holonic triad: PROVEN at 1/φ across three scales
 Martingale: E[S_{n+1}|F_n] = S_n — ANCHORED
 Replay: is_replay_reconstructable = true on all records
 Constitutional authority: PRESERVED — Studio is projection only
-Skill Harness: 15 core agent + 24 Antigravity manifests registered (Phase 1 static baseline)
 EU AI Act Article 12 compliance hooks: ACTIVE in aegis-cl-psi audit.rs (T0)
 AdaptivePower(T) ≤ ReplayVerifiability(T): ENFORCED
 
