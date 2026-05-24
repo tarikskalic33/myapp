@@ -1659,7 +1659,8 @@ Memory fabric composition: GraceSupervisor+SlabAllocator+ForkTree+MultiverseRegi
 ZeroCopyChannel: zero-copy inter-fiber IMC via SlabChunkHandle; send→receive→release lifecycle; autoRelease crash hook; duplicate-handle + claim-before-release guards; channel_hash audit certificate
 Channel+Memory Fabric: ZeroCopyChannel integrates with all four memory-fabric layers; slab handle round-trips through channel; autoRelease + GraceSupervisor compose; 3-channel pendingCount = slab totalAllocated; full 5-layer pipeline deterministic ×3
 FiberActorCell: ACTIVE→TERMINATED DFA; deposit/consume/terminate Grace Loop; joint FiberCertificate (channel_hash+allocator_hash); zero-copy preserved end-to-end; idempotent terminate
-Test count: 2648 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
+Digital Mushaf: aegis-mushaf Rust crate — T0 TanzilLedger (SHA-256 hash-chained Quran corpus ledger, append-only, BTreeMap<AyahKey>); epistemic firewall (Domain 0 rasm / Domain 1 tafsir, BTreeMap-deterministic, write isolation); Tajweed DFA (5 acoustic states: Izhar/Ikhfa/Idgham/Madd/Qalqalah, 40-entry transition table, BTreeMap, no HashMap); semantic algebra (WaznOperator morphological derivation graph, TriliteralArena, SHA-256 arena fingerprint); telemetry emitter (64-byte UDP ResonancePacket, RESONANCE_MAGIC=0xE0E0, std::net — no tokio); maqam_visualizer.js UDP terminal renderer. 48 Rust tests — all pass. Constitutional corrections applied: BTreeMap throughout, std::net for telemetry, TANZIL_GENESIS_SEAL marked T2 (placeholder until verified against actual Tanzil XML corpus).
+Test count: 2648 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + 48 (aegis-mushaf Rust) + all 7 products build clean
 Holonic triad: PROVEN at 1/φ across three scales
 Martingale: E[S_{n+1}|F_n] = S_n — ANCHORED
 Replay: is_replay_reconstructable = true on all records
