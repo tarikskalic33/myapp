@@ -55,7 +55,9 @@ Content pillar 3: ${input.pillar3}
     userMessage,
   })
   const parsed = constitutional.data
-  return Array.isArray(parsed) ? parsed : (parsed.weeks ?? [])
+  const weeks: WeekPlan[] = Array.isArray(parsed) ? parsed : (parsed.weeks ?? [])
+  // Normalize: theme is required by calendarToText but may be absent from model output
+  return weeks.map(w => ({ ...w, theme: w.theme ?? `Week ${w.week}` }))
 }
 
 const DAY_NAMES = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']

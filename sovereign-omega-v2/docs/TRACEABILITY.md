@@ -1458,6 +1458,15 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 
 ---
 
+## Layer DL — FiberActorCell: Isolated Fiber Execution Unit with Grace Loop (Gate 198)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/memory/fiber-actor-cell.ts` | T2 | 198 | `FiberActorCell` — isolated fiber execution unit with Grace Loop integration. Constitutional translation of the Fiber Actor Cell with Grace Loop spec. Fiber state: `ACTIVE → TERMINATED` (irreversible DFA seal). `create(actor_id, producer_id)` initializes `ZeroCopyChannel.create(producer_id, actor_id)` + `SlabAllocator.empty()`. `deposit(handle, sequence)` — producer deposits a `SlabChunkHandle` into the fiber's inbox channel; throws `FiberError` if TERMINATED. `consume(message_id, tier, sequence)` — fiber claims inbox message, allocates a work chunk from its own slab, releases the inbox message; producer payload stays in its slab (zero-copy preserved end-to-end); throws `FiberError` if TERMINATED, propagates `ChannelError` for unknown `message_id`. `terminate(sequence)` — Grace Loop: `autoRelease(actor_id)` clears all inbox messages; seals fiber to TERMINATED; idempotent (second call: `released_count=0`). `certify(sequence)` — produces frozen `FiberCertificate` with `fiber_hash = hashValue({actor_id, channel_hash, allocator_hash, is_terminated, sequence})`; joint certification of channel + slab state. `is_terminated` reflected in `fiber_hash` — pre/post-terminate hashes are provably distinct. Constitutional mapping: `SEQUENCE` (message ordering through inbox) · `PROPAGATE` (E5, no LOCK authority) · `DFA` (ACTIVE→TERMINATED). |
+| `test/unit/fiber-actor-cell.test.ts` | T2 | 198 | 33 tests: `FIBER_SCHEMA_VERSION=1.0.0`; `FiberError` is Error; name='FiberError'; `create()` pendingMessages=0 / allocatedChunks=0 / isTerminated=false / actorId correct; `deposit()` pendingMessages=1 / message_id 64-char hex / immutable / two deposits→2 / TERMINATED throws FiberError / duplicate handle throws ChannelError; `consume()` pendingMessages=0 / allocatedChunks=1 / correct tier / work_handle_hash 64-char / immutable / TERMINATED throws FiberError / unknown id throws ChannelError; full lifecycle: single cycle pendingMessages=0+allocatedChunks=1+isTerminated=false / two messages sequential pendingMessages=0+allocatedChunks=2; `terminate()` released_count=N / isTerminated=true / pendingMessages=0 / idempotent / no-messages released_count=0; `certify()` frozen / fiber_hash 64-char / fields correct (channel_pending=0 channel_total_sent=1 slab_allocated=1 is_terminated=false) / is_terminated reflected / deterministic ×3 / different actor_ids→different hashes / pre/post-terminate→different hashes. |
+
+---
+
 ## Layer DK — Channel + Memory Fabric Holonic Composition (Gate 197)
 
 | Module | Tier | Gate | Role |
@@ -1624,7 +1633,7 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 ## Final Constitutional Status
 
 ```
-AEGIS Ω — Gates 1–197 complete
+AEGIS Ω — Gates 1–198 complete
 AGI Swarm Framework: Fibonacci-paced RALPH loops + Skill Harness Phase 1–6 + Marketplace UI
 CL-Ψ Cognitive Fabric: 7-phase Rust inference crate + Edge BFT Verifier for AMD RX 570
 BFT Synthesis Swarm: three-agent game-theoretic code generation at 1/φ convergence threshold
@@ -1649,7 +1658,8 @@ SlabAllocator: 4-tier epoch slab allocator; 64-bit bigint bitmaps; decommission 
 Memory fabric composition: GraceSupervisor+SlabAllocator+ForkTree+MultiverseRegistry proven consistent in full pipeline
 ZeroCopyChannel: zero-copy inter-fiber IMC via SlabChunkHandle; send→receive→release lifecycle; autoRelease crash hook; duplicate-handle + claim-before-release guards; channel_hash audit certificate
 Channel+Memory Fabric: ZeroCopyChannel integrates with all four memory-fabric layers; slab handle round-trips through channel; autoRelease + GraceSupervisor compose; 3-channel pendingCount = slab totalAllocated; full 5-layer pipeline deterministic ×3
-Test count: 2614 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
+FiberActorCell: ACTIVE→TERMINATED DFA; deposit/consume/terminate Grace Loop; joint FiberCertificate (channel_hash+allocator_hash); zero-copy preserved end-to-end; idempotent terminate
+Test count: 2648 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
 Holonic triad: PROVEN at 1/φ across three scales
 Martingale: E[S_{n+1}|F_n] = S_n — ANCHORED
 Replay: is_replay_reconstructable = true on all records

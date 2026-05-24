@@ -308,6 +308,13 @@ class EpochFailsafeController:
         snap_n = _parse_snap(checkpoint.get('epoch_n'))
         snap_n1 = _parse_snap(checkpoint.get('epoch_n1'))
 
+        # Fail closed: if a snapshot was present but failed hash verification, abort
+        # without modifying any state. Proceeding with None would mask corruption.
+        if checkpoint.get('epoch_n') is not None and snap_n is None:
+            return False
+        if checkpoint.get('epoch_n1') is not None and snap_n1 is None:
+            return False
+
         with self._lock:
             self._epoch_n = snap_n
             self._epoch_n1 = snap_n1

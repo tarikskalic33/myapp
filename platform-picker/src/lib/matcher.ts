@@ -76,6 +76,13 @@ Current following size: ${input.current_following}
     rankings = arr as PlatformRanking[]
   }
 
+  // Normalize: prompt outputs `reasoning`/`strengths`; UI reads `reason`/`best_for`
+  rankings = rankings.map(r => ({
+    ...r,
+    reason: r.reason ?? r.reasoning,
+    best_for: r.best_for ?? r.strengths?.[0] ?? r.reasoning ?? '',
+  }))
+
   return {
     rankings,
     chain_hash: constitutional.audit.chain_hash,
