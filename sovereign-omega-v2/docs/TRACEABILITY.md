@@ -1458,6 +1458,15 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 
 ---
 
+## Layer CZ — Shapley Value Attribution for Synthesis Swarm (Gate 186)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/consensus/game-theory.ts` | T2 | 186 | `computeSynthesisShapley(SynthesisRecord): ShapleyAttestation` — Shapley value credit attribution for the three-agent BFT synthesis game. Characteristic function: v({A,B})=sim (convergence), v({A,G})=0.5 if COMMITTED else 0, v({B,G})=0, v({N})=1.0 if COMMITTED else sim. Closed-form Shapley for n=3: φ_Alpha=sim/6+(c?1/12:0)+outcome/3; φ_Beta=sim/6+outcome/3−(c?1/6:0); φ_Gamma=(c?1/12:0)+(outcome−sim)/3. Efficiency: φ_A+φ_B+φ_G=v(N) algebraically. COMMITTED sim=1.0: Alpha=7/12, Beta=4/12, Gamma=1/12. REJECTED/DEADLOCK: Gamma credit=0. Constitutional translation of game theory Wikipedia insight: Shapley attribution is the only T2-new concept not already implicit in existing gates. Nash equilibrium (convergence), folk theorem (epoch failsafe), mechanism design (VCG gating), principal-agent IC (Law of Silence) are all T1-already-implemented. |
+| `test/unit/game-theory.test.ts` | T2 | 186 | 18 tests: schema version, efficiency (φ sum = v(N) within 1e-9), COMMITTED exact values (7/12, 4/12, 1/12), ordering (alpha>beta>gamma), non-negative credits, deterministic hash ×3, REJECTED (gamma=0, alpha=beta=sim/2), DEADLOCK (gamma=0, total=sim), efficiency invariant for all verdict types, hash distinguishes records. |
+
+---
+
 ## Layer CY — Martingale-Synthesis Holonic Composition (Gate 185)
 
 | Module | Tier | Gate | Role |
@@ -1518,7 +1527,7 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 ## Final Constitutional Status
 
 ```
-AEGIS Ω — Gates 1–185 complete
+AEGIS Ω — Gates 1–186 complete
 AGI Swarm Framework: Fibonacci-paced RALPH loops + Skill Harness Phase 1–6 + Marketplace UI
 CL-Ψ Cognitive Fabric: 7-phase Rust inference crate + Edge BFT Verifier for AMD RX 570
 BFT Synthesis Swarm: three-agent game-theoretic code generation at 1/φ convergence threshold
@@ -1531,7 +1540,8 @@ ValidatorRegistry: immutable builder with SHA-256 content hash + ceiling quorum_
 BFT pipeline: ValidatorRegistry→verify→log→audit chain proven end-to-end in integration test
 Synthesis adversarial: REJECTED/DEADLOCK/parse-fail paths + AdaptiveLineage chaining proven
 Martingale-synthesis: 61/62 boundary proven with real synthesis records — fourth 1/φ holonic surface
-Test count: 2327 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
+Shapley attribution: game-theory.ts — closed-form φ_A+φ_B+φ_G=v(N) for 3-agent synthesis game
+Test count: 2345 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
 Holonic triad: PROVEN at 1/φ across three scales
 Martingale: E[S_{n+1}|F_n] = S_n — ANCHORED
 Replay: is_replay_reconstructable = true on all records
