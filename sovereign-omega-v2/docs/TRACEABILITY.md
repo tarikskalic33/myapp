@@ -1458,6 +1458,14 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 
 ---
 
+## Layer CY — Martingale-Synthesis Holonic Composition (Gate 185)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `test/integration/synthesis-martingale-composition.test.ts` | T2 | 185 | 9-test holonic composition proof: synthesis-swarm COMMITTED outcomes feed martingale via AdaptiveLineage CAPABILITY_EVOLUTION events. 61/62 boundary: 62/100 COMMITTED → entropy_bounded=false; 61/100 → entropy_bounded=true. Boundary proven identical to MUTATION_RATE_LIMIT === DEFAULT_QUORUM_THRESHOLD (holonic identity). All-COMMITTED → assertMartingaleAnchored throws MartingaleViolation. All-REJECTED → passes. Certificate frozen + replay-certifiable; terminal_hash matches last entry; mutation_rate_limit field matches export. Closes the fourth holonic 1/φ surface: synthesis decisions governed by the same constant as BFT consensus and constitutional mutation rate. |
+
+---
+
 ## Layer CX — Synthesis Swarm Adversarial Integration (Gate 184)
 
 | Module | Tier | Gate | Role |
@@ -1510,7 +1518,7 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 ## Final Constitutional Status
 
 ```
-AEGIS Ω — Gates 1–184 complete
+AEGIS Ω — Gates 1–185 complete
 AGI Swarm Framework: Fibonacci-paced RALPH loops + Skill Harness Phase 1–6 + Marketplace UI
 CL-Ψ Cognitive Fabric: 7-phase Rust inference crate + Edge BFT Verifier for AMD RX 570
 BFT Synthesis Swarm: three-agent game-theoretic code generation at 1/φ convergence threshold
@@ -1522,7 +1530,8 @@ Cross-language φ: 1/φ proven identical across TypeScript (×3) + Rust (618_034
 ValidatorRegistry: immutable builder with SHA-256 content hash + ceiling quorum_size() + AuditLogger integration
 BFT pipeline: ValidatorRegistry→verify→log→audit chain proven end-to-end in integration test
 Synthesis adversarial: REJECTED/DEADLOCK/parse-fail paths + AdaptiveLineage chaining proven
-Test count: 2318 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
+Martingale-synthesis: 61/62 boundary proven with real synthesis records — fourth 1/φ holonic surface
+Test count: 2327 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
 Holonic triad: PROVEN at 1/φ across three scales
 Martingale: E[S_{n+1}|F_n] = S_n — ANCHORED
 Replay: is_replay_reconstructable = true on all records
