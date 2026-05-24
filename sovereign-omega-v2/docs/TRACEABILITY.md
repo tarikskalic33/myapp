@@ -1458,6 +1458,17 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 
 ---
 
+## Layer DB — Bounded Generation Camera + Exclusive Slot Map (Gate 188)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `src/memory/bounded-generation.ts` | T2 | 188 | `BoundedGeneration` branded type with saturation semantics. Carrier: ℤ_{2^32} ⊎ {⊥}. `makeGeneration(v)` validates range; `incrementGeneration(g)` returns `null` (⊥) at GENERATION_BOUND−1; `composeGenerations(a,b)` propagates null (⊥-contamination); `isGenerationFresh(candidate, reference)` strict greater-than for stale handle detection; `describeGeneration(g)` frozen replay record. Constitutional translation of Coq/Iris bounded generation CMRA. |
+| `src/memory/slot-registry.ts` | T2 | 188 | `ExclusiveSlotMap` — authoritative exclusive slot ownership. Mirrors `authR (gmapUR nat (exclR slot_stateO))`. Exclusivity law: `register()` throws `SlotRegistryError` on duplicate `slot_index` (Excl⊗Excl=⊥). `relocate()` atomically advances `slot_gen` and updates `slot_addr` in one immutable step (Coq proof Step 3: linearized ghost camera update). `certify(sequence)` produces frozen `RegistryCertificate` with SHA-256 hash over all slot hashes sorted by index. Immutable pattern throughout: every mutation returns new instance. |
+| `test/unit/bounded-generation.test.ts` | T2 | 188 | 55 tests: makeGeneration bounds (0, max, negative, float, GENERATION_BOUND all correct); incrementGeneration saturation (null at max, valid below); composeGenerations ⊥-contamination; isGenerationFresh strict ordering; describeGeneration frozen+is_saturated+deterministic×3; ExclusiveSlotMap empty/register/duplicate-throws/size-0-throws/immutability/relocate-gen-advances/relocate-addr-updates/hash-changes/stale-relocation-on-nonexistent/getAll-sorted/certify-frozen/certify-hash-64/certify-deterministic×3/certify-different-registries-differ. |
+| `docs/FORMAL_VERIFICATION_WASM.md` | T2/T3 | 188 | Coq/Iris verification framework for WebAssembly compacting allocator. Bounded generation CMRA, physical/ghost slot coupling, FreeSpace Protocol RA, WP semantics for memory.copy, 5-step block relocation correctness proof, adequacy theorem. Full Coq scaffold committed. `free_pool_composition_law` and `block_relocation_invariance_proof` explicitly labelled T3 (Admitted.); all other Iris laws T0. Migration path table: T3→T2 requires `coqc` acceptance without Admitted.; T2→T1 requires fuzz-test evidence on live WASM binary. |
+
+---
+
 ## Layer DA — Shapley-Martingale Joint Composition (Gate 187)
 
 | Module | Tier | Gate | Role |
@@ -1535,7 +1546,7 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 ## Final Constitutional Status
 
 ```
-AEGIS Ω — Gates 1–187 complete
+AEGIS Ω — Gates 1–188 complete
 AGI Swarm Framework: Fibonacci-paced RALPH loops + Skill Harness Phase 1–6 + Marketplace UI
 CL-Ψ Cognitive Fabric: 7-phase Rust inference crate + Edge BFT Verifier for AMD RX 570
 BFT Synthesis Swarm: three-agent game-theoretic code generation at 1/φ convergence threshold
@@ -1550,7 +1561,8 @@ Synthesis adversarial: REJECTED/DEADLOCK/parse-fail paths + AdaptiveLineage chai
 Martingale-synthesis: 61/62 boundary proven with real synthesis records — fourth 1/φ holonic surface
 Shapley attribution: game-theory.ts — closed-form φ_A+φ_B+φ_G=v(N) for 3-agent synthesis game
 Shapley-Martingale: joint composition proven — each layer certifies independently, 61/62 boundary preserved
-Test count: 2355 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
+Bounded generation: BoundedGeneration (ℤ_{2^32} ⊎ {⊥}) + ExclusiveSlotMap + Coq/Iris formal spec (T2/T3)
+Test count: 2410 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
 Holonic triad: PROVEN at 1/φ across three scales
 Martingale: E[S_{n+1}|F_n] = S_n — ANCHORED
 Replay: is_replay_reconstructable = true on all records
