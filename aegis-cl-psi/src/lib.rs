@@ -77,6 +77,9 @@ pub mod proportional_metric;
 // Gate 214 — Vortex Sequence Classifier (T2, digital root cycle detection, Triadic/Hexadic)
 pub mod vortex_classifier;
 
+// Gate 215 — Abjad Letter Encoder (T2, letter→integer routing via Abjad values, طارق=310)
+pub mod abjad_encoder;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
