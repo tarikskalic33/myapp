@@ -1,54 +1,26 @@
-# ── Dependencies ────────────────────────────────────────────────
-node_modules/
-__pycache__/
-*.pyc
-*.pyo
-.venv/
-venv/
+```rust
+# Dependencies
+target/
 
-# ── Secrets ─────────────────────────────────────────────────────
-.env
-free-claude-code/.env
-
-# ── IDE / Agent state ───────────────────────────────────────────
-.claude/worktrees/
-.memory/
-.kilocode/
-.kilocodemodes
-
-# ── Forge ephemeral (backups reset on restart) ──────────────────
-.forge/state.backup.*
-.forge/sentinel-events/
-.forge/sentinel.log
-.forge/bot.lock
-
-# ── Large data dumps (not source code) ──────────────────────────
-chat.html
-chat_data.json
-final_data.json
-line_with_data.txt
-script_7_data.txt
-extracted_text.txt
-
-# ── Godot editor cache ──────────────────────────────────────────
-game/.godot/
-
-# ── Product builds / secrets ────────────────────────────────────
-cockpit/dist/
-cockpit/.env
-platform-picker/dist/
-platform-picker/.env
-hook-generator/dist/
-hook-generator/.env
-
-# ── OS / build ──────────────────────────────────────────────────
-.DS_Store
-Thumbs.db
+# Logs and temp files
 *.log
-content-calendar/dist/
-content-calendar/.env
-hub/dist/
-hub/.env
 
-# Rust build artifacts
-crates/*/target/
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Rust-specific
+Cargo.lock
+**/*.rs.bk
+```
+
+Wait, let me reconsider. Looking at the added files, there are Rust files in an `eccf` directory with a `Cargo.toml`, but the current .gitignore is empty and there are no build artifacts in the change list. The only files being added are source files (.py, .rs, .toml, .md). Since there are no compiled artifacts, dependency directories, or temporary files in the changes, and the source files themselves shouldn't be ignored, I should output nothing.
+
+```rust
+
+```

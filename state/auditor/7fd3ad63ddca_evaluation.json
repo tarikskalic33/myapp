@@ -1,0 +1,27 @@
+{
+  "evaluation": {
+    "sprint_id": "7fd3ad63ddca",
+    "verdict": "PASS_WITH_WARNINGS",
+    "score": 0.928,
+    "test_coverage": 0.91,
+    "alignment_score": 0.75,
+    "genesis_verified": true,
+    "execution_time_ms": 0
+  },
+  "nla_findings": [],
+  "playwright_results": {
+    "tests_run": 12,
+    "tests_passed": 12,
+    "tests_failed": 0,
+    "coverage": 0.9099999999999999,
+    "errors": [],
+    "timestamp": "2026-05-24T15:51:06.375491+00:00"
+  },
+  "recommendations": [
+    "Acceptable but has room for improvement"
+  ],
+  "metadata": {
+    "node_id": "auditor-gamma-001",
+    "evaluated_at": "2026-05-24T15:51:06.376021+00:00"
+  }
+}
