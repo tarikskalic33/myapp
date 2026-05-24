@@ -5,7 +5,7 @@
 import { describe, it, expect } from 'vitest'
 import { computeSynthesisShapley, GAME_THEORY_SCHEMA_VERSION } from '../../src/consensus/game-theory.js'
 import { runSynthesisSwarm } from '../../src/consensus/synthesis-swarm.js'
-import type { SynthesisRequest, AgentRole } from '../../src/consensus/synthesis-swarm.js'
+import type { AgentRole } from '../../src/consensus/synthesis-swarm.js'
 import type { SequenceNumber } from '../../src/core/types.js'
 
 function seq(n: number): SequenceNumber { return BigInt(n) as SequenceNumber }

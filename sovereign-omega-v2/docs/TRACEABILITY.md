@@ -1458,6 +1458,14 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 
 ---
 
+## Layer DA — Shapley-Martingale Joint Composition (Gate 187)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `test/integration/shapley-martingale-composition.test.ts` | T2 | 187 | 10-test joint composition proof: ShapleyAttestation and MartingaleCertificate compose correctly and independently over sequences of synthesis decisions. COMMITTED runs: alpha=7/12, beta=4/12, gamma=1/12, efficiency=true on all 10 rounds; martingale entropy_bounded=false (10/10 > 1/φ). REJECTED runs: gamma=0, efficiency=true on all 10; martingale entropy_bounded=true (adaptive_power=0). Mixed runs: total Shapley value ≤ 10 (each ≤1.0); all distinct attribution_hashes; efficiency invariant survives 3:7 COMMITTED:REJECTED split. 62/38 boundary: adaptive_power=62, entropy_bounded=false. 61/39 boundary: adaptive_power=61, entropy_bounded=true. Structural independence theorem: computeSynthesisShapley is read-only (no shared state with AdaptiveLineage). Constitutional proof: game-theoretic credit attribution (Shapley) is orthogonal to martingale entropy governance — each layer certifies independently over the same record set. |
+
+---
+
 ## Layer CZ — Shapley Value Attribution for Synthesis Swarm (Gate 186)
 
 | Module | Tier | Gate | Role |
@@ -1527,7 +1535,7 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 ## Final Constitutional Status
 
 ```
-AEGIS Ω — Gates 1–186 complete
+AEGIS Ω — Gates 1–187 complete
 AGI Swarm Framework: Fibonacci-paced RALPH loops + Skill Harness Phase 1–6 + Marketplace UI
 CL-Ψ Cognitive Fabric: 7-phase Rust inference crate + Edge BFT Verifier for AMD RX 570
 BFT Synthesis Swarm: three-agent game-theoretic code generation at 1/φ convergence threshold
@@ -1541,7 +1549,8 @@ BFT pipeline: ValidatorRegistry→verify→log→audit chain proven end-to-end i
 Synthesis adversarial: REJECTED/DEADLOCK/parse-fail paths + AdaptiveLineage chaining proven
 Martingale-synthesis: 61/62 boundary proven with real synthesis records — fourth 1/φ holonic surface
 Shapley attribution: game-theory.ts — closed-form φ_A+φ_B+φ_G=v(N) for 3-agent synthesis game
-Test count: 2345 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
+Shapley-Martingale: joint composition proven — each layer certifies independently, 61/62 boundary preserved
+Test count: 2355 (sovereign-omega-v2) + 121 (aegis-cl-psi Rust) + all 7 products build clean
 Holonic triad: PROVEN at 1/φ across three scales
 Martingale: E[S_{n+1}|F_n] = S_n — ANCHORED
 Replay: is_replay_reconstructable = true on all records
