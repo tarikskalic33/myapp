@@ -33,6 +33,16 @@ async function postBridgeEvent(type: string, payload: Record<string, unknown>): 
 }
 
 export default function App() {
+  useEffect(() => {
+    const key = (import.meta.env.VITE_POSTHOG_KEY as string | undefined) ?? ''
+    if (!key) return
+    void fetch('https://app.posthog.com/capture/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_key: key, event: 'trial_started', properties: { product: 'cockpit', distinct_id: 'anonymous' } }),
+    }).catch(() => {/* observational only */})
+  }, [])
+
   const [tab, setTab] = useState<AppTab>('chat')
   const [provider, setProvider] = useState<Provider>('dashscope')
   const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM)
