@@ -1458,6 +1458,14 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 
 ---
 
+## Layer CV — ValidatorRegistry + Audit Integration (Gate 182)
+
+| Module | Tier | Gate | Role |
+|--------|------|------|------|
+| `aegis-cl-psi/src/edge_verifier.rs` | T2 | 182 | Added `ValidatorRegistry` immutable builder: `empty()` → SHA-256 of empty bytes; `.register()` deduplicates by node_id, recomputes content hash over BTreeMap-sorted entries; `.quorum_size()` = ceiling(n × 618_034 / 1_000_000); `.as_map()` feeds `verify_quorum_at_edge`. Added `log_verification_result(&mut AuditLogger, &EdgeVerificationResult) -> String` — logs quorum results to SHA-256 audit chain. Constitutional translation of Gemini Doc 8 Proposal 1 (audit hooks) + Proposal 2 (dynamic membership). 14 new tests; 24 total in edge_verifier. |
+
+---
+
 ## Layer CU — Cross-Language 1/φ Holonic Triad Extension (Gate 180)
 
 | Module | Tier | Gate | Role |
@@ -1486,7 +1494,7 @@ Boundary: 61/100 (bounded) · 62/100 (suspended) — greatest integer < 100·(1/
 ## Final Constitutional Status
 
 ```
-AEGIS Ω — Gates 1–180 complete
+AEGIS Ω — Gates 1–182 complete
 AGI Swarm Framework: Fibonacci-paced RALPH loops + Skill Harness Phase 1–6 + Marketplace UI
 CL-Ψ Cognitive Fabric: 7-phase Rust inference crate + Edge BFT Verifier for AMD RX 570
 BFT Synthesis Swarm: three-agent game-theoretic code generation at 1/φ convergence threshold
@@ -1495,7 +1503,8 @@ Depth-Bounded Corpus Processing: MAX_SECTION_DEPTH=8, no unbounded recursion in 
 Composition Proof: synthesis+HGT+corpus interoperate across paradigms (Gate 175)
 Edge Verifier: stateless Ed25519 quorum proof at 1/φ integer threshold (Gate 177, T2)
 Cross-language φ: 1/φ proven identical across TypeScript (×3) + Rust (618_034/1_000_000) + Python (/edge-verify)
-Test count: 2307 (sovereign-omega-v2) + 100 (aegis-cl-psi Rust) + all 7 products build clean
+ValidatorRegistry: immutable builder with SHA-256 content hash + ceiling quorum_size() + AuditLogger integration
+Test count: 2307 (sovereign-omega-v2) + 113 (aegis-cl-psi Rust) + all 7 products build clean
 Holonic triad: PROVEN at 1/φ across three scales
 Martingale: E[S_{n+1}|F_n] = S_n — ANCHORED
 Replay: is_replay_reconstructable = true on all records
