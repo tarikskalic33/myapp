@@ -135,6 +135,10 @@ pub mod self_certification;
 // GlobalSection exists iff all 5 tower levels simultaneously satisfied.
 pub mod lattice_coherence;
 
+// Gate 228 — Coherence Broadcaster: encode CoherenceReport as 16-byte gossip frame (T2)
+// Bridges lattice_coherence → peer broadcast. Deterministic fixed-point encoding.
+pub mod coherence_broadcaster;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
