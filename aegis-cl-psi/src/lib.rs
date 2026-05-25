@@ -208,6 +208,11 @@ pub mod momentum_tracker;
 // ConstitutionalPhase: Nominal/Degraded/Recovery/Critical. Recovery = improving from Critical+.
 pub mod phase_transition;
 
+// Gate 247 — Constitutional Health Aggregator: unified system health vector (T2)
+// SystemHealthVector: health_verdict + resilience_verdict + pulse_verdict + stability_grade + momentum_dir + phase.
+// OverallCondition: Optimal/Good/Caution/Alert/Emergency. vector_hash = SHA-256(prev ‖ condition ‖ degraded_count ‖ epoch).
+pub mod health_aggregator;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
