@@ -204,6 +204,10 @@ pub mod coherence_stability;
 // MomentumDir: Improving/Stable/Declining. momentum_int = score[last] - score[first].
 pub mod momentum_tracker;
 
+// Gate 246 — Phase Transition Detector: constitutional regime change detection (T2)
+// ConstitutionalPhase: Nominal/Degraded/Recovery/Critical. Recovery = improving from Critical+.
+pub mod phase_transition;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
