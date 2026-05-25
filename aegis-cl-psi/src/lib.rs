@@ -139,6 +139,11 @@ pub mod lattice_coherence;
 // Bridges lattice_coherence → peer broadcast. Deterministic fixed-point encoding.
 pub mod coherence_broadcaster;
 
+// Gate 229 — Epoch Coherence Chain: hash-linked CoherenceFrame history (T2)
+// Temporal dimension of the moduli tower. Continuously coherent = martingale holds.
+// SHA-256(epoch ‖ frame ‖ prev_hash). Breach detection. Terminal hash certification.
+pub mod epoch_coherence_chain;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
