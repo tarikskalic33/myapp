@@ -130,6 +130,11 @@ pub mod chord_network;
 // Deterministic: same inputs → same self_hash across all platforms. No clock, no RNG.
 pub mod self_certification;
 
+// Gate 227 — Lattice Coherence: moduli tower global section checker (T2)
+// ObstructionLevels × CoherenceReport × Fibonacci weights.
+// GlobalSection exists iff all 5 tower levels simultaneously satisfied.
+pub mod lattice_coherence;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
