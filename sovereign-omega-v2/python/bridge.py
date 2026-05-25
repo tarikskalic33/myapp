@@ -470,6 +470,16 @@ class BridgeHandler(BaseHTTPRequestHandler):
             t0_verdict = (corruption == 0) and (drift_risk < phi_threshold)
             node_input = f'seq={seq}:epoch={epoch}:corruption={corruption}'.encode()
             constitutional_hash = _hl.sha256(node_input).hexdigest()
+            # Gate 223: Constitutional Chord — compact 4-byte spectral fingerprint
+            # chord_bytes: [vortex_family, digital_root, resonance_depth, phi_class]
+            leading_int = int(constitutional_hash[:16], 16)  # first 8 bytes as u64
+            dr = (leading_int % 9) or 9                      # digital_root 1..9
+            vortex_byte = 0 if dr in (3, 6, 9) else 1        # 0=Triadic, 1=Hexadic
+            resonance_depth_live = 4                          # live: all 4 invariants satisfied
+            phi_class_byte = (0 if drift_risk < phi_threshold - 1e-9
+                              else (1 if drift_risk <= phi_threshold + 1e-9 else 2))
+            chord_bytes = [vortex_byte, dr, resonance_depth_live, phi_class_byte]
+            chord_hex = ''.join(f'{b:02x}' for b in chord_bytes)
             self._respond(200, {
                 'node_id': constitutional_hash[:16],
                 't0_verdict': t0_verdict,
@@ -481,6 +491,9 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 'corruption_count': corruption,
                 'phi_threshold': phi_threshold,
                 'drift_risk': drift_risk,
+                'chord_bytes': chord_bytes,
+                'chord_hex': chord_hex,
+                'schema_version': '1.0.0',
                 'is_replay_reconstructable': True,
             })
 

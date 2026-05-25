@@ -112,6 +112,12 @@ pub mod phi_convergence;
 // resonance_coefficient = depth × vortex_factor × phi_headroom; > 5.0 → certified path.
 pub mod resonance_monitor;
 
+// Gate 223 — Constitutional Chord (T2)
+// Compact 4-byte spectral fingerprint of constitutional state for distributed resonance checks.
+// chord_bytes: [vortex_family, digital_root, resonance_depth, phi_class]
+// chords_in_resonance(a, b): same VortexFamily + same PhiClass → compatible resonance class.
+pub mod constitutional_chord;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
