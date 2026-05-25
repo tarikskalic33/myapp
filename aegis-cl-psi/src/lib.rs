@@ -106,6 +106,12 @@ pub mod spsf;
 // RankSpan vortex classification: digital_root → Triadic {3,6,9} vs Hexadic {1,2,4,5,7,8}.
 pub mod phi_convergence;
 
+// Gate 222 — Constitutional Resonance Monitor (T1/T2)
+// Unifies phi_convergence + ring_composition + vortex_classifier + spsf monotone law.
+// is_resonant iff phi_convergent AND ring_valid AND sequence_monotone (three T1 invariants).
+// resonance_coefficient = depth × vortex_factor × phi_headroom; > 5.0 → certified path.
+pub mod resonance_monitor;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
