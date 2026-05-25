@@ -4,7 +4,7 @@
 
 *Designed and built by Tarik Skalić · Copyright (C) 2025 · AGPL-3.0*
 
-[![Tests](https://img.shields.io/badge/Tests-2733_TS_%7C_200_Rust-brightgreen)](#build)
+[![Tests](https://img.shields.io/badge/Tests-2733_TS_%7C_279_Rust-brightgreen)](#build)
 [![Gate 8](https://img.shields.io/badge/Gate_8-passing-brightgreen)](#build)
 [![Claude](https://img.shields.io/badge/AI-Claude_Sonnet_4.6-orange)](#ai-integration)
 [![License](https://img.shields.io/badge/License-AGPL--3.0-blue)](LICENSE)
@@ -147,7 +147,7 @@ These tools are powered by the same constitutional pipeline — every response i
 ## Build
 
 ```bash
-# Rust gates (200 tests)
+# Rust gates (279 tests)
 cd aegis-cl-psi && cargo test
 
 # TypeScript runtime (2733 tests)

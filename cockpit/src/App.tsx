@@ -123,38 +123,45 @@ export default function App() {
 
       <div className="flex-1 flex flex-col min-w-0">
         {/* Constitutional status strip */}
-        <div className="flex items-center gap-4 px-4 py-1.5 border-b border-aegis-border bg-aegis-surface/30 overflow-x-auto shrink-0">
-          <span className="text-aegis-phi font-mono text-xs whitespace-nowrap opacity-80">
+        <div
+          className="flex items-center gap-4 px-5 py-1.5 overflow-x-auto shrink-0"
+          style={{ borderBottom: '1px solid #1E1E22', background: 'rgba(20,20,22,0.6)' }}
+        >
+          <span className="font-mono text-xs whitespace-nowrap" style={{ color: '#C8A96E', opacity: 0.85 }}>
             AdaptivePower(T) ≤ ReplayVerifiability(T)
           </span>
-          <span className="text-aegis-muted text-xs whitespace-nowrap opacity-40">·</span>
-          <span className="text-aegis-t0 font-mono text-xs whitespace-nowrap opacity-70">
-            E[S&#8407;|F] = S
+          <span className="text-xs opacity-20" style={{ color: '#6B6B7A' }}>·</span>
+          <span className="font-mono text-xs whitespace-nowrap" style={{ color: '#34D399', opacity: 0.65 }}>
+            E[S|F] = S
           </span>
-          <span className="text-aegis-muted text-xs whitespace-nowrap opacity-40">·</span>
-          <span className="text-aegis-phi font-mono text-xs whitespace-nowrap opacity-70">
+          <span className="text-xs opacity-20" style={{ color: '#6B6B7A' }}>·</span>
+          <span className="font-mono text-xs whitespace-nowrap" style={{ color: '#C8A96E', opacity: 0.65 }}>
             1/φ ≈ 0.6180
           </span>
-          <span className="text-aegis-muted text-xs whitespace-nowrap opacity-40">·</span>
-          <span className="text-aegis-t1 font-mono text-xs whitespace-nowrap opacity-70">
-            2733 TS · 200 Rust
+          <span className="text-xs opacity-20" style={{ color: '#6B6B7A' }}>·</span>
+          <span className="font-mono text-xs whitespace-nowrap" style={{ color: '#60A5FA', opacity: 0.55 }}>
+            2733 TS · 279 Rust
           </span>
         </div>
 
         {/* Tab bar */}
-        <div className="flex items-center border-b border-aegis-border bg-aegis-surface/50">
-          <button
-            onClick={() => setTab('chat')}
-            className={`px-4 py-2 text-xs font-mono transition-colors ${tab === 'chat' ? 'text-aegis-text border-b border-blue-500' : 'text-aegis-muted hover:text-aegis-text'}`}
-          >
-            Chat
-          </button>
-          <button
-            onClick={() => setTab('skills')}
-            className={`px-4 py-2 text-xs font-mono transition-colors ${tab === 'skills' ? 'text-aegis-text border-b border-blue-500' : 'text-aegis-muted hover:text-aegis-text'}`}
-          >
-            Skills
-          </button>
+        <div
+          className="flex items-center px-2"
+          style={{ borderBottom: '1px solid #1E1E22', background: '#0C0C0E' }}
+        >
+          {(['chat', 'skills'] as const).map(t => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className="px-4 py-2.5 text-xs font-mono transition-colors capitalize relative"
+              style={{
+                color: tab === t ? '#ECEAE3' : '#6B6B7A',
+                borderBottom: tab === t ? '1px solid #C8A96E' : '1px solid transparent',
+              }}
+            >
+              {t}
+            </button>
+          ))}
         </div>
 
         {tab === 'skills' ? (
