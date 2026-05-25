@@ -1,5 +1,5 @@
 {
-  "model": "claude-sonnet-4-20250514",
+  "model": "claude-sonnet-4-6",
   "permissions": {
     "allow": [
       "Bash(npm:*)",
@@ -14,6 +14,14 @@
       "Bash(find:*)",
       "Bash(ls:*)",
       "Bash(cat:*)",
+      "Bash(cargo:*)",
+      "Bash(cargo test*)",
+      "Bash(cargo build*)",
+      "Bash(python3:*)",
+      "Bash(curl:*)",
+      "Bash(grep:*)",
+      "Bash(wc:*)",
+      "Bash(rustc --version)",
       "Read(**)",
       "Write(src/**)",
       "Write(test/**)",
