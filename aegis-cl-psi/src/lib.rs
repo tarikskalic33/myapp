@@ -118,6 +118,12 @@ pub mod resonance_monitor;
 // chords_in_resonance(a, b): same VortexFamily + same PhiClass → compatible resonance class.
 pub mod constitutional_chord;
 
+// Gate 224 — Constitutional Chord Network (T2)
+// Peer table tracking chord fingerprints across multiple nodes. Detects UNIFIED / CLUSTERED / SPLIT.
+// BTreeMap<node_id, ConstitutionalChord> — deterministic iteration. Integer 1/φ quorum threshold.
+// find_dissonant() identifies drift nodes; quorum_triadic checks the 1/φ Triadic majority.
+pub mod chord_network;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
