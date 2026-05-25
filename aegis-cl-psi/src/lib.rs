@@ -156,6 +156,10 @@ pub mod swarm_autonode;
 // ReplayChain + ReplayProof: terminal_hash and replay_fingerprint are tamper-evident proofs.
 pub mod constitutional_replay;
 
+// Gate 234 — Entropy Budget: AdaptivePower(T) ≤ ReplayVerifiability(T) as numerical ledger (T2)
+// Hash-linked BudgetEntry chain. consume_adaptive() blocked if balance < ADAPTIVE_EVENT_COST.
+pub mod entropy_budget;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
