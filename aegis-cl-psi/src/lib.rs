@@ -242,6 +242,10 @@ pub mod recovery_sequencer;
 // chains_valid, peak_condition, peak_severity, certificate_hash = SHA-256(3 terminals ‖ epoch_end).
 pub mod audit_certifier;
 
+// Gate 254 — Constitutional Telemetry Encoder: 32-byte gossip packet (T2)
+// TelemetryPacket: epoch(8) ‖ condition(1) ‖ trend(1) ‖ severity(1) ‖ phase(1) ‖ dir(1) ‖ degraded(1) ‖ momentum(2) ‖ checksum(8) ‖ frame_hash_prefix(8).
+pub mod telemetry_encoder;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
