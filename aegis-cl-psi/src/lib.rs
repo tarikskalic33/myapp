@@ -148,6 +148,10 @@ pub mod epoch_coherence_chain;
 // One tick() = full constitutional cycle. AdaptivePower(T) ≤ ReplayVerifiability(T) made concrete.
 pub mod constitutional_autonode;
 
+// Gate 232 — Swarm Autonode: N-node constitutional consensus at 1/φ quorum threshold (T2)
+// Organism-scale layer. consensus_hash = SHA-256(all chain_entry_hashes, BTreeMap order).
+pub mod swarm_autonode;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
