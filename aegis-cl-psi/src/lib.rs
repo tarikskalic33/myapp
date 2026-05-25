@@ -89,6 +89,17 @@ pub mod tajweed_dfa;
 // Isomorphic to AdaptivePower(T) ≤ ReplayVerifiability(T) — the constitutional law is a ring.
 pub mod ring_composition;
 
+// Gate 220 — Compile-Time Acyclic DAG Lattice + Lawvere Metric + Homotopy Witness (T1/T2)
+// Cycles are unrepresentable: VerifiedEdge<From,To> requires From::RANK < To::RANK at compile time.
+// Lawvere enrichment: d(A,C) ≤ d(A,B) + d(B,C) — triangle inequality by additive composition.
+// HomotopyWitness: structural endpoint equality (T2 code / T3 full HoTT claim).
+pub mod lattice_dag;
+
+// Gate 220 (cont.) — Sovereign Persistence Layer (SPSF) (T2)
+// Disk-boundary determinism: sequence-monotone, hash-chained, BTreeMap-indexed writes.
+// Genesis root verified at open(); divergence from expected root is rejected (not ignored).
+pub mod spsf;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
