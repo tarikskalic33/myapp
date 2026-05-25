@@ -105,8 +105,134 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 out = {'status': 'error', 'stderr': result.stderr.decode()[:200]}
             self._respond(200, out)
 
-        elif self.path == '/edge-verify':
-            # Stateless 1/φ quorum threshold check — same integer approximation as
+        elif self.path == '/claude':
+            # Constitutional Claude API endpoint.
+            # Applies AEGIS system prompt, returns hash-linked response.
+            # Body: { "messages": [{role, content}], "model"?, "max_tokens"?, "system"? }
+            import hashlib
+            try:
+                import anthropic as _anthropic
+            except ImportError:
+                self._respond(503, {'error': 'anthropic SDK not installed. Run: pip install anthropic'})
+                return
+
+            api_key = os.environ.get('ANTHROPIC_API_KEY')
+            if not api_key:
+                self._respond(503, {'error': 'ANTHROPIC_API_KEY not set in environment'})
+                return
+
+            messages = data.get('messages', [])
+            model = data.get('model', 'claude-sonnet-4-6')
+            max_tokens = int(data.get('max_tokens', 2048))
+            user_system = data.get('system', '')
+
+            CONSTITUTIONAL_SYSTEM = (
+                'You are Claude, operating as the AEGIS-Ω Orchestration Alliance Coordinator.\n\n'
+                'CONSTITUTIONAL INVARIANTS:\n'
+                '1. EPISTEMIC SOVEREIGNTY: Tag every claim with tier (T0/T1/T2/T3).\n'
+                '2. CAUSAL ARCHITECTURE: Every assertion needs a traceable causal chain.\n'
+                '3. OPERATIONAL REALISM: AdaptivePower(T) ≤ ReplayVerifiability(T).\n'
+                '4. ADVERSARIAL SELF-CORRECTION: Flag the weakest point in every argument.\n\n'
+                'Copyright (C) 2025 Tarik Skalić. You are a tool in his system.\n'
+            )
+            system_prompt = (CONSTITUTIONAL_SYSTEM + '\n---\n' + user_system) if user_system else CONSTITUTIONAL_SYSTEM
+
+            req_hash = hashlib.sha256(json.dumps(
+                {'messages': messages, 'model': model}, sort_keys=True
+            ).encode()).hexdigest()
+
+            try:
+                client = _anthropic.Anthropic(api_key=api_key)
+                resp = client.messages.create(
+                    model=model,
+                    max_tokens=max_tokens,
+                    system=system_prompt,
+                    messages=messages,
+                )
+                response_text = ''.join(
+                    b.text for b in resp.content if b.type == 'text'
+                )
+                resp_hash = hashlib.sha256(json.dumps(
+                    {'response_text': response_text, 'model': model}, sort_keys=True
+                ).encode()).hexdigest()
+                chain_hash = hashlib.sha256(f'{req_hash}{resp_hash}'.encode()).hexdigest()
+
+                self._respond(200, {
+                    'response_text': response_text,
+                    'model_id': model,
+                    'request_hash': req_hash,
+                    'response_hash': resp_hash,
+                    'chain_hash': chain_hash,
+                    'input_tokens': resp.usage.input_tokens,
+                    'output_tokens': resp.usage.output_tokens,
+                    'stop_reason': resp.stop_reason,
+                    'is_replay_reconstructable': True,
+                })
+            except Exception as e:
+                self._respond(500, {'error': str(e)})
+
+        elif self.path == '/claude/stream':
+            # SSE streaming Claude endpoint.
+            # Body: { "messages": [{role, content}], "model"?, "max_tokens"? }
+            try:
+                import anthropic as _anthropic
+            except ImportError:
+                self._respond(503, {'error': 'anthropic SDK not installed'})
+                return
+
+            api_key = os.environ.get('ANTHROPIC_API_KEY')
+            if not api_key:
+                self._respond(503, {'error': 'ANTHROPIC_API_KEY not set'})
+                return
+
+            messages = data.get('messages', [])
+            model = data.get('model', 'claude-sonnet-4-6')
+            max_tokens = int(data.get('max_tokens', 2048))
+
+            CONSTITUTIONAL_SYSTEM = (
+                'You are Claude, AEGIS-Ω Orchestration Alliance Coordinator. '
+                'Copyright (C) 2025 Tarik Skalić. '
+                'Tier-stamp all claims (T0/T1/T2/T3). '
+                'Flag your weakest point. AdaptivePower(T) ≤ ReplayVerifiability(T).'
+            )
+
+            self.send_response(200)
+            self._cors_headers()
+            self.send_header('Content-Type', 'text/event-stream')
+            self.send_header('Cache-Control', 'no-cache')
+            self.send_header('X-Accel-Buffering', 'no')
+            self.send_header('Transfer-Encoding', 'chunked')
+            self.end_headers()
+
+            try:
+                client = _anthropic.Anthropic(api_key=api_key)
+                with client.messages.stream(
+                    model=model,
+                    max_tokens=max_tokens,
+                    system=CONSTITUTIONAL_SYSTEM,
+                    messages=messages,
+                ) as stream:
+                    for text in stream.text_stream:
+                        event = f'data: {json.dumps({"delta": text})}\n\n'
+                        self.wfile.write(event.encode())
+                        self.wfile.flush()
+                    # Final event with usage
+                    final = stream.get_final_message()
+                    done_event = f'data: {json.dumps({"done": True, "input_tokens": final.usage.input_tokens, "output_tokens": final.usage.output_tokens})}\n\n'
+                    self.wfile.write(done_event.encode())
+                    self.wfile.flush()
+            except (BrokenPipeError, ConnectionResetError):
+                pass
+            except Exception as e:
+                err_event = f'data: {json.dumps({"error": str(e)})}\n\n'
+                try:
+                    self.wfile.write(err_event.encode())
+                    self.wfile.flush()
+                except Exception:
+                    pass
+            return
+
+        elif self.path == '/edge-verify':            # Stateless 1/φ quorum threshold check — same integer approximation as
             # aegis-cl-psi/src/edge_verifier.rs (618_034/1_000_000 ≈ 0.618034 ≈ 1/φ).
             # Actual Ed25519 verification happens at the Rust/WASM layer; this endpoint
             # applies the threshold rule to pre-computed counts.
