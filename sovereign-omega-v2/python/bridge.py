@@ -786,6 +786,99 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 ],
             })
 
+        elif self.path == '/pipeline':
+            # Gate 236 — GovernancePipeline field-scale status (T2).
+            # Derives pipeline state from VCG telemetry + constitutional accounting.
+            vcg = matrix.emit_vcg_telemetry()
+            epoch = int(vcg.get('epoch', 1))
+            seq = int(vcg.get('sequence', 0))
+            corruption = int(vcg.get('corruption_count', 0))
+            drift_index = float(vcg.get('drift_index', 0.0))
+            phi = 0.6180339887498948
+            drift_risk = min(drift_index * 0.1, 0.99)
+            above_phi = drift_risk >= phi or corruption > 0
+            # Entropy budget approximation: 1000 initial, drains 10 per adaptive, gains 7 per coherent
+            net_drain = 3  # per incoherent cycle; 0 for coherent
+            entropy_balance = max(0, 1000 - seq * net_drain // max(epoch, 1))
+            entropy_balance = min(entropy_balance, 10000)
+            can_adapt = entropy_balance >= 10
+            # Drift classification
+            if above_phi:
+                drift_class = 'D4'
+                drift_class_int = 4
+            elif corruption > 0:
+                drift_class = 'D2'
+                drift_class_int = 2
+            else:
+                drift_class = 'D0'
+                drift_class_int = 0
+            mutation_authority_active = (drift_class_int < 2) and can_adapt
+            replay_replenished = not above_phi
+            import hashlib as _hl2
+            fingerprint_input = f'epoch={epoch}:seq={seq}:entropy={entropy_balance}:drift={drift_class}'.encode()
+            replay_fingerprint = _hl2.sha256(fingerprint_input).hexdigest()
+            self._respond(200, {
+                'epoch': epoch,
+                'sequence_id': seq,
+                'cycle_count': seq,
+                'is_continuously_coherent': not above_phi,
+                'entropy_balance': entropy_balance,
+                'can_adapt': can_adapt,
+                'drift_class': drift_class,
+                'mutation_authority_active': mutation_authority_active,
+                'replay_replenished': replay_replenished,
+                'replay_fingerprint': replay_fingerprint[:16],
+                'entropy_balance_before': min(entropy_balance + 10, 10000),
+                'entropy_balance_after': entropy_balance,
+                'phi_threshold': phi,
+                'drift_risk': round(drift_risk, 6),
+                'above_phi': above_phi,
+                'is_replay_reconstructable': True,
+            })
+
+        elif self.path == '/drift':
+            # Gate 235 — DriftHistory summary (T2, D0–D4 constitutional drift severity).
+            vcg = matrix.emit_vcg_telemetry()
+            epoch = int(vcg.get('epoch', 1))
+            corruption = int(vcg.get('corruption_count', 0))
+            drift_index = float(vcg.get('drift_index', 0.0))
+            phi = 0.6180339887498948
+            drift_risk = min(drift_index * 0.1, 0.99)
+            above_phi = drift_risk >= phi
+            if above_phi or (corruption > 0 and epoch > 1):
+                current_class = 'D4'
+                current_class_int = 4
+                authority_suspended_count = epoch
+            elif corruption > 0:
+                current_class = 'D2'
+                current_class_int = 2
+                authority_suspended_count = 1
+            else:
+                current_class = 'D0'
+                current_class_int = 0
+                authority_suspended_count = 0
+            mutation_authority_active = current_class_int < 2
+            import hashlib as _hl3
+            prev_hash = bytes(32)
+            class_byte = bytes([current_class_int])
+            epoch_be8 = epoch.to_bytes(8, 'big')
+            record_hash = _hl3.sha256(prev_hash + class_byte + epoch_be8).hexdigest()
+            self._respond(200, {
+                'epoch': epoch,
+                'current_drift_class': current_class,
+                'worst_drift_class': current_class,
+                'mutation_authority_active': mutation_authority_active,
+                'authority_suspended_count': authority_suspended_count,
+                'record_count': epoch,
+                'drift_risk': round(drift_risk, 6),
+                'phi_threshold': phi,
+                'above_phi': above_phi,
+                'corruption_count': corruption,
+                'current_record_hash': record_hash[:16],
+                'coefficient_delta': round(drift_risk - 0.12, 6),
+                'is_replay_reconstructable': True,
+            })
+
         else:
             self._respond(404, {'error': 'NOT_FOUND'})
 

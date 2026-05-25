@@ -6,6 +6,8 @@ export interface LiveState {
   resonance: ResonanceData | null
   telemetry: TelemetryData | null
   coherence: CoherenceData | null
+  pipeline:  PipelineData | null
+  drift:     DriftData | null
 }
 
 export interface NodeDescriptor {
@@ -73,6 +75,39 @@ export interface CoherenceData {
   frame_hex: string
 }
 
+export interface PipelineData {
+  epoch: number
+  sequence_id: number
+  cycle_count: number
+  is_continuously_coherent: boolean
+  entropy_balance: number
+  can_adapt: boolean
+  drift_class: string
+  mutation_authority_active: boolean
+  replay_replenished: boolean
+  replay_fingerprint: string
+  entropy_balance_before: number
+  entropy_balance_after: number
+  phi_threshold: number
+  drift_risk: number
+  above_phi: boolean
+}
+
+export interface DriftData {
+  epoch: number
+  current_drift_class: string
+  worst_drift_class: string
+  mutation_authority_active: boolean
+  authority_suspended_count: number
+  record_count: number
+  drift_risk: number
+  phi_threshold: number
+  above_phi: boolean
+  corruption_count: number
+  current_record_hash: string
+  coefficient_delta: number
+}
+
 async function safeFetch<T>(path: string): Promise<T | null> {
   try {
     const res = await fetch(`${BRIDGE}${path}`, { signal: AbortSignal.timeout(4_000) })
@@ -81,14 +116,16 @@ async function safeFetch<T>(path: string): Promise<T | null> {
 }
 
 export async function fetchLiveState(): Promise<LiveState> {
-  const [node, network, resonance, telemetry, coherence] = await Promise.all([
+  const [node, network, resonance, telemetry, coherence, pipeline, drift] = await Promise.all([
     safeFetch<NodeDescriptor>('/node'),
     safeFetch<NetworkReport>('/network'),
     safeFetch<ResonanceData>('/resonance'),
     safeFetch<TelemetryData>('/telemetry'),
     safeFetch<CoherenceData>('/coherence'),
+    safeFetch<PipelineData>('/pipeline'),
+    safeFetch<DriftData>('/drift'),
   ])
-  return { node, network, resonance, telemetry, coherence }
+  return { node, network, resonance, telemetry, coherence, pipeline, drift }
 }
 
 export function subscribeLiveState(

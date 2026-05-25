@@ -168,6 +168,13 @@ pub mod drift_classifier;
 // process() = entropy check → autonode tick → drift classify → budget → replay chain.
 pub mod governance_pipeline;
 
+// Gate 237 — Swarm Health Monitor (T2, unified constitutional health verdict across swarm)
+pub mod swarm_health;
+
+// Gate 238 — Divergence Oracle: classifies constitutional drift between health epochs (T2)
+// Stable/Nominal/Elevated/Critical/Terminal. adaptive_permitted() blocks at Critical+.
+pub mod divergence_oracle;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;

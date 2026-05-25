@@ -12,9 +12,9 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   Shield, Activity, GitBranch, Users, FileText, Radio,
   Layers, AlertTriangle, CheckCircle, Circle, Wifi, WifiOff,
-  Globe,
+  Globe, Gauge,
 } from 'lucide-react'
-import { subscribeLiveState, type LiveState, type CoherenceData } from './lib/bridge.js'
+import { subscribeLiveState, type LiveState, type CoherenceData, type PipelineData, type DriftData } from './lib/bridge.js'
 
 // ─── Design tokens (inline for single-bundle enterprise product) ──────────
 
@@ -40,6 +40,7 @@ type SurfaceId =
   | 'compliance'
   | 'governance-events'
   | 'self-certification'
+  | 'pipeline-drift'
 
 const SURFACES: Array<{ id: SurfaceId; label: string; icon: React.ElementType; tier: string }> = [
   { id: 'constitutional-health', label: 'Constitutional Health',  icon: Shield,      tier: 'T0' },
@@ -51,6 +52,7 @@ const SURFACES: Array<{ id: SurfaceId; label: string; icon: React.ElementType; t
   { id: 'compliance',            label: 'EU AI Act Compliance',  icon: Globe,       tier: 'T1' },
   { id: 'governance-events',     label: 'Governance Events',     icon: GitBranch,   tier: 'T2' },
   { id: 'self-certification',    label: 'Self-Certification',    icon: Shield,      tier: 'T1' },
+  { id: 'pipeline-drift',        label: 'Pipeline & Drift',      icon: Gauge,       tier: 'T2' },
 ]
 
 // ─── Constitutional Ribbon ────────────────────────────────────────────────
@@ -973,6 +975,152 @@ function SkillCertificationSurface() {
   )
 }
 
+// ─── Pipeline & Drift Surface ─────────────────────────────────────────────
+
+const DRIFT_COLORS: Record<string, string> = {
+  D0: '#34D399', D1: '#60A5FA', D2: '#C8A96E', D3: '#F59E0B', D4: '#F87171',
+}
+
+function PipelineDriftSurface({
+  pipeline, drift,
+}: { pipeline: PipelineData | null; drift: DriftData | null }) {
+  if (!pipeline && !drift) return <Offline />
+  const dClass = drift?.current_drift_class ?? pipeline?.drift_class ?? 'D0'
+  const dColor = DRIFT_COLORS[dClass] ?? '#A1A1AA'
+  const mutOk = pipeline?.mutation_authority_active ?? drift?.mutation_authority_active ?? true
+  const entropyPct = pipeline ? pipeline.entropy_balance / 10000 : 1
+  const driftRisk = pipeline?.drift_risk ?? drift?.drift_risk ?? 0
+
+  return (
+    <div className="p-6 space-y-5">
+      <div>
+        <h2 className="text-lg font-semibold mb-1" style={{ color: T.text }}>Pipeline & Drift</h2>
+        <p className="text-sm" style={{ color: T.muted }}>
+          Gates 235–236 — GovernancePipeline field-scale status · DriftHistory D0–D4 · Entropy budget ledger
+        </p>
+      </div>
+
+      {/* Mutation authority banner */}
+      <div className="rounded-lg p-4 flex items-center gap-4"
+        style={{
+          background: mutOk ? 'rgba(52,211,153,0.06)' : 'rgba(248,113,113,0.06)',
+          border: `1px solid ${mutOk ? 'rgba(52,211,153,0.25)' : 'rgba(248,113,113,0.25)'}`,
+        }}>
+        {mutOk
+          ? <CheckCircle size={28} style={{ color: T.T0 }} />
+          : <AlertTriangle size={28} style={{ color: T.error }} />}
+        <div>
+          <div className="font-semibold mb-0.5" style={{ color: mutOk ? T.T0 : T.error }}>
+            MUTATION AUTHORITY: {mutOk ? 'ACTIVE' : 'SUSPENDED'}
+          </div>
+          <div className="text-sm" style={{ color: T.muted }}>
+            {mutOk
+              ? `Drift ${dClass} < D2 · Entropy sufficient · Adaptive events permitted`
+              : `Drift ${dClass} ≥ D2 or entropy exhausted · Adaptive events BLOCKED`}
+          </div>
+        </div>
+        <div className="ml-auto font-mono text-2xl font-bold" style={{ color: dColor }}>{dClass}</div>
+      </div>
+
+      {/* Metric grid */}
+      <div className="grid grid-cols-4 gap-3">
+        {[
+          { label: 'Drift Class',   value: dClass,                                          color: dColor },
+          { label: 'Entropy',       value: pipeline ? pipeline.entropy_balance : '—',        color: entropyPct > 0.5 ? T.T0 : T.warn },
+          { label: 'Cycle Count',   value: pipeline?.cycle_count ?? '—',                    color: T.secondary },
+          { label: 'Drift Risk',    value: `${(driftRisk * 100).toFixed(2)}%`,              color: driftRisk < 0.618 ? T.T0 : T.error },
+        ].map(m => (
+          <div key={m.label} className="rounded-lg p-3 text-center"
+            style={{ background: T.surface, border: `1px solid ${T.border}` }}>
+            <div className="text-xl font-mono font-semibold" style={{ color: m.color }}>{String(m.value)}</div>
+            <div className="text-2xs mt-0.5" style={{ color: T.muted }}>{m.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Entropy bar */}
+      {pipeline && (
+        <div>
+          <div className="flex justify-between text-xs mb-1.5">
+            <span style={{ color: T.muted }}>Entropy budget (ADAPTIVE_COST=10 · REPLAY_GAIN=7)</span>
+            <span className="font-mono" style={{ color: entropyPct > 0.5 ? T.T0 : T.warn }}>
+              {pipeline.entropy_balance} / 10000
+            </span>
+          </div>
+          <div className="h-2 rounded-full" style={{ background: T.border }}>
+            <div className="h-full rounded-full transition-all"
+              style={{
+                width: `${entropyPct * 100}%`,
+                background: entropyPct > 0.5 ? T.T0 : entropyPct > 0.2 ? T.warn : T.error,
+              }} />
+          </div>
+          <div className="flex justify-between text-2xs mt-1 font-mono">
+            <span style={{ color: T.muted }}>before: {pipeline.entropy_balance_before}</span>
+            <span style={{ color: pipeline.replay_replenished ? T.T0 : T.muted }}>
+              replay_replenished: {pipeline.replay_replenished ? 'YES' : 'NO'}
+            </span>
+            <span style={{ color: T.muted }}>after: {pipeline.entropy_balance_after}</span>
+          </div>
+        </div>
+      )}
+
+      {/* D0–D4 drift class table */}
+      <div>
+        <div className="text-sm font-medium mb-3" style={{ color: T.secondary }}>
+          Drift Severity Classification (D0→D4)
+        </div>
+        <div className="space-y-1.5">
+          {(['D0', 'D1', 'D2', 'D3', 'D4'] as const).map(dc => {
+            const isActive = dClass === dc
+            const dcColor = DRIFT_COLORS[dc]
+            const desc = dc === 'D0' ? 'Observational — coefficient changed, invariants intact'
+              : dc === 'D1' ? 'Serializer drift — phi_headroom sign changed'
+              : dc === 'D2' ? 'Topology mismatch — ring_valid or seq_monotone flipped (authority BLOCKED)'
+              : dc === 'D3' ? 'Ownership inconsistency — vortex_family changed'
+              : 'Constitutional invalidity — phi_convergent=false OR depth=0'
+            return (
+              <div key={dc}
+                className="flex items-center gap-3 rounded-lg px-4 py-2.5"
+                style={{
+                  background: isActive ? `${dcColor}12` : T.surface,
+                  border: `1px solid ${isActive ? dcColor + '40' : T.border}`,
+                }}>
+                <span className="font-mono font-bold w-6 text-center" style={{ color: dcColor }}>{dc}</span>
+                <span className="flex-1 text-sm" style={{ color: isActive ? T.text : T.muted }}>{desc}</span>
+                {isActive && (
+                  <span className="text-2xs font-mono px-1.5 py-0.5 rounded"
+                    style={{ background: `${dcColor}20`, color: dcColor }}>CURRENT</span>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Drift history summary */}
+      {drift && (
+        <div className="rounded-lg p-4 font-mono text-xs space-y-2"
+          style={{ background: T.card, border: `1px solid ${T.border}` }}>
+          <div className="text-sm font-semibold mb-2" style={{ color: T.secondary }}>
+            DriftHistory — Gate 235
+          </div>
+          {[
+            ['worst_class', drift.worst_drift_class, DRIFT_COLORS[drift.worst_drift_class]],
+            ['authority_suspended_count', drift.authority_suspended_count, drift.authority_suspended_count > 0 ? T.warn : T.T0],
+            ['coefficient_delta', drift.coefficient_delta.toFixed(6), drift.coefficient_delta > 0 ? T.error : T.T0],
+            ['current_record_hash', drift.current_record_hash + '…', T.border],
+          ].map(([label, val, color]) => (
+            <div key={String(label)} className="flex gap-2">
+              <span style={{ color: T.muted }}>{String(label)}:</span>
+              <span style={{ color: String(color) }}>{String(val)}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function Offline() {
   return (
     <div className="p-6 flex items-center justify-center h-full min-h-64">
@@ -993,6 +1141,7 @@ export function App() {
   const [surface, setSurface] = useState<SurfaceId>('constitutional-health')
   const [liveState, setLiveState] = useState<LiveState>({
     node: null, network: null, resonance: null, telemetry: null, coherence: null,
+    pipeline: null, drift: null,
   })
 
   useEffect(() => subscribeLiveState(setLiveState), [])
@@ -1008,6 +1157,7 @@ export function App() {
       case 'audit-trail':           return <AuditTrailSurface />
       case 'governance-events':     return <GovernanceEventsSurface />
       case 'skill-certification':   return <SkillCertificationSurface />
+      case 'pipeline-drift':        return <PipelineDriftSurface pipeline={liveState.pipeline} drift={liveState.drift} />
     }
   }, [surface, liveState])
 
@@ -1052,8 +1202,8 @@ export function App() {
 
           <div className="mt-4 pt-4 mx-2" style={{ borderTop: `1px solid ${T.border}` }}>
             <div className="text-2xs font-mono space-y-1" style={{ color: T.border }}>
-              <div>Gates 1–225 complete</div>
-              <div>312 Rust tests</div>
+              <div>Gates 1–236 complete</div>
+              <div>475 Rust tests</div>
               <div>2790 TS tests</div>
             </div>
           </div>
