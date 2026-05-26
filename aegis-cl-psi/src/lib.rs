@@ -251,6 +251,11 @@ pub mod telemetry_encoder;
 // GossipLog: BTreeMap<node_id, highest_sequence>; append validates MAC + monotone sequence.
 pub mod gossip_broadcaster;
 
+// Gate 256 — Gossip Router: multi-hop peer routing with deduplication and TTL (T2)
+// RoutingTable: BTreeMap<peer_id, PeerEntry> + BTreeMap<(node_id, seq), ()> seen set.
+// route() → Forward(peer_ids) | Drop(AlreadySeen|TtlExpired|NoPeers|SelfMessage).
+pub mod gossip_router;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
