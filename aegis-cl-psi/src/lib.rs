@@ -649,6 +649,14 @@ pub mod gossip_health_report;
 //             ‖coefficient_bits_be8‖phi_headroom_bits_be8‖sequence_id_be8
 pub mod resonance_anchor;
 
+// Gate 323 — Constitutional Verdict Ledger (T2)
+// Per-node T0 verdict tracking with tamper-evident SHA-256 hash chain.
+// NodeVerdictLedger: per-node append-only chain of VerdictEntry records.
+// SwarmVerdictRegistry: BTreeMap<node_id, NodeVerdictLedger> — deterministic.
+// consensus_t0(): all nodes certified. quorum_t0(): integer 1/φ quorum.
+// verify_all() → (bool, BTreeMap<node_id, first_invalid_idx>).
+pub mod verdict_ledger;
+
 // Gate 322 — Constitutional Synthesis Monitor (T2)
 // Synthesises Gate 320 gossip health verdict + Gate 321 resonance certification
 // into a single T0 constitutional verdict with SHA-256 hash chain.
