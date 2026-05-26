@@ -1196,6 +1196,12 @@ pub mod gossip_backpressure_epoch;
 // GossipFrameSizeHistogramLog: record(), total_small(), total_medium(), total_large(), dominant_bucket(), verify_chain().
 pub mod gossip_frame_size_histogram;
 
+// Gate 398 — Gossip Peer Reputation Log (T2)
+// Per-peer score [0,100]: delivered+5, missed-10, churned-3. Trusted>=80, Neutral>=40, Untrusted<40.
+// entry_hash = SHA-256(prev[32]‖peer_id_be8‖epoch_end_be8‖score_be4‖class_byte‖delivered_byte‖churned_byte).
+// GossipPeerReputationLog: record(), score_for(), trusted_count(), untrusted_count(), verify_chain().
+pub mod gossip_peer_reputation;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
