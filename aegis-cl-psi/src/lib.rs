@@ -837,6 +837,14 @@ pub mod compaction_epoch_comparator;
 // TrendAnalyzerLog: append(delta), improving/degrading/volatile/stable_trend_count(), verify_chain().
 pub mod compaction_trend_analyzer;
 
+// Gate 347 — Compaction Dashboard Aggregator (T2)
+// Unifies alert + trend + SLA signals into a per-epoch DashboardFrame.
+// DashboardCondition: Thriving / Stable / Concerning / Critical.
+// Critical: Red alert OR Degrading trend. Thriving: Green + Improving + SLA-compliant.
+// frame_hash = SHA-256(prev[32]‖epoch_be8‖condition‖alert‖trend‖sla‖compliance_rate_be4‖imp_be4‖deg_be4).
+// CompactionDashboard: record(), thriving/stable/concerning/critical_count(), verify_chain().
+pub mod compaction_dashboard;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
