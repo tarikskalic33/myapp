@@ -908,6 +908,15 @@ pub mod compaction_gossip_dispatcher;
 // CompactionGossipHealthMonitor: record(), verify_chain(), red_count(), yellow_count(), green_count().
 pub mod compaction_gossip_health;
 
+// Gate 356 — Compaction Gossip Health Compactor (T2)
+// Applies proof-preserving compaction (Gate 328 pattern) to the Gate 355 health chain.
+// GossipHealthAnchor: anchor_epoch, terminal_hash, entry_count, peak_class.
+// terminal_hash chain: SHA-256(acc‖epoch_be8‖report_hash‖class_byte).
+// certificate_hash = SHA-256(compaction_epoch_be8‖pruned_be8‖retained_be8
+//                             ‖anchor.terminal_hash‖anchor_epoch_be8‖peak_class_byte).
+// GossipHealthCompactionLog: append(), verify_chain(), total_pruned().
+pub mod compaction_gossip_health_compactor;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
