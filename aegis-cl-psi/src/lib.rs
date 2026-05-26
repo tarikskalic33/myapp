@@ -886,6 +886,13 @@ pub mod compaction_sync_state;
 // CompactionPeerRegistry: admit(), evict(), contains(), get(), verify_chain().
 pub mod compaction_peer_registry;
 
+// Gate 354 — Compaction Gossip Dispatcher (T2)
+// Dispatches BroadcastFrames to all registered peers; rejects corrupt frames.
+// DispatchRecord: epoch_end, peer_count, delivered_count.
+// record_hash = SHA-256(prev[32]‖epoch_end_be8‖peer_count_be4‖delivered_be4).
+// CompactionGossipDispatcher: dispatch(frame, registry), total_delivered(), verify_chain().
+pub mod compaction_gossip_dispatcher;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
