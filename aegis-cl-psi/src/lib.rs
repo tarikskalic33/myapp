@@ -261,6 +261,11 @@ pub mod gossip_router;
 // PeerRegistry: BTreeMap<node_id, manifest>; register validates hash + monotone epoch.
 pub mod peer_manifest;
 
+// Gate 258 — Swarm Topology Snapshot: hash-linked mesh state capture (T2)
+// TopologySnapshot: peer_count + operational_count + cap counts + max_epoch + prev_hash.
+// quorum_reached(): operational/total >= 1/φ (integer arithmetic). TopologyLog chains snapshots.
+pub mod swarm_topology;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
