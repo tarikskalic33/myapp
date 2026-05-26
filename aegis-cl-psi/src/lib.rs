@@ -498,6 +498,12 @@ pub mod message_priority_queue;
 // PeerScoringEngine: update_score(), composite_score(), top_peers(n), all_scores().
 pub mod peer_scoring_engine;
 
+// Gate 301 — Gossip Routing Table: per-peer next-hop route management with hash-chained audit (T2)
+// RouteOperation: Insert/Update/Remove. Stores (destination→(next_hop, metric)) in BTreeMap.
+// MAX_ROUTES=256. RouteLog: hash-chained; insert/update/remove counts, verify_chain.
+// RoutingTable: insert(), remove(), lookup(), all_routes(). Log embedded.
+pub mod routing_table;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
