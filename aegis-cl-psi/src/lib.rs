@@ -1170,6 +1170,13 @@ pub mod gossip_delivery_ratio;
 // GossipPeerChurnLog: record(), total_joins(), total_leaves(), max_churn(), average_churn(), verify_chain().
 pub mod gossip_peer_churn;
 
+// Gate 394 — Gossip Epoch Health Verdict (T2)
+// Synthesises delivery_ratio, drop_pct, churn_count, backpressure into Healthy/Degraded/Critical.
+// Critical: ratio<50 OR drop>50 OR churn>20. Degraded: ratio<80 OR drop>10 OR pressure OR churn>5.
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖ratio_be4‖drop_be4‖churn_be4‖pressure_byte‖verdict_byte).
+// GossipEpochHealthLog: record(), healthy_count(), degraded_count(), critical_count(), verify_chain().
+pub mod gossip_epoch_health;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
