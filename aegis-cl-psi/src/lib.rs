@@ -281,6 +281,11 @@ pub mod epoch_synchronizer;
 // ConsensusCertificate + ConsensusLedger: hash-chained round certifications.
 pub mod consensus_ledger;
 
+// Gate 262 — Node State Machine: per-node lifecycle automaton (T2)
+// NodeState: Initializing→Active→Degraded→Recovery→Halted; transition adjacency enforced.
+// NodeHistory: hash-chained NodeRecords; degraded_count(), recovery_count(), verify_chain().
+pub mod node_state_machine;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
