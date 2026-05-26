@@ -649,6 +649,14 @@ pub mod gossip_health_report;
 //             ‖coefficient_bits_be8‖phi_headroom_bits_be8‖sequence_id_be8
 pub mod resonance_anchor;
 
+// Gate 322 — Constitutional Synthesis Monitor (T2)
+// Synthesises Gate 320 gossip health verdict + Gate 321 resonance certification
+// into a single T0 constitutional verdict with SHA-256 hash chain.
+// T0: false if Red health OR not certified; true if non-Red AND certified.
+// report_hash = SHA-256(prev[32]‖epoch_be8‖health_class_byte‖certified_byte‖t0_byte).
+// ConstitutionalSynthesisMonitor: record(), latest(), t0_verdict(), health_class(), verify_chain().
+pub mod constitutional_synthesis;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
