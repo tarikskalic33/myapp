@@ -589,6 +589,13 @@ pub mod peer_capability_tracker;
 // GossipMessageCache: insert(), contains(), advance_epoch(), window_entry_count().
 pub mod gossip_message_cache;
 
+// Gate 314 — Gossip Subscription Filter: topic-based message forwarding decisions (T2)
+// FilterDecision: Forward/Drop/NoSubscriptions. MAX_FILTER_TOPICS=64.
+// BTreeSet<topic_hash[32]> per peer; evaluate() checks membership and records decision.
+// FilterLog: per-peer SHA-256 hash-chained; forward_count, drop_count, verify_chain.
+// SubscriptionFilter: register_topics() (truncates at MAX), evaluate(), clear_peer(), topics_for().
+pub mod subscription_filter;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
