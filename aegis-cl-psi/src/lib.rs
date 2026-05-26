@@ -629,6 +629,16 @@ pub mod message_sequence_tracker;
 // EpochSnapshotArchive: archive(), get(epoch), latest(), total_messages_sent/dropped, verify_chain.
 // verify_chain() → (bool, Option<u64>) — epoch of first invalid record.
 pub mod epoch_snapshot_archive;
+// Gate 320 — Gossip Network Health Report: constitutional health synthesis (T2)
+// Aggregates liveness (dead/suspect/degraded/live peer counts), rate accounting
+// (total_dropped, exceeded_epochs), and sequence integrity (gaps, duplicates) into
+// a single GossipHealthReport with NetworkHealthClass verdict (Green/Yellow/Red).
+// Red:    dead_peers≥1 OR exceeded_epochs≥3 OR sequence_gaps≥10.
+// Yellow: degraded/suspect≥1 OR total_dropped≥100 OR sequence_gaps≥1.
+// report_hash = SHA-256(prev‖epoch_be8‖live_be4‖degraded_be4‖suspect_be4‖dead_be4
+//               ‖dropped_be8‖exceeded_be4‖gaps_be8‖dups_be8‖class_byte).
+// GossipHealthMonitor: record(), latest(), health_class(), verify_chain().
+pub mod gossip_health_report;
 
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
