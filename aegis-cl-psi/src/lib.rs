@@ -845,6 +845,13 @@ pub mod compaction_trend_analyzer;
 // CompactionDashboard: record(), thriving/stable/concerning/critical_count(), verify_chain().
 pub mod compaction_dashboard;
 
+// Gate 348 — Compaction Epoch Ledger (T2)
+// Tamper-evident LedgerEntry per epoch binding all compaction subsystem terminal hashes.
+// entry_hash = SHA-256(prev[32]‖epoch_be8‖report_hash‖alert_hash‖sla_hash
+//                       ‖capacity_hash‖delta_hash‖trend_hash‖dashboard_hash).
+// CompactionEpochLedger: append(), terminal_hash(), entry_count(), verify_chain().
+pub mod compaction_epoch_ledger;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
