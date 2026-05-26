@@ -321,6 +321,11 @@ pub mod mesh_ledger;
 // NegotiationLog: hash-chained results per (local,peer) pair; capability_stable(), verify_chain().
 pub mod capability_negotiator;
 
+// Gate 270 — Epoch Sealer: terminal epoch seal across all gossip subsystems (T2)
+// EpochSeal: epoch + ledger/consensus/topology/sync hashes + SHA-256 chain.
+// SealChain: hash-chained EpochSeals; terminal_seal_hash(), seal_count(), verify_chain().
+pub mod epoch_sealer;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
