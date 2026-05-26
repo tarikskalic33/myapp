@@ -640,6 +640,15 @@ pub mod epoch_snapshot_archive;
 // GossipHealthMonitor: record(), latest(), health_class(), verify_chain().
 pub mod gossip_health_report;
 
+// Gate 321 — Resonance Anchor: hash-chained constitutional resonance ledger (T2)
+// Wraps Gate 222 check_resonance to add report_hash (SHA-256 chain), vortex_is_triadic,
+// ring_depth (center_index from ring_composition), certified_constitutional bool, and
+// a ResonanceChain monitor with verify_chain() → (bool, Option<usize>) audit replay.
+// Hash input: prev[32]‖is_resonant‖phi_convergent‖ring_valid‖sequence_monotone
+//             ‖vortex_is_triadic‖certified‖resonance_depth‖ring_depth_be8
+//             ‖coefficient_bits_be8‖phi_headroom_bits_be8‖sequence_id_be8
+pub mod resonance_anchor;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
