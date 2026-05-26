@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 # AEGIS Monorepo — Coordination Document
-## Branch: claude/aegis-setup-Lx7Ji · Gates complete: 379
+## Branch: claude/aegis-setup-Lx7Ji · Gates complete: 385
 ## Operator: Tarik Skalić · Hardware: AMD RX 570, 8 GB RAM
 
 Approach every component as a recursively nested atomic-scale holon governed by
@@ -18,7 +18,7 @@ A T0 violation at any scale propagates upward and invalidates everything above i
 
 ```
 /sovereign-omega-v2/   Governance runtime (Layer A: TypeScript, Layer B: Python)
-/aegis-cl-psi/         CL-Ψ cognitive fabric — 379-gate Rust inference crate (T2, EU AI Act-compliant)
+/aegis-cl-psi/         CL-Ψ cognitive fabric — 385-gate Rust inference crate (T2, EU AI Act-compliant)
 /aegis-runtime/        AEGIS-Ω Seven-Pillar distributed agent swarm runtime (T2)
 /cockpit/              AI chat UI with sovereign-omega telemetry integration
 /platform-picker/      Commercial product — platform recommendation ($19)
@@ -39,12 +39,12 @@ Key specs: `sovereign-omega-v2/docs/SOVEREIGN_RUNTIME_HANDOFF_v1.0.md` (constitu
 
 ## Build & Test Commands
 
-### Rust — aegis-cl-psi (2781 tests)
+### Rust — aegis-cl-psi (2881 tests)
 ```bash
 cd aegis-cl-psi
 
 cargo test                          # full suite — default features only (NEVER --all-features)
-cargo test <module_name>            # single module: e.g. cargo test gossip_health_report
+cargo test <module_name>            # single module: e.g. cargo test gossip_epoch_seal
 cargo test <test_fn_name>           # single test:   e.g. cargo test verify_chain_tampered
 cargo build --release               # release build (no HIP/ROCm required)
 
