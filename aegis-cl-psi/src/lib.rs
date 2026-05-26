@@ -387,6 +387,12 @@ pub mod convergence_certifier;
 // ProbeMatrix: BTreeMap<(prober_id,target_id), ProbeLog>; reachable_from(), avg_mesh_rtt().
 pub mod gossip_prober;
 
+// Gate 283 — Mesh Partition Detector: network partition classification from probe evidence (T2)
+// PartitionClass: Unified/Asymmetric/Clustered/Isolated(u32)/Unknown.
+// detect_partition(): BFS component analysis + symmetry check, integer arithmetic.
+// PartitionLog: hash-chained PartitionReports; longest_non_unified_run(), unified_count().
+pub mod partition_detector;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
