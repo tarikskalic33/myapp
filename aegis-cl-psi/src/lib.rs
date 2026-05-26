@@ -466,6 +466,12 @@ pub mod backpressure_controller;
 // MessageDeduplicator: observe(), seal_epoch(), dup_rate_current().
 pub mod message_deduplicator;
 
+// Gate 296 — Gossip Adaptive Fanout Controller: delivery-rate-aware fanout tuning (T2)
+// Distinct from fanout_controller (Gate 273): this one uses delivery success rate (delivered/attempted).
+// Thresholds: <60%→Increase, >90%→Decrease; clamped [MIN=2, MAX=16], STEP=1.
+// FanoutLog: hash-chained; increase_count(), decrease_count(), avg_fanout(), verify_chain().
+pub mod adaptive_fanout_controller;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
