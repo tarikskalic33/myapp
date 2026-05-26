@@ -1158,6 +1158,12 @@ pub mod gossip_retransmit;
 // GossipAckLatencyLog: record(), avg_latency_for(), max_latency(), overall_avg(), verify_chain().
 pub mod gossip_ack_latency;
 
+// Gate 392 — Gossip Delivery Ratio Tracker (T2)
+// delivery_ratio_pct = floor(delivered*100/max(dispatched,1)). Full/Partial/Poor classification.
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖dispatched_be4‖delivered_be4‖ratio_pct_be4‖class_byte).
+// GossipDeliveryRatioLog: record(), full_count(), partial_count(), poor_count(), average_ratio_pct(), verify_chain().
+pub mod gossip_delivery_ratio;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
