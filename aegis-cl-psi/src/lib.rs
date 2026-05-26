@@ -484,6 +484,13 @@ pub mod epoch_boundary_detector;
 // LinkQualityMonitor: sample(), sample_timeout(), current_tier(), peers_at_tier().
 pub mod link_quality_monitor;
 
+// Gate 299 — Gossip Message Priority Queue: urgency-ordered message scheduling (T2)
+// PriorityClass: Critical(0)/High(1)/Normal(2)/Low(3). Capacity=64, CriticalReserve=8.
+// VecDeque sorted by (priority ASC, enqueue_seq ASC). Evicts lowest-priority non-Critical on overflow.
+// QueueRecord: hash-chained; enqueue/dequeue/evict operations tracked.
+// MessagePriorityQueue: enqueue(), dequeue(), verify_chain(), stats.
+pub mod message_priority_queue;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
