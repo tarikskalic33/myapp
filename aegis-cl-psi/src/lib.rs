@@ -545,6 +545,13 @@ pub mod nonce_cache;
 //   expire_bans(epoch), banned_peers(epoch) sorted, blocklist_size().
 pub mod peer_blocklist;
 
+// Gate 308 — Gossip Message Acknowledgment Tracker: per-message delivery confirmation (T2)
+// AckStatus: Pending/Acked/TimedOut. ACK_TIMEOUT_EPOCHS=5, MAX_PENDING_PER_PEER=128.
+// AckLog: global hash-chained; acked_count, timed_out_count, verify_chain.
+// MessageAckTracker: send(), ack() → bool, expire_timeouts(epoch),
+//   pending_count(peer), delivery_rate_pct(peer) = acked*100/(acked+timed_out).
+pub mod message_ack_tracker;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
