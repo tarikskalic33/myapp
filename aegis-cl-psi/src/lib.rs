@@ -517,6 +517,12 @@ pub mod heartbeat_tracker;
 // TokenBucketRegistry: consume(peer, epoch), tick_refill_all(), tokens(), get_log().
 pub mod token_bucket;
 
+// Gate 304 — Gossip Message Fragmenter: split/reassemble large messages into fixed-size fragments (T2)
+// FRAGMENT_SIZE=256, MAX_FRAGMENTS=64. Fragment: message_id, fragment_index, total_fragments, payload_hash.
+// fragment_message() splits data into fragments. FragmentError: MessageTooLarge/EmptyPayload/etc.
+// ReassemblyBuffer: insert() returns Ok(Some(data)) when complete, Ok(None) when waiting.
+pub mod message_fragmenter;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
