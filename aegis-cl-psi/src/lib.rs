@@ -1077,6 +1077,12 @@ pub mod gossip_broadcast_summary;
 // GossipFanoutLog: record(), full_coverage_count(), average_coverage_pct(), verify_chain().
 pub mod gossip_fanout_tracker;
 
+// Gate 379 — Gossip Latency Tracker (T2)
+// Per-peer epoch-delta latency: latency_epochs = ack_epoch.saturating_sub(dispatch_epoch).
+// record_hash = SHA-256(prev‖peer_id_be8‖dispatch_epoch_be8‖ack_epoch_be8‖latency_epochs_be8).
+// GossipLatencyLog: record(), max/min/avg_latency(), verify_chain().
+pub mod gossip_latency_tracker;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
