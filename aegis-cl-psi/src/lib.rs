@@ -1010,6 +1010,14 @@ pub mod compaction_gossip_epoch_comparator;
 // GossipTrendAnalyzerLog: append(delta), improving_trend_count(), degrading_trend_count(), verify_chain().
 pub mod compaction_gossip_trend_analyzer;
 
+// Gate 369 — Compaction Gossip Dashboard Aggregator (T2)
+// Unifies gossip signals into GossipDashboardFrame: condition = Thriving/Stable/Concerning/Critical.
+// Mirrors Gate 347. Critical: Red alert OR Degrading trend. Concerning: SLA violation OR Volatile OR Amber.
+// Thriving: SLA compliant AND Improving AND Green. frame_hash = SHA-256(prev‖epoch_be8‖condition_byte‖
+// alert_byte‖trend_byte‖sla_byte‖compliance_rate_be4‖improvement_be4‖degradation_be4).
+// GossipDashboard: record(), thriving/stable/concerning/critical_count(), verify_chain().
+pub mod compaction_gossip_dashboard_aggregator;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
