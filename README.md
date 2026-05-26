@@ -20,8 +20,8 @@ AEGIS-Ω was conceived, designed, and executed by a single engineer operating un
 
 - **Single author, single machine** — AMD RX 570, 8GB RAM. No cloud. No build farm. No team.
 - **113,000+ lines of polyglot code** — TypeScript (governance runtime), Rust (gossip fabric + seven-pillar runtime), Python (analytical bridge) — architected, typed, and maintained by a singular author.
-- **5,508 invariant tests, 0 failures** — every hash chain, every BFT boundary, every determinism proof runs on the same machine that generated them. Test density is approximately one test per 16 lines of production code, approaching DO-178C aerospace coverage standards.
-- **385 gates completed** — each gate required a passing implementation, unit tests, and a full-suite green run before the commit was allowed to land.
+- **6,113 invariant tests, 0 failures** — every hash chain, every BFT boundary, every determinism proof runs on the same machine that generated them. Test density is approximately one test per 17 lines of production code, approaching DO-178C aerospace coverage standards.
+- **404 gates completed** — each gate required a passing implementation, unit tests, and a full-suite green run before the commit was allowed to land.
 - **One law above all others** — `AdaptivePower(T) ≤ ReplayVerifiability(T)` — every module, every layer, every commit answers to it.
 
 The code does not ask to be believed. It can be replayed from genesis and will produce the same cryptographic fingerprint every time.
@@ -407,12 +407,12 @@ Qwen Plus         · weight = 191/1000
 
 | Layer | Language | Source Files | Lines | Tests |
 |-------|----------|-------------|-------|-------|
-| Gossip / math gates | Rust | 196 | 46,800 | 2881 |
-| Governance runtime | TypeScript | 177 | 20,200 | 2790 |
-| Seven-pillar runtime | Rust | 12 | 2,200 | 96 |
-| Python bridge | Python | 11 | 5,500 | — |
-| Frontend products | TSX/TS | 60 | 5,200 | — |
-| **Total** | | **444** | **~78,100** | **5508** |
+| Gossip / math gates | Rust | 223 | 74,295 | 3227 |
+| Governance runtime | TypeScript | 177 | 20,188 | 2790 |
+| Seven-pillar runtime | Rust | 14 | 2,958 | 96 |
+| Python bridge | Python | 14 | 4,343 | — |
+| Frontend products | TSX/TS | 45 | 4,165 | — |
+| **Total** | | **473** | **~105,950** | **6113** |
 
 ---
 
