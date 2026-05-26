@@ -266,6 +266,11 @@ pub mod peer_manifest;
 // quorum_reached(): operational/total >= 1/φ (integer arithmetic). TopologyLog chains snapshots.
 pub mod swarm_topology;
 
+// Gate 259 — Constitutional Beacon: 16-byte self-broadcast frame (T2)
+// BeaconFrame: epoch(8) ‖ node_id_byte(1) ‖ phase(1) ‖ capabilities(1) ‖ quorum(1) ‖ checksum(4).
+// BeaconLog: hash-chained records; append validates checksum + monotone epoch.
+pub mod constitutional_beacon;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
