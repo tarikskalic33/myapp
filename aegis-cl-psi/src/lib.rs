@@ -1089,6 +1089,13 @@ pub mod gossip_latency_tracker;
 // GossipEpochWindow: push(), healthy/degraded/critical_count(), verify_chain().
 pub mod gossip_epoch_window;
 
+// Gate 381 — Gossip Health Snapshot (T2)
+// Aggregates fanout coverage, avg latency, and window state into a hash-chained snapshot.
+// snapshot_hash = SHA-256(prev[32]‖epoch_end_be8‖coverage_pct_be4‖avg_latency_be8
+//                          ‖window_avg_pct_be4‖window_state_byte).
+// GossipHealthLog: record(), healthy/degraded/critical_count(), verify_chain().
+pub mod gossip_health_snapshot;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
