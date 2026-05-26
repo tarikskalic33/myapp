@@ -1280,6 +1280,22 @@ pub mod gossip_peer_timeout;
 //   degraded_count(), max_stall_pct(), verify_chain().
 pub mod gossip_latency_histogram;
 
+// Gate 409 — Gossip Connection Pool Log (T2)
+// Per-epoch pool state: pool_size / active_count / idle_count → utilization_pct.
+// underutilized: utilization_pct < POOL_UTILIZATION_FLOOR (30%).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖pool_size_be4‖active_be4‖idle_be4‖util_pct_be4‖underutilized_byte).
+// GossipConnectionPoolLog: record(), max_pool_size(), underutilized_count(),
+//   min_utilization_pct(), verify_chain().
+pub mod gossip_connection_pool;
+
+// Gate 410 — Gossip Epoch Error Log (T2)
+// Per-epoch error/warning accounting: error_count / total_events → error_rate_pct.
+// error_burst: error_rate_pct >= ERROR_BURST_THRESHOLD (2%).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖error_be4‖warning_be4‖total_be4‖rate_pct_be4‖burst_byte).
+// GossipEpochErrorLog: record(), total_errors(), total_warnings(),
+//   burst_count(), max_error_rate_pct(), verify_chain().
+pub mod gossip_epoch_error;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
