@@ -351,6 +351,11 @@ pub mod backpressure_monitor;
 // advance_epoch() evicts entries older than current_epoch - max_epoch_lag. hit_rate_pct().
 pub mod dedup_cache;
 
+// Gate 276 — Latency Tracker: per-peer round-trip latency estimation with rolling window (T2)
+// LatencyTier: Fast(≤50ms)/Normal(≤200ms)/Slow(≤500ms)/Timeout(>500ms).
+// PeerLatencyLog: circular buffer window[8], hash-chained records. LatencyRegistry: BTreeMap<peer_id>.
+pub mod latency_tracker;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
