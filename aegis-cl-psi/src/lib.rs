@@ -399,6 +399,12 @@ pub mod partition_detector;
 // BandwidthRegistry: BTreeMap<peer_id>; request_bytes(), seal_epoch() persists to log.
 pub mod bandwidth_tracker;
 
+// Gate 285 — Gossip Flood Guard: per-source message rate limiting with penalty escalation (T2)
+// FloodLevel: Clean(≤50)/Warning(≤100)/Blocking(≤500)/Banned(>500). should_drop() for Banned/Blocking.
+// FloodLog: hash-chained FloodRecords; worst_level(), banned_epoch_count(), total_dropped().
+// FloodGuard: BTreeMap<source_id>; observe_message(), seal_epoch(), sources_at_level().
+pub mod flood_guard;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
