@@ -504,6 +504,12 @@ pub mod peer_scoring_engine;
 // RoutingTable: insert(), remove(), lookup(), all_routes(). Log embedded.
 pub mod routing_table;
 
+// Gate 302 — Gossip Heartbeat Tracker: per-peer liveness via periodic beat monitoring (T2)
+// PeerStatus: Alive/Suspect(≥3 misses)/Dead(≥6 misses). HeartbeatEvent: Beat/Miss.
+// HeartbeatLog: hash-chained per peer; beat_count, miss_count_total, verify_chain.
+// HeartbeatTracker: beat(), tick_miss(), status(), suspect_peers(), dead_peers(), alive_peers().
+pub mod heartbeat_tracker;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
