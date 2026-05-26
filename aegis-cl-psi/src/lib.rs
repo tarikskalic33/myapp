@@ -1232,6 +1232,22 @@ pub mod gossip_fanout_epoch;
 //   high_overhead_count(), max_overhead_pct(), verify_chain().
 pub mod gossip_epoch_bandwidth;
 
+// Gate 403 — Gossip TTL Tracker Log (T2)
+// Per-epoch message TTL hop accounting. mean_hops_x10 = total_hops*10/max(delivered,1).
+// ttl_efficiency_pct = delivered*100/(expired+delivered); low_efficiency when <70%.
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖expired_be4‖delivered_be4‖mean_hops_x10_be4‖eff_pct_be4‖low_byte).
+// GossipTtlTrackerLog: record(), total_expired(), total_delivered(),
+//   low_efficiency_count(), min_efficiency_pct(), verify_chain().
+pub mod gossip_ttl_tracker;
+
+// Gate 404 — Gossip Queue Depth Log (T2)
+// Per-epoch send-queue depth (min/max/mean). mean=(min+max)/2 (integer).
+// queue_full: max_depth >= QUEUE_FULL_THRESHOLD (1000).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖min_be4‖max_be4‖mean_be4‖queue_full_byte).
+// GossipQueueDepthLog: record(), queue_full_count(), max_ever_depth(),
+//   mean_of_means(), verify_chain().
+pub mod gossip_queue_depth;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
