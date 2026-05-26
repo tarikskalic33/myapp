@@ -994,6 +994,14 @@ pub mod compaction_gossip_sla_tracker;
 // GossipCapacityPlannerLog: critical_projections() (epochs_to_ceiling≤5), verify_chain().
 pub mod compaction_gossip_capacity_planner;
 
+// Gate 367 — Compaction Gossip Epoch Comparator (T2)
+// Compares consecutive GossipEpochReports; records signed delta as hash-chained record.
+// Mirrors Gate 345. flags_byte: bit0=joint_improved, bit1=joint_worsened, bit2=chains_recovered,
+// bit3=chains_degraded, bit4=direction_changed. delivered_delta = i64 signed delivery diff.
+// delta_hash = SHA-256(prev[32]‖epoch_be8‖prev_epoch_be8‖flags_byte‖delivered_delta_be8‖momentum_delta_be2).
+// GossipEpochComparatorLog: improvement_count(), degradation_count(), verify_chain().
+pub mod compaction_gossip_epoch_comparator;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
