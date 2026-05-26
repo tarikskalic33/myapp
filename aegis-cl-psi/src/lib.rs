@@ -1184,6 +1184,12 @@ pub mod gossip_epoch_health;
 // GossipPipelineSummaryLog: record(), healthy_epochs(), degraded_epochs(), critical_epochs(), verify_chain().
 pub mod gossip_pipeline_summary;
 
+// Gate 396 — Gossip Backpressure Epoch Log (T2)
+// Per-epoch backpressure event counter. high_pressure = pressure_events >= SATURATION_THRESHOLD(10).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖pressure_events_be4‖high_pressure_byte).
+// GossipBackpressureEpochLog: record(), total_pressure_events(), high_pressure_count(), max_pressure_events(), verify_chain().
+pub mod gossip_backpressure_epoch;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
