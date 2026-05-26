@@ -1164,6 +1164,12 @@ pub mod gossip_ack_latency;
 // GossipDeliveryRatioLog: record(), full_count(), partial_count(), poor_count(), average_ratio_pct(), verify_chain().
 pub mod gossip_delivery_ratio;
 
+// Gate 393 — Gossip Peer Churn Tracker (T2)
+// churn_count = joins.saturating_add(leaves) per epoch. High churn = unstable mesh.
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖joins_be4‖leaves_be4‖churn_count_be4).
+// GossipPeerChurnLog: record(), total_joins(), total_leaves(), max_churn(), average_churn(), verify_chain().
+pub mod gossip_peer_churn;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
