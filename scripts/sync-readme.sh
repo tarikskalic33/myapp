@@ -26,7 +26,7 @@ AEGIS_PSI=$(echo "$OUTPUT" | grep -oP '\d+ passed' | grep -oP '\d+' | awk '{s+=$
 [ -z "$AEGIS_PSI" ] && exit 0
 [ "$AEGIS_PSI" -lt 100 ] && exit 0
 
-RUNTIME=55
+RUNTIME=96
 TS=2790
 TOTAL_RUST=$((AEGIS_PSI + RUNTIME))
 TOTAL=$((AEGIS_PSI + RUNTIME + TS))

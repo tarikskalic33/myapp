@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 # AEGIS Monorepo — Coordination Document
-## Branch: claude/aegis-setup-Lx7Ji · Gates complete: 321
+## Branch: claude/aegis-setup-Lx7Ji · Gates complete: 367
 ## Operator: Tarik Skalić · Hardware: AMD RX 570, 8 GB RAM
 
 Approach every component as a recursively nested atomic-scale holon governed by
@@ -18,7 +18,7 @@ A T0 violation at any scale propagates upward and invalidates everything above i
 
 ```
 /sovereign-omega-v2/   Governance runtime (Layer A: TypeScript, Layer B: Python)
-/aegis-cl-psi/         CL-Ψ cognitive fabric — 321-gate Rust inference crate (T2, EU AI Act-compliant)
+/aegis-cl-psi/         CL-Ψ cognitive fabric — 367-gate Rust inference crate (T2, EU AI Act-compliant)
 /aegis-runtime/        AEGIS-Ω Seven-Pillar distributed agent swarm runtime (T2)
 /cockpit/              AI chat UI with sovereign-omega telemetry integration
 /platform-picker/      Commercial product — platform recommendation ($19)
@@ -39,7 +39,7 @@ Key specs: `sovereign-omega-v2/docs/SOVEREIGN_RUNTIME_HANDOFF_v1.0.md` (constitu
 
 ## Build & Test Commands
 
-### Rust — aegis-cl-psi (1862 tests)
+### Rust — aegis-cl-psi (2622 tests)
 ```bash
 cd aegis-cl-psi
 
@@ -54,7 +54,7 @@ cargo build --release               # release build (no HIP/ROCm required)
 
 `--all-features` will fail in CI — `hip` and `rocblas` link against ROCm symbols not present on standard Ubuntu. Always use plain `cargo test`.
 
-### Rust — aegis-runtime (55 tests)
+### Rust — aegis-runtime (96 tests)
 ```bash
 cd aegis-runtime
 cargo test
@@ -128,7 +128,7 @@ ORGANISM     — Python bridge (bridge.py, port 7890)
                routes between TypeScript governance and hardware inference
 CELLULAR     — TypeScript governance runtime (sovereign-omega-v2/src/)
                hash-chained event ledger, BFT swarm, martingale gating, skill catalog
-MOLECULAR    — Rust gossip + math fabric (aegis-cl-psi/src/, 321 gate modules)
+MOLECULAR    — Rust gossip + math fabric (aegis-cl-psi/src/, 367 gate modules)
                deterministic state-coherence routing, EU AI Act audit chain
 ATOMIC       — Seven-Pillar runtime (aegis-runtime/src/)
                StateAnchor · DomainFirewall · AffineCanvas · SemanticGraph
