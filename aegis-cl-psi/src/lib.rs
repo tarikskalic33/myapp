@@ -858,6 +858,13 @@ pub mod compaction_epoch_ledger;
 // CompactionAuditSealLog: certify(), certify_ledger(), all_valid(), seal_count(), verify_chain().
 pub mod compaction_audit_seal;
 
+// Gate 350 — Compaction Broadcaster (T2)
+// Encodes CompactionAuditSeal into a compact 32-byte BroadcastFrame for peer broadcast.
+// Frame: epoch_end(8)‖epoch_count(8)‖chains_valid(1)‖seal_prefix(4)‖terminal_prefix(4)‖checksum(7).
+// record_hash = SHA-256(prev[32]‖frame[32]‖epoch_end_be8).
+// CompactionBroadcaster: encode(), decode() with checksum verification, verify_chain().
+pub mod compaction_broadcaster;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
