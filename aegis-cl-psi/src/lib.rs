@@ -715,6 +715,13 @@ pub mod spsf_verifier;
 // SchedulerLog: hash-chained audit trail. triggered_count(), verify_chain().
 pub mod spsf_scheduler;
 
+// Gate 331 — SPSF Integrated Manager (T2)
+// Unified facade wiring the SPSF compaction trilogy: scheduler → compact → verify.
+// tick(epoch): evaluates schedule, compacts if advised, verifies the retained suffix.
+// manager_hash(): SHA-256 over sub-log terminal hashes — cross-module tamper-evident seal.
+// ManagementLog: hash-chained per-tick records. total_compacted_entries(), verify_chain().
+pub mod spsf_manager;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
