@@ -478,6 +478,12 @@ pub mod adaptive_fanout_controller;
 // EpochBoundaryDetector: report_peer_epoch(), evaluate(current_epoch), trigger_boundary().
 pub mod epoch_boundary_detector;
 
+// Gate 298 — Gossip Link Quality Monitor: per-peer EMA latency tracking and tier classification (T2)
+// LatencyTier: Excellent(≤10)/Good(≤30)/Fair(≤100)/Poor/Timeout. EMA α=1/4 (integer).
+// LinkQualityLog: hash-chained; timeout_count(), tier_count(), verify_chain().
+// LinkQualityMonitor: sample(), sample_timeout(), current_tier(), peers_at_tier().
+pub mod link_quality_monitor;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
