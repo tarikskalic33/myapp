@@ -745,6 +745,14 @@ pub mod resonance_compactor;
 // spsf_total_pruned(), health_total_pruned(), resonance_total_pruned().
 pub mod unified_compaction_manager;
 
+// Gate 335 — Compaction Epoch Seal (T2)
+// Closes each epoch with a tamper-evident seal binding the Unified Compaction Manager
+// terminal hash + per-compactor running totals into a hash-chained CompactionSealChain.
+// seal_hash = SHA-256(prev[32]‖epoch_be8‖unified_hash[32]
+//                      ‖spsf_pruned_be8‖health_pruned_be8‖resonance_pruned_be8‖total_pruned_be8).
+// CompactionSealChain: append(), terminal_hash(), seal_count(), verify_chain().
+pub mod compaction_epoch_seal;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
