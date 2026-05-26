@@ -649,6 +649,13 @@ pub mod gossip_health_report;
 //             ‖coefficient_bits_be8‖phi_headroom_bits_be8‖sequence_id_be8
 pub mod resonance_anchor;
 
+// Gate 324 — Epoch Synthesis Seal (T2)
+// Closes each epoch with a tamper-evident seal over all three synthesis layers
+// (Gates 320–323): gossip_health_hash ‖ resonance_hash ‖ verdict_hash
+// (SHA-256 over BTreeMap-ordered per-node terminal hashes) ‖ t0_consensus ‖ quorum_t0.
+// SynthesisSealChain: append(), terminal_hash(), consensus_count(), verify_chain().
+pub mod epoch_synthesis_seal;
+
 // Gate 323 — Constitutional Verdict Ledger (T2)
 // Per-node T0 verdict tracking with tamper-evident SHA-256 hash chain.
 // NodeVerdictLedger: per-node append-only chain of VerdictEntry records.
