@@ -306,6 +306,11 @@ pub mod recovery_planner;
 // QuorumGuard: hash-chained QuorumStatus records; alert_epochs(), longest_outage(), latest_delta().
 pub mod quorum_guard;
 
+// Gate 267 — Health Ticker: epoch-by-epoch condensed 3-byte health signal (T2)
+// TickerFrame[3]: quorum_level(1) ‖ health_pct(1) ‖ fault_class:4|top_action:4(1).
+// TickerLog: hash-chained TickerRecords; healthy_count(), alert_count(), verify_chain().
+pub mod health_ticker;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
