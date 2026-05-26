@@ -523,6 +523,13 @@ pub mod token_bucket;
 // ReassemblyBuffer: insert() returns Ok(Some(data)) when complete, Ok(None) when waiting.
 pub mod message_fragmenter;
 
+// Gate 305 — Gossip Topic Subscription Registry: peer topic interest tracking (T2)
+// SubEvent: Subscribe/Unsubscribe. MAX_TOPICS_PER_PEER=64.
+// SubLog: hash-chained per peer; subscribe_count, unsubscribe_count, verify_chain.
+// TopicSubscriptionRegistry: subscribe(), unsubscribe(), is_subscribed(),
+//   topics_for(peer) sorted, peers_for_topic(topic) sorted.
+pub mod topic_subscription;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
