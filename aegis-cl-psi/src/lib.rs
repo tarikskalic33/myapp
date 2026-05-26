@@ -736,6 +736,15 @@ pub mod gossip_health_compactor;
 // ResonanceCompactionLog: hash-chained audit trail. total_pruned(), verify_chain().
 pub mod resonance_compactor;
 
+// Gate 334 — Unified Compaction Manager (T2)
+// Single per-epoch orchestrator coordinating all three proof-preserving compactors:
+// SPSF (Gate 328) + GossipHealth (Gate 332) + Resonance (Gate 333) in one tick().
+// unified_hash = SHA-256(prev‖epoch_be8‖spsf_cert[32]‖health_cert[32]‖resonance_cert[32]
+//                         ‖spsf_pruned_be8‖health_pruned_be8‖resonance_pruned_be8).
+// UnifiedCompactionLog: hash-chained audit trail. total_pruned(), verify_chain(),
+// spsf_total_pruned(), health_total_pruned(), resonance_total_pruned().
+pub mod unified_compaction_manager;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
