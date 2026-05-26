@@ -649,6 +649,12 @@ pub mod gossip_health_report;
 //             ‖coefficient_bits_be8‖phi_headroom_bits_be8‖sequence_id_be8
 pub mod resonance_anchor;
 
+// Gate 325 — Constitutional State Broadcaster (T2)
+// Encodes epoch synthesis seal (Gate 324) as a 40-byte network frame for peer broadcast.
+// Frame: epoch(8)‖seal_prefix(8)‖gossip_prefix(8)‖resonance_prefix(8)‖flags(1)‖checksum(7).
+// Checksum = SHA-256(epoch‖seal_prefix‖flags)[0..7]. BroadcastLog: hash-chained send/recv log.
+pub mod state_broadcaster;
+
 // Gate 324 — Epoch Synthesis Seal (T2)
 // Closes each epoch with a tamper-evident seal over all three synthesis layers
 // (Gates 320–323): gossip_health_hash ‖ resonance_hash ‖ verdict_hash
