@@ -411,6 +411,12 @@ pub mod flood_guard;
 // Inflation detected when claimed_ttl > (current_ttl - 1). expired_count(), inflated_count().
 pub mod ttl_enforcer;
 
+// Gate 287 — Gossip Epoch Auditor: cross-module epoch consistency verification (T2)
+// AuditFinding: Consistent/Lagging{by}/Leading{by}/Diverged. MAX_LAG_ALLOWED=3.
+// audit_epoch() checks [supervisor, finalizer, scheduler, prober, bandwidth] in order.
+// EpochAuditLog: hash-chained records; consistent_epoch_count(), diverged_epoch_count(), verify_chain().
+pub mod epoch_auditor;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
