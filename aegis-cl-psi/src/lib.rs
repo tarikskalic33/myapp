@@ -768,6 +768,15 @@ pub mod compaction_audit_certifier;
 // encode(), decode(), verify_chain(), frame_count(). Mirrors Gate 254.
 pub mod compaction_telemetry_encoder;
 
+// Gate 338 — Compaction Health Aggregator (T2)
+// Combines compaction telemetry validity (chains_valid, total_pruned) with constitutional
+// OverallCondition (Gate 247) into a per-epoch CompactionHealthVector.
+// CompactionHealthGrade: Healthy/Nominal/Elevated/Critical from (chains_valid, prune_threshold).
+// JointCondition: Optimal/Nominal/Degraded/Critical — worst of both axes.
+// vector_hash = SHA-256(prev‖epoch_be8‖grade‖cond‖joint‖total_pruned_be8‖chains_valid).
+// CompactionHealthLog: critical_count(), optimal_count(), joint_condition_count(), verify_chain().
+pub mod compaction_health_aggregator;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
