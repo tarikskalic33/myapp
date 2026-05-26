@@ -926,6 +926,15 @@ pub mod compaction_gossip_health_compactor;
 // GossipEpochSealChain: append(), terminal_hash(), seal_count(), verify_chain().
 pub mod compaction_gossip_epoch_seal;
 
+// Gate 358 — Compaction Gossip Audit Certifier (T2)
+// Certifies a GossipEpochSealChain (Gate 357) over an epoch window into a
+// tamper-evident GossipAuditCertificate. Mirrors Gate 336 for gossip subsystem.
+// certificate_hash = SHA-256(epoch_start_be8‖epoch_end_be8‖epoch_count_be8
+//                             ‖chains_valid_byte‖total_delivered_be8‖total_missed_be8
+//                             ‖red_be4‖yellow_be4‖green_be4‖terminal_hash[32]).
+// GossipCertifierLog: certify_window(), all_valid(), verify_chain().
+pub mod compaction_gossip_audit_certifier;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
