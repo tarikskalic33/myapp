@@ -405,6 +405,12 @@ pub mod bandwidth_tracker;
 // FloodGuard: BTreeMap<source_id>; observe_message(), seal_epoch(), sources_at_level().
 pub mod flood_guard;
 
+// Gate 286 — Gossip TTL Enforcer: per-message hop-count enforcement with inflation detection (T2)
+// TtlDecision: Forward{remaining_ttl}/Drop{Expired|Inflated|TooHigh}. MAX_INITIAL_TTL=15.
+// TtlEnforcer: BTreeMap<message_id>; register_origin(), forward() chains hash-linked records.
+// Inflation detected when claimed_ttl > (current_ttl - 1). expired_count(), inflated_count().
+pub mod ttl_enforcer;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
