@@ -814,6 +814,14 @@ pub mod compaction_recovery_advisor;
 // SlaTrackerLog: compliance_rate() per-mille, streak_compliant(), verify_chain().
 pub mod compaction_sla_tracker;
 
+// Gate 344 — Compaction Capacity Planner (T2)
+// Linear extrapolation over CAPACITY_WINDOW=4 epoch total_pruned values to project
+// epochs-to-CAPACITY_CEILING(10_000). Integer arithmetic only: mean_delta = (last-first)/(n-1).
+// epochs_to_ceiling = remaining/mean_delta; u32::MAX if delta≤0 ("no foreseeable risk").
+// projection_hash = SHA-256(prev‖epoch_be8‖current_total_be8‖mean_delta_be8‖window_len_be4‖epochs_be4‖at_cap).
+// CapacityPlannerLog: critical_projections() (≤5 epochs), verify_chain().
+pub mod compaction_capacity_planner;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
