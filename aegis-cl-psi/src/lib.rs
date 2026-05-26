@@ -1115,6 +1115,12 @@ pub mod gossip_epoch_seal;
 // GossipFrameRateLog: record(), spike_count(), verify_chain().
 pub mod gossip_frame_rate;
 
+// Gate 385 — Gossip Drop Rate Tracker (T2)
+// Per-epoch frame drop rate: drop_pct = floor(dropped*100/max(dispatched,1)).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖dispatched_be4‖dropped_be4‖drop_pct_be4).
+// GossipDropRateLog: record(), high_drop_count(threshold), average_drop_pct(), verify_chain().
+pub mod gossip_drop_rate;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
