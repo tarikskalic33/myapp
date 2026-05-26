@@ -979,6 +979,13 @@ pub mod compaction_gossip_alert_classifier;
 // action_hash = SHA-256(prev[32]‖epoch_be8‖alert_byte‖priority_byte‖reason_code‖rec_byte).
 pub mod compaction_gossip_recovery_advisor;
 
+// Gate 365 — Compaction Gossip SLA Tracker (T2)
+// Per-epoch SLA compliance: joint≤Nominal AND alert≤Amber AND chains_valid.
+// Mirrors Gate 343. violation_mask bits: bit0=joint, bit1=alert, bit2=chains.
+// sla_hash = SHA-256(prev[32]‖epoch_be8‖compliant_byte‖violation_mask).
+// GossipSlaTrackerLog: compliance_rate() per-mille, streak_compliant(), verify_chain().
+pub mod compaction_gossip_sla_tracker;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
