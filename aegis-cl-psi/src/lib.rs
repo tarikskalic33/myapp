@@ -1140,6 +1140,12 @@ pub mod gossip_reachability;
 // GossipBackpressureLog: record(), pressure_epoch_count(), max_queue_depth(), verify_chain().
 pub mod gossip_backpressure;
 
+// Gate 389 — Gossip Topology Change Detector (T2)
+// Detects peer count changes between epochs; delta = peer_count - prev_peer_count (i32).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖peer_count_be4‖delta_be4‖changed_byte).
+// GossipTopologyChangeLog: record(), change_count(), max_peer_count(), verify_chain().
+pub mod gossip_topology_change;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
