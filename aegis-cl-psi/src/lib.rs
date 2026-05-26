@@ -417,6 +417,12 @@ pub mod ttl_enforcer;
 // EpochAuditLog: hash-chained records; consistent_epoch_count(), diverged_epoch_count(), verify_chain().
 pub mod epoch_auditor;
 
+// Gate 288 — Gossip Reputation Decay: epoch-based reputation erosion for inactive peers (T2)
+// DecayReason: Inactive(−3)/Overdue(−5)/Unreachable(−8). Saturating score 0–100. Initial=50.
+// PeerDecayLog: hash-chained per-peer decay records; total_decayed(), min_score(), verify_chain().
+// DecayEngine: BTreeMap<peer_id>; apply_decay(), bulk_decay(), peers_below(threshold).
+pub mod reputation_decay;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
