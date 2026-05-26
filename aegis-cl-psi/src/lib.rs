@@ -1296,6 +1296,22 @@ pub mod gossip_connection_pool;
 //   burst_count(), max_error_rate_pct(), verify_chain().
 pub mod gossip_epoch_error;
 
+// Gate 411 — Gossip Round-Trip Time Log (T2)
+// Per-epoch RTT tracking (min/max/mean in ms). mean=(min+max)/2.
+// high_rtt: max_rtt_ms >= RTT_HIGH_THRESHOLD (500 ms).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖min_rtt_be4‖max_rtt_be4‖mean_rtt_be4‖high_rtt_byte).
+// GossipRoundTripTimeLog: record(), high_rtt_count(), max_ever_rtt(),
+//   mean_of_means(), verify_chain().
+pub mod gossip_round_trip_time;
+
+// Gate 412 — Gossip Window Fill Log (T2)
+// Per-epoch sliding window fill ratio: slots_used/slots_total → fill_pct.
+// window_full: fill_pct >= WINDOW_FULL_THRESHOLD (90%); window_empty: fill_pct==0.
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖slots_used_be4‖slots_total_be4‖fill_pct_be4‖full_byte‖empty_byte).
+// GossipWindowFillLog: record(), full_count(), empty_count(),
+//   max_fill_pct(), verify_chain().
+pub mod gossip_window_fill;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
