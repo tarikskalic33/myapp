@@ -950,6 +950,13 @@ pub mod compaction_gossip_telemetry_encoder;
 // GossipHealthLog: critical_count(), optimal_count(), joint_condition_count(), verify_chain().
 pub mod compaction_gossip_health_aggregator;
 
+// Gate 361 — Compaction Gossip Momentum Tracker (T2)
+// Rolling directional trend for GossipJointCondition (Gate 360) across GOSSIP_MOMENTUM_WINDOW=4.
+// GossipMomentumDir: Improving/Stable/Declining from signed score delta (latest − earliest).
+// record_hash = SHA-256(prev[32]‖epoch_be8‖score_byte‖dir_byte‖momentum_int_be2‖window_size_be2).
+// GossipMomentumLog: direction_count(), improving_epochs(), declining_epochs(), verify_chain().
+pub mod compaction_gossip_momentum_tracker;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
