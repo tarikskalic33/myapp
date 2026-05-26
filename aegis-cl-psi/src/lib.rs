@@ -596,6 +596,13 @@ pub mod gossip_message_cache;
 // SubscriptionFilter: register_topics() (truncates at MAX), evaluate(), clear_peer(), topics_for().
 pub mod subscription_filter;
 
+// Gate 315 — Gossip Peer Address Book: peer endpoint registry with epoch-monotone updates (T2)
+// AddressOp: Register/Update/Remove. MAX_ADDRESS_LEN=128, MAX_BOOK_SIZE=256.
+// Epochs strictly monotone per peer (StaleEpoch). SHA-256 content-hash of address string in log.
+// AddressLog: global hash-chained; register_count, update_count, remove_count, verify_chain.
+// PeerAddressBook: register() → Ok(Register|Update)|Err, remove() → bool, lookup(), all_peers() sorted.
+pub mod peer_address_book;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
