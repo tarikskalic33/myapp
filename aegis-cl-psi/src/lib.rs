@@ -454,6 +454,12 @@ pub mod epoch_integrator;
 // SessionRegistry: BTreeMap<(peer_id, session_id)>; open_session(), active_sessions(), closed_session_count().
 pub mod session_tracker;
 
+// Gate 294 — Gossip Backpressure Controller: downstream-load-aware injection throttling (T2)
+// PressureLevel: Normal (≤100), Moderate (≤500), Severe (>500). Allowance fractions: 100/50/10%.
+// BackpressureLog: hash-chained events per peer; severe_count(), moderate_count(), verify_chain().
+// BackpressureController: update(queue_depth)→(level, granted); tick_recovery(); peers_under_pressure().
+pub mod backpressure_controller;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
