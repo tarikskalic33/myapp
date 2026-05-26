@@ -326,6 +326,11 @@ pub mod capability_negotiator;
 // SealChain: hash-chained EpochSeals; terminal_seal_hash(), seal_count(), verify_chain().
 pub mod epoch_sealer;
 
+// Gate 271 — Gossip Scheduler: Fibonacci-paced gossip interval calculator (T2)
+// fibonacci(n) capped at F_11=89; interval_ms = F(n)*100ms. GossipSchedule: hash-chained intervals.
+// next_interval_ms(), total_elapsed_ms(), verify_chain(). Mirrors TypeScript Gate 124.
+pub mod gossip_scheduler;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
