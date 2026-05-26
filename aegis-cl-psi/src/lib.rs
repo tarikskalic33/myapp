@@ -371,6 +371,11 @@ pub mod peer_reputation;
 // MeshSupervisionLog: hash-chained; min_reach_pct(), max_drop_count(), quorum_loss_epochs().
 pub mod mesh_supervisor;
 
+// Gate 280 — Gossip Epoch Finalizer: terminal gossip state seal at epoch close (T2)
+// GossipEpochSeal: supervision+scheduler+spread hashes + peer counts in SHA-256 chain.
+// GossipEpochChain: append(), terminal_hash(), seal_count(), verify_chain().
+pub mod gossip_epoch_finalizer;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
