@@ -66,10 +66,6 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: |
-            packages/shared/package-lock.json
-            ${{ matrix.product }}/package-lock.json
-      - name: Install shared packages
-        run: cd packages/shared && npm ci
+          cache-dependency-path: ${{ matrix.product }}/package-lock.json
       - name: Build ${{ matrix.product }}
         run: cd ${{ matrix.product }} && npm ci && npm run build
