@@ -366,6 +366,11 @@ pub mod gossip_priority;
 // ReputationLedger: BTreeMap<peer_id, PeerReputation>; trusted_peers(), blocked_peers(), weakest_peer().
 pub mod peer_reputation;
 
+// Gate 279 — Mesh Supervisor: epoch-level gossip subsystem integration snapshot (T2)
+// MeshSupervisionRecord: fanout+drops+spread+quorum+reputation+queue in one tamper-evident hash.
+// MeshSupervisionLog: hash-chained; min_reach_pct(), max_drop_count(), quorum_loss_epochs().
+pub mod mesh_supervisor;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
