@@ -622,6 +622,14 @@ pub mod peer_liveness_oracle;
 // MessageSequenceTracker: observe() → SequenceEvent|TooManyPeers, expected_sequence(), gap/dup/reset totals.
 pub mod message_sequence_tracker;
 
+// Gate 319 — Gossip Epoch Snapshot Archive: rolling epoch-boundary state archive (T2)
+// MAX_ARCHIVE_SIZE=128 rolling window; oldest epochs evicted when archive exceeds capacity.
+// content_hash = SHA-256(epoch_be8‖peers_be4‖sent_be8‖recv_be8‖dropped_be8).
+// record_hash = SHA-256(prev_hash‖content_hash[32]). Epochs strictly monotone (StaleEpoch).
+// EpochSnapshotArchive: archive(), get(epoch), latest(), total_messages_sent/dropped, verify_chain.
+// verify_chain() → (bool, Option<u64>) — epoch of first invalid record.
+pub mod epoch_snapshot_archive;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
