@@ -1457,3 +1457,5 @@ pub mod gossip_broadcast_peer_isolation;
 pub mod gossip_broadcast_ttl_exceeded;
 // Gate 454 — Gossip Broadcast Flood Rate Monitor (T2)
 pub mod gossip_broadcast_flood_rate;
+// Gate 455 — Gossip Broadcast Dedup Miss Monitor (T2)
+pub mod gossip_broadcast_dedup_miss;
