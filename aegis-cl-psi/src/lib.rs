@@ -1360,6 +1360,23 @@ pub mod gossip_broadcast_drop;
 //   min_ack_rate_pct(), verify_chain().
 pub mod gossip_broadcast_ack;
 
+// Gate 419 — Gossip Broadcast Timeout Log (T2)
+// Per-epoch timeout tracking: timeout_count, total_sent, timeout_rate_pct = (timeout*100)/max(sent,1) capped 100.
+// excessive_timeout: timeout_rate_pct > TIMEOUT_THRESHOLD (5).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖timeout_count_be4‖total_sent_be4‖timeout_rate_pct_be4‖excessive_byte).
+// GossipBroadcastTimeoutLog: record(), excessive_timeout_count(), total_timeouts(),
+//   mean_timeout_rate_pct(), verify_chain().
+pub mod gossip_broadcast_timeout;
+
+// Gate 420 — Gossip Broadcast Sequence Disorder Log (T2)
+// Per-epoch out-of-order tracking: out_of_order_count, total_received,
+// disorder_rate_pct = (ooo*100)/max(received,1) capped 100.
+// disordered: disorder_rate_pct > DISORDER_THRESHOLD (15).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖out_of_order_count_be4‖total_received_be4‖disorder_rate_pct_be4‖disordered_byte).
+// GossipBroadcastSequenceLog: record(), disordered_count(), total_out_of_order(),
+//   mean_disorder_rate_pct(), verify_chain().
+pub mod gossip_broadcast_sequence;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
