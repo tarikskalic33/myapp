@@ -2,7 +2,7 @@ name: Deploy to Cloud Run
 
 on:
   push:
-    branches: [main]
+    branches: [claude/aegis-setup-Lx7Ji]
   workflow_dispatch:
 
 env:
