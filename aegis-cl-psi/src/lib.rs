@@ -1489,3 +1489,5 @@ pub mod gossip_broadcast_timeout_e3;
 pub mod gossip_broadcast_jitter_e3;
 // Gate 470 — Gossip Broadcast Backpressure E3 Monitor (T2)
 pub mod gossip_broadcast_backpressure_e3;
+// Gate 471 — Gossip Broadcast Window Miss E3 Monitor (T2)
+pub mod gossip_broadcast_window_miss_e3;
