@@ -11,6 +11,17 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/user/myapp && git fetch origin claude/aegis-setup-Lx7Ji --quiet 2>/dev/null; git status --short 2>/dev/null | head -5; cargo test 2>&1 | grep 'test result' | head -1",
+            "timeout": 60
+          }
+        ]
+      }
     ]
   }
 }

@@ -1377,6 +1377,24 @@ pub mod gossip_broadcast_timeout;
 //   mean_disorder_rate_pct(), verify_chain().
 pub mod gossip_broadcast_sequence;
 
+// Gate 421 — Gossip Broadcast Batch Fill Monitor (T2)
+// Per-epoch batch fill efficiency: messages_in_batch, batch_capacity,
+// fill_rate_pct = (messages_in_batch*100)/max(batch_capacity,1) capped 100.
+// under_filled: fill_rate_pct < UNDERFILL_THRESHOLD (50).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖messages_in_batch_be4‖batch_capacity_be4‖fill_rate_pct_be4‖under_filled_byte).
+// GossipBroadcastBatchLog: record(), under_filled_count(), total_messages(),
+//   mean_fill_rate_pct(), verify_chain().
+pub mod gossip_broadcast_batch;
+
+// Gate 422 — Gossip Broadcast Duplicate Detection Monitor (T2)
+// Per-epoch duplicate message rate: duplicate_count, total_received,
+// dup_rate_pct = (duplicate_count*100)/max(total_received,1) capped 100.
+// high_duplication: dup_rate_pct > DUPLICATION_THRESHOLD (10).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖duplicate_count_be4‖total_received_be4‖dup_rate_pct_be4‖high_duplication_byte).
+// GossipBroadcastDuplicateLog: record(), high_duplication_count(), total_duplicates(),
+//   mean_dup_rate_pct(), verify_chain().
+pub mod gossip_broadcast_duplicate;
+
 pub use sgm_gate::SGMGate;
 pub use lut_kan::LUTKANRouter;
 pub use rwkv_state::RWKVStateCache;
