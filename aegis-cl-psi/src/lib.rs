@@ -1561,3 +1561,5 @@ pub mod gossip_broadcast_jitter_e4;
 pub mod gossip_broadcast_backpressure_e4;
 // Gate 506 — Gossip Broadcast Window Miss E4 Monitor (T2)
 pub mod gossip_broadcast_window_miss_e4;
+// Gate 507 — Gossip Broadcast Epoch Gap E4 Monitor (T2)
+pub mod gossip_broadcast_epoch_gap_e4;
