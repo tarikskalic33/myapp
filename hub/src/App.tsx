@@ -1,88 +1,55 @@
 import { useEffect, useRef } from 'react'
-import { ProductCard } from './components/ProductCard.js'
 import { PricingTable } from './components/PricingTable.js'
-import { Zap, Lock, RefreshCw, Code } from 'lucide-react'
+import { Shield, Zap, GitBranch, Lock, RefreshCw, ChevronRight, Mail } from 'lucide-react'
 
-// Minimal observational analytics — PostHog, determinism_class: 'observational'
-// No write-back into governance paths. BigQuery warehouse → dbt metric layer.
 function captureEvent(event: string, props?: Record<string, unknown>): void {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ph = (window as any).posthog
   if (typeof ph?.capture === 'function') ph.capture(event, props)
 }
 
-const PRODUCTS = [
+const STATS = [
+  { value: '6,271', label: 'invariant tests' },
+  { value: '414', label: 'gate modules' },
+  { value: '1/φ', label: 'BFT consensus threshold' },
+  { value: 'T0', label: 'deterministic replay proof' },
+]
+
+const TOOLS = [
   {
     icon: '🎯',
     name: 'Platform Picker',
-    tagline: 'Stop guessing which platform fits you',
-    description: 'Tell the AI your niche, style, posting schedule, and monetisation goal. Get a scored breakdown across TikTok, YouTube Shorts, Instagram Reels, and Snapchat Spotlight — with a radar chart and one-click share.',
-    features: [
-      'Radar chart across 4 platforms',
-      'Score + reasoning per platform',
-      'Tailored to your monetisation goal',
-      'Share summary to clipboard',
-    ],
+    tagline: 'AI-ranked platform fit',
+    desc: 'Your niche, style, and monetisation goal → scored breakdown across TikTok, YouTube Shorts, Instagram Reels, Snapchat. Radar chart. One-click share.',
     accentColor: '#7C3AED',
-    glowColor: '#A78BFA',
     price: 19,
     gumroadUrl: 'https://gumroad.com/l/aegis-platform-picker',
   },
   {
     icon: '⚡',
     name: 'Hook Generator',
-    tagline: '10 scroll-stopping hooks in 10 seconds',
-    description: 'Input your niche, platform, topic, and tone. The AI returns 10 ranked viral hooks — curiosity gap, controversy, social proof, numbers, pain point — each with a type badge and one-click copy.',
-    features: [
-      '10 hooks ranked by viral potential',
-      'Type-coded with colour badges',
-      'Star & save favourites locally',
-      'Export all hooks at once',
-    ],
+    tagline: '10 ranked viral hooks in seconds',
+    desc: 'Niche, platform, topic, tone → 10 hooks ranked by viral potential. Type-coded badges. Star favourites. Export all at once.',
     accentColor: '#D97706',
-    glowColor: '#FCD34D',
     price: 19,
     gumroadUrl: 'https://gumroad.com/l/aegis-hook-generator',
   },
   {
     icon: '📅',
     name: 'Content Calendar',
-    tagline: 'A month of content ideas in one click',
-    description: 'Enter your niche, platforms, posting frequency, and 3 content pillars. Get a full 4-week calendar with daily ideas, viral hooks per post, formats, and production notes. Export as TXT or CSV.',
-    features: [
-      '4 weeks × your posting frequency',
-      'Per-post copy buttons',
-      'Colour-coded content pillars',
-      'Export as TXT or CSV',
-    ],
+    tagline: 'A month of content, one click',
+    desc: '4-week calendar with daily ideas, viral hooks per post, formats, production notes. Export as TXT or CSV. Colour-coded pillars.',
     accentColor: '#16A34A',
-    glowColor: '#86EFAC',
     price: 19,
     gumroadUrl: 'https://gumroad.com/l/aegis-content-calendar',
   },
 ]
 
-const GUARANTEES = [
-  {
-    icon: Lock,
-    title: 'Zero backend',
-    desc: 'Runs entirely in your browser. No servers, no accounts, no data collection.',
-  },
-  {
-    icon: Zap,
-    title: 'Your API key, your costs',
-    desc: 'DashScope free tier covers hundreds of runs. You pay pennies, not subscriptions.',
-  },
-  {
-    icon: Code,
-    title: 'Full source code',
-    desc: 'Self-host on Vercel in 2 minutes. Fork, modify, make it yours.',
-  },
-  {
-    icon: RefreshCw,
-    title: 'Buy once, own forever',
-    desc: 'No recurring fees. Future updates included.',
-  },
+const ENTERPRISE_CAPABILITIES = [
+  { icon: Shield, title: 'Deterministic replay', desc: 'Every AI decision hash-chained. SHA-256 audit trail from genesis. Replay any past state and get the same cryptographic fingerprint every time.' },
+  { icon: GitBranch, title: 'BFT consensus at 1/φ', desc: 'Byzantine fault-tolerant quorum at the golden ratio threshold. Swarm convergence proofs. No silent failures.' },
+  { icon: Lock, title: 'EU AI Act compliance', desc: 'Audit hooks, martingale-bounded adaptation, T0-certified epistemic tier tagging. AdaptivePower(T) ≤ ReplayVerifiability(T).' },
+  { icon: RefreshCw, title: '414 gate modules', desc: 'Gossip layer, peer diversity, epoch convergence, RTT histograms, window fill — all hash-chained and replay-certifiable.' },
 ]
 
 export default function App() {
@@ -100,114 +67,217 @@ export default function App() {
   return (
     <div className="min-h-screen bg-hub-bg text-hub-text">
 
-      {/* Hero */}
-      <div className="max-w-4xl mx-auto px-4 pt-20 pb-12 text-center">
-        <div
-          className="animate-fade-up inline-flex items-center gap-2 bg-hub-accent/10 border border-hub-accent/30 rounded-full px-4 py-1.5 text-hub-glow text-sm font-medium mb-8"
-          style={{ animationDelay: '0ms' }}
-        >
-          <Zap size={14} />
-          Creator AI Toolkit — 3 tools, one DashScope key
+      {/* Nav */}
+      <nav className="border-b border-hub-border/60 sticky top-0 z-50 bg-hub-bg/90 backdrop-blur-sm">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded bg-hub-accent flex items-center justify-center">
+              <span className="text-white text-xs font-bold">Ω</span>
+            </div>
+            <span className="text-hub-text font-semibold text-sm tracking-tight">AEGIS-Ω</span>
+          </div>
+          <div className="flex items-center gap-6">
+            <a href="#tools" className="text-hub-muted text-xs hover:text-hub-text transition-colors hidden sm:block">Tools</a>
+            <a href="#enterprise" className="text-hub-muted text-xs hover:text-hub-text transition-colors hidden sm:block">Enterprise</a>
+            <a href="#pricing" className="text-hub-muted text-xs hover:text-hub-text transition-colors hidden sm:block">Pricing</a>
+            <a
+              href="https://gumroad.com/l/aegis-full-toolkit"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handlePurchaseClick('nav', 39)}
+              className="text-xs bg-hub-accent text-white px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity font-medium"
+            >
+              Get started
+            </a>
+          </div>
         </div>
-        <h1
-          className="animate-fade-up text-5xl md:text-6xl font-bold text-hub-text tracking-tight mb-6"
-          style={{ animationDelay: '80ms' }}
-        >
-          AI tools that actually<br />
-          <span className="text-hub-glow">help you grow.</span>
+      </nav>
+
+      {/* Hero */}
+      <div className="max-w-4xl mx-auto px-4 pt-24 pb-16 text-center">
+        <div className="inline-flex items-center gap-2 bg-hub-accent/10 border border-hub-accent/30 rounded-full px-4 py-1.5 text-hub-glow text-xs font-medium mb-8">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+          6,271 tests passing · 414 gate modules · deterministic from genesis
+        </div>
+
+        <h1 className="text-5xl md:text-6xl font-bold text-hub-text tracking-tight mb-6 leading-tight">
+          The AI runtime<br />
+          <span className="text-hub-glow">that governs itself.</span>
         </h1>
-        <p
-          className="animate-fade-up text-hub-muted text-xl max-w-2xl mx-auto mb-10"
-          style={{ animationDelay: '160ms' }}
-        >
-          Platform Picker. Hook Generator. Content Calendar.
-          Zero backend, zero subscription. You own the code.
+
+        <p className="text-hub-muted text-xl max-w-2xl mx-auto mb-4 leading-relaxed">
+          Constitutional state management for AI applications.
+          Every decision hash-signed, sequence-numbered, replay-certifiable.
         </p>
-        <div
-          className="animate-fade-up flex flex-col sm:flex-row gap-3 justify-center"
-          style={{ animationDelay: '240ms' }}
-        >
+        <p className="text-hub-muted/70 text-sm max-w-xl mx-auto mb-10">
+          Built on one law: <span className="font-mono text-hub-glow/80">AdaptivePower(T) ≤ ReplayVerifiability(T)</span>
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
           <a
             href="https://gumroad.com/l/aegis-full-toolkit"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => handlePurchaseClick('full-toolkit', 39)}
+            onClick={() => handlePurchaseClick('hero-full-toolkit', 39)}
             className="inline-flex items-center justify-center gap-2 bg-hub-accent text-white font-semibold px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity text-sm"
           >
             <Zap size={15} />
-            Get all 3 tools — $39
+            Get creator tools — $39
           </a>
           <a
-            href="#products"
+            href="#enterprise"
             className="inline-flex items-center justify-center gap-2 border border-hub-border text-hub-muted hover:text-hub-text hover:border-hub-accent/40 font-medium px-8 py-3.5 rounded-xl transition-all text-sm"
           >
-            See the tools
+            Enterprise runtime
+            <ChevronRight size={14} />
           </a>
         </div>
-        <p className="text-hub-muted text-xs mt-4">
-          One-time payment · Full source code · No subscriptions
-        </p>
+        <p className="text-hub-muted text-xs">One-time · Full source code · No subscriptions</p>
       </div>
 
-      {/* Product cards */}
-      <div id="products" className="max-w-5xl mx-auto px-4 pb-20 scroll-mt-8">
-        <div className="grid md:grid-cols-3 gap-6">
-          {PRODUCTS.map((p, i) => (
-            <ProductCard key={p.name} {...p} delay={300 + i * 100} />
-          ))}
-        </div>
-      </div>
-
-      {/* Guarantees */}
-      <div className="max-w-4xl mx-auto px-4 pb-20">
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {GUARANTEES.map(g => (
-            <div key={g.title} className="bg-hub-surface border border-hub-border rounded-xl p-5">
-              <g.icon size={18} className="text-hub-glow mb-3" />
-              <div className="font-semibold text-hub-text text-sm mb-1">{g.title}</div>
-              <p className="text-hub-muted text-xs leading-relaxed">{g.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* How it works */}
-      <div className="max-w-3xl mx-auto px-4 pb-20 text-center">
-        <h2 className="text-2xl font-bold text-hub-text mb-3">Up and running in 5 minutes</h2>
-        <p className="text-hub-muted mb-10">
-          No backend to set up. No API wrappers to pay for. Just your key and a Vercel deploy.
-        </p>
-        <div className="grid md:grid-cols-3 gap-4 text-left">
-          {[
-            {
-              step: '1',
-              title: 'Get a free DashScope key',
-              desc: 'Sign up at dashscope.aliyuncs.com. The free tier covers hundreds of requests — more than enough to start.',
-            },
-            {
-              step: '2',
-              title: 'Deploy to Vercel',
-              desc: 'Import the repo, set VITE_DASHSCOPE_API_KEY, set Root Directory to the tool you bought. Done in 2 minutes.',
-            },
-            {
-              step: '3',
-              title: 'Create content',
-              desc: 'Fill in the form, click Generate, get AI results instantly. Copy, share, download — no login required.',
-            },
-          ].map(item => (
-            <div key={item.step} className="bg-hub-surface border border-hub-border rounded-xl p-5">
-              <div className="w-7 h-7 rounded-lg bg-hub-accent/20 text-hub-glow font-bold text-sm flex items-center justify-center mb-3">
-                {item.step}
+      {/* Stats bar */}
+      <div className="border-y border-hub-border/60 bg-hub-surface/40">
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {STATS.map(s => (
+              <div key={s.label} className="text-center">
+                <div className="text-2xl font-bold text-hub-glow font-mono">{s.value}</div>
+                <div className="text-hub-muted text-xs mt-1">{s.label}</div>
               </div>
-              <div className="font-semibold text-hub-text text-sm mb-1">{item.title}</div>
-              <p className="text-hub-muted text-xs leading-relaxed">{item.desc}</p>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Creator Tools */}
+      <div id="tools" className="max-w-5xl mx-auto px-4 py-20 scroll-mt-16">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 text-hub-muted text-xs font-medium mb-3 uppercase tracking-widest">
+            Starter tools
+          </div>
+          <h2 className="text-3xl font-bold text-hub-text mb-3">AI tools powered by AEGIS</h2>
+          <p className="text-hub-muted max-w-xl mx-auto">
+            Three production-grade content tools built on the constitutional runtime.
+            Full source code. Deploy on Vercel in 5 minutes.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {TOOLS.map(tool => (
+            <div
+              key={tool.name}
+              className="bg-hub-surface border border-hub-border rounded-2xl p-6 flex flex-col hover:border-hub-border/80 transition-colors"
+              style={{ '--tool-accent': tool.accentColor } as React.CSSProperties}
+            >
+              <div className="text-3xl mb-4">{tool.icon}</div>
+              <div
+                className="text-xs font-semibold uppercase tracking-wider mb-1"
+                style={{ color: tool.accentColor }}
+              >
+                {tool.tagline}
+              </div>
+              <h3 className="text-hub-text font-bold text-lg mb-3">{tool.name}</h3>
+              <p className="text-hub-muted text-sm leading-relaxed mb-6 flex-1">{tool.desc}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-hub-text font-bold text-lg">${tool.price}</span>
+                <a
+                  href={tool.gumroadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => handlePurchaseClick(tool.name.toLowerCase().replace(' ', '-'), tool.price)}
+                  className="text-xs font-semibold px-4 py-2 rounded-lg transition-all hover:opacity-90 text-white"
+                  style={{ backgroundColor: tool.accentColor }}
+                >
+                  Buy — ${tool.price}
+                </a>
+              </div>
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Enterprise */}
+      <div id="enterprise" className="bg-hub-surface/40 border-y border-hub-border/60 scroll-mt-16">
+        <div className="max-w-5xl mx-auto px-4 py-20">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 text-hub-glow text-xs font-medium mb-3 uppercase tracking-widest">
+              <Shield size={12} />
+              Enterprise runtime
+            </div>
+            <h2 className="text-3xl font-bold text-hub-text mb-3">
+              AI governance infrastructure.
+            </h2>
+            <p className="text-hub-muted max-w-2xl mx-auto">
+              The constitutional runtime underneath the tools.
+              For teams deploying LLMs that need audit trails, compliance, and deterministic replay.
+              Not a wrapper — a state machine with an immune system.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-5 mb-12">
+            {ENTERPRISE_CAPABILITIES.map(cap => (
+              <div key={cap.title} className="bg-hub-bg border border-hub-border rounded-xl p-6">
+                <cap.icon size={18} className="text-hub-glow mb-3" />
+                <h3 className="text-hub-text font-semibold text-sm mb-2">{cap.title}</h3>
+                <p className="text-hub-muted text-xs leading-relaxed">{cap.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Enterprise CTA */}
+          <div className="bg-hub-bg border border-hub-accent/20 rounded-2xl p-8 text-center">
+            <div className="inline-flex items-center gap-2 text-hub-accent text-xs font-medium mb-4 uppercase tracking-widest">
+              <Mail size={12} />
+              Custom licensing available
+            </div>
+            <h3 className="text-hub-text font-bold text-xl mb-3">
+              Enterprise pricing on request
+            </h3>
+            <p className="text-hub-muted text-sm max-w-md mx-auto mb-6">
+              Constitutional runtime licensing, integration support, compliance documentation,
+              and custom deployment. Minimum engagement: teams of 3+.
+            </p>
+            <a
+              href="mailto:tarikskalic33@gmail.com?subject=AEGIS-Ω Enterprise Inquiry"
+              onClick={() => captureEvent('enterprise_inquiry_click')}
+              className="inline-flex items-center gap-2 bg-hub-accent text-white font-semibold px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity text-sm"
+            >
+              <Mail size={15} />
+              Get in touch
+            </a>
+            <p className="text-hub-muted text-xs mt-3">Response within 24 hours</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Why it exists */}
+      <div className="max-w-3xl mx-auto px-4 py-20 text-center">
+        <h2 className="text-2xl font-bold text-hub-text mb-6">Why this exists</h2>
+        <div className="text-hub-muted text-base leading-relaxed space-y-4 text-left">
+          <p>
+            Frontier AI labs ship models. They do not ship governance. When a model hallucinates,
+            there is no audit trail. When a decision is made, it cannot be replayed. When a system
+            evolves, it cannot prove it evolved within bounds.
+          </p>
+          <p>
+            AEGIS-Ω was built to solve that. One law above all:
+            <span className="font-mono text-hub-glow"> AdaptivePower(T) ≤ ReplayVerifiability(T)</span>.
+            No part of the system can do more than it can prove it did.
+          </p>
+          <p>
+            Every AI response, every state transition, every peer message, every epoch boundary
+            is hash-signed, sequence-numbered, and stored in a tamper-evident chain. The system
+            can replay any past state from scratch and arrive at the same cryptographic fingerprint.
+            If it cannot, that is a detectable failure — not a silent one.
+          </p>
+        </div>
+        <p className="text-hub-muted/60 text-xs mt-8 font-mono">
+          113,000+ lines · AMD RX 570, 8 GB RAM · single engineer · AGPL-3.0
+        </p>
       </div>
 
       {/* Pricing */}
-      <div id="pricing" className="max-w-3xl mx-auto px-4 pb-20 scroll-mt-8">
+      <div id="pricing" className="max-w-3xl mx-auto px-4 pb-20 scroll-mt-16">
         <div className="text-center mb-10">
           <h2 className="text-2xl font-bold text-hub-text mb-2">Simple pricing</h2>
           <p className="text-hub-muted">Buy once. Own it forever. No subscriptions, no upsells.</p>
@@ -215,30 +285,68 @@ export default function App() {
         <PricingTable />
       </div>
 
+      {/* How it works */}
+      <div className="bg-hub-surface/40 border-y border-hub-border/60">
+        <div className="max-w-3xl mx-auto px-4 py-16 text-center">
+          <h2 className="text-xl font-bold text-hub-text mb-10">Up and running in 5 minutes</h2>
+          <div className="grid md:grid-cols-3 gap-4 text-left">
+            {[
+              {
+                step: '1',
+                title: 'Buy & get your license key',
+                desc: 'Purchase on Gumroad. Receive a license key and the full source code. Enter the key once in the tool to activate.',
+              },
+              {
+                step: '2',
+                title: 'Deploy to Vercel',
+                desc: 'Import the repo, set VITE_DASHSCOPE_API_KEY and your license key, set Root Directory to the tool you bought. 2 minutes.',
+              },
+              {
+                step: '3',
+                title: 'Generate at scale',
+                desc: 'Fill in the form, click Generate, get AI results instantly. Copy, share, download — no login, no limits.',
+              },
+            ].map(item => (
+              <div key={item.step} className="bg-hub-bg border border-hub-border rounded-xl p-5">
+                <div className="w-7 h-7 rounded-lg bg-hub-accent/20 text-hub-glow font-bold text-sm flex items-center justify-center mb-3">
+                  {item.step}
+                </div>
+                <div className="font-semibold text-hub-text text-sm mb-1">{item.title}</div>
+                <p className="text-hub-muted text-xs leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* FAQ */}
-      <div className="max-w-2xl mx-auto px-4 pb-20">
+      <div className="max-w-2xl mx-auto px-4 py-16">
         <h2 className="text-2xl font-bold text-hub-text text-center mb-8">FAQ</h2>
         <div className="space-y-4">
           {[
             {
               q: 'What is DashScope / do I need to pay for it?',
-              a: 'DashScope is Alibaba Cloud\'s AI API, powered by Qwen. The free tier gives you enough credits to run hundreds of generations per month. Most users never need to upgrade.',
-            },
-            {
-              q: 'Do I need to know how to code?',
-              a: 'You need to import the repo to Vercel and set one environment variable. Vercel walks you through it — takes about 2 minutes. No coding required.',
+              a: 'DashScope is Alibaba Cloud\'s AI API (Qwen). The free tier covers hundreds of generations per month. Most users never need to upgrade. You supply your own key — your data, your costs, your control.',
             },
             {
               q: 'What do I actually receive when I buy?',
-              a: 'You receive the full source code as a zip file. It\'s a React + TypeScript project that you deploy to Vercel. You own the code — modify it however you like.',
+              a: 'A Gumroad license key + the full source code as a zip. React + TypeScript project you deploy to Vercel. You own it — fork it, modify it, sell tools built on it.',
+            },
+            {
+              q: 'How does the license key work?',
+              a: 'Enter your Gumroad license key once in the tool. It\'s validated and stored locally in your browser. No account required. Works offline after first validation.',
             },
             {
               q: 'Can I use this commercially?',
-              a: 'Yes. The code is MIT licensed. Use it for your own content, your agency\'s clients, or build your own paid tool on top of it.',
+              a: 'Yes. MIT licensed for the creator tools. Use for your own content, your agency\'s clients, or build your own paid product on top of it.',
             },
             {
-              q: 'What if the tool doesn\'t work for me?',
-              a: 'Email for a refund within 30 days. No questions asked.',
+              q: 'What about the enterprise runtime?',
+              a: 'The constitutional runtime (aegis-cl-psi Rust crate + sovereign-omega-v2 TypeScript governance layer) is available for enterprise licensing. Email for details.',
+            },
+            {
+              q: 'What if it doesn\'t work for me?',
+              a: '30-day no-questions refund. Email and it\'s done within 24 hours.',
             },
           ].map(item => (
             <div key={item.q} className="bg-hub-surface border border-hub-border rounded-xl p-5">
@@ -249,53 +357,27 @@ export default function App() {
         </div>
       </div>
 
-      {/* Cross-sell activation strip */}
-      <div className="max-w-3xl mx-auto px-4 pb-12">
-        <div className="bg-hub-surface border border-hub-accent/20 rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <p className="text-hub-text text-sm font-semibold">Already using one tool?</p>
-            <p className="text-hub-muted text-xs mt-0.5">Get all three for $39 — save $18. Starter Pack (any two) for $29.</p>
-          </div>
-          <div className="flex gap-2 shrink-0">
-            <a
-              href="https://gumroad.com/l/aegis-starter-pack"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => handlePurchaseClick('starter-pack', 29)}
-              className="text-xs border border-hub-border text-hub-muted hover:text-hub-text hover:border-hub-accent/40 px-4 py-2 rounded-lg transition-all"
-            >
-              Any 2 — $29
-            </a>
-            <a
-              href="https://gumroad.com/l/aegis-full-toolkit"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => handlePurchaseClick('full-toolkit-crosssell', 39)}
-              className="text-xs bg-hub-accent text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
-            >
-              All 3 — $39
-            </a>
-          </div>
-        </div>
-      </div>
-
       {/* Final CTA */}
       <div className="max-w-2xl mx-auto px-4 pb-20 text-center">
         <div className="bg-hub-surface border border-hub-accent/20 rounded-2xl p-10">
-          <h2 className="text-2xl font-bold text-hub-text mb-3">Ready to start?</h2>
-          <p className="text-hub-muted mb-6">All three tools for $39. One-time payment. Full source code.</p>
+          <div className="inline-flex items-center gap-2 text-hub-glow text-xs font-medium mb-4 uppercase tracking-widest">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            6,271 tests passing
+          </div>
+          <h2 className="text-2xl font-bold text-hub-text mb-3">Start building.</h2>
+          <p className="text-hub-muted mb-6">All three tools for $39. One payment. Full source code.</p>
           <a
             href="https://gumroad.com/l/aegis-full-toolkit"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => handlePurchaseClick('full-toolkit', 39)}
+            onClick={() => handlePurchaseClick('final-cta', 39)}
             className="inline-flex items-center justify-center gap-2 bg-hub-accent text-white font-semibold px-10 py-4 rounded-xl hover:opacity-90 transition-opacity text-sm"
           >
             <Zap size={15} />
-            Get the Full Toolkit — $39
+            Get Full Toolkit — $39
           </a>
           <p className="text-hub-muted text-xs mt-4">
-            Or get a single tool for $19 · Starter Pack (any 2) for $29
+            Or a single tool for $19 · Any two for $29 · Enterprise on request
           </p>
         </div>
       </div>
@@ -304,19 +386,22 @@ export default function App() {
       <div className="border-t border-hub-border">
         <div className="max-w-4xl mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Zap size={16} className="text-hub-glow" />
-            <span className="text-hub-muted text-sm font-medium">AEGIS Creator Toolkit</span>
+            <div className="w-5 h-5 rounded bg-hub-accent flex items-center justify-center">
+              <span className="text-white text-xs font-bold">Ω</span>
+            </div>
+            <span className="text-hub-muted text-sm font-medium">AEGIS-Ω</span>
+            <span className="text-hub-border text-sm">·</span>
+            <span className="text-hub-muted text-xs">Built by Tarik Skalić · AGPL-3.0</span>
           </div>
           <div className="flex items-center gap-6">
-            <a href="#products" className="text-hub-muted text-xs hover:text-hub-text transition-colors">Products</a>
+            <a href="#tools" className="text-hub-muted text-xs hover:text-hub-text transition-colors">Tools</a>
+            <a href="#enterprise" className="text-hub-muted text-xs hover:text-hub-text transition-colors">Enterprise</a>
             <a href="#pricing" className="text-hub-muted text-xs hover:text-hub-text transition-colors">Pricing</a>
             <a
-              href="https://gumroad.com/l/aegis-full-toolkit"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-hub-glow text-xs font-medium hover:opacity-80 transition-opacity"
+              href="mailto:tarikskalic33@gmail.com"
+              className="text-hub-muted text-xs hover:text-hub-text transition-colors"
             >
-              Buy now →
+              Contact
             </a>
           </div>
         </div>
