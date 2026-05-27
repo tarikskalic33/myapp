@@ -1571,3 +1571,5 @@ pub mod gossip_broadcast_peer_churn_e4;
 pub mod gossip_broadcast_broadcast_drop_e4;
 // Gate 511 — Gossip Broadcast Queue Overflow E4 Monitor (T2)
 pub mod gossip_broadcast_queue_overflow_e4;
+// Gate 512 — Gossip Broadcast Sync Lag E4 Monitor (T2)
+pub mod gossip_broadcast_sync_lag_e4;
