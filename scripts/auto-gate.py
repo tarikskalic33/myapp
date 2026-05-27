@@ -27,6 +27,28 @@ class CreditsExhausted(Exception):
     pass
 
 
+# claude-sonnet-4-6 pricing (USD per token)
+_INPUT_PRICE_PER_TOKEN  = 3.00 / 1_000_000
+_OUTPUT_PRICE_PER_TOKEN = 15.00 / 1_000_000
+
+# Empirical averages per gate (1 attempt, no retry)
+_EST_INPUT_TOKENS_PER_GATE  = 3_800
+_EST_OUTPUT_TOKENS_PER_GATE = 1_600
+
+
+def estimate_cost(count: int, max_attempts: int = 3) -> tuple[float, float]:
+    """Return (best_case_usd, worst_case_usd) for building `count` gates."""
+    per_gate_best  = (_EST_INPUT_TOKENS_PER_GATE  * _INPUT_PRICE_PER_TOKEN
+                    + _EST_OUTPUT_TOKENS_PER_GATE * _OUTPUT_PRICE_PER_TOKEN)
+    per_gate_worst = per_gate_best * max_attempts
+    return count * per_gate_best, count * per_gate_worst
+
+
+def token_cost(input_tokens: int, output_tokens: int) -> float:
+    return (input_tokens * _INPUT_PRICE_PER_TOKEN
+          + output_tokens * _OUTPUT_PRICE_PER_TOKEN)
+
+
 EXAMPLE_MODULE = """//! Gate 422 — Gossip Broadcast Duplicate Detection Monitor (T2)
 //! Tracks duplicate message rate per gossip broadcast epoch.
 //! DUPLICATION_THRESHOLD = 10: dup_rate_pct > 10 → high_duplication
@@ -226,7 +248,8 @@ def next_gossip_metrics(gate_num: int) -> tuple[str, str, str, str, int, str]:
     return suffix, prim, sec, flag, thresh, op
 
 
-def build_gate(gate_num: int, client: anthropic.Anthropic) -> bool:
+def build_gate(gate_num: int, client: anthropic.Anthropic,
+               budget_remaining: float | None = None) -> tuple[bool, float]:
     suffix, primary, secondary, flag, threshold, op = next_gossip_metrics(gate_num)
     module_name = f"gossip_broadcast_{suffix}"
     module_path = os.path.join(SRC_DIR, f"{module_name}.rs")
@@ -235,7 +258,7 @@ def build_gate(gate_num: int, client: anthropic.Anthropic) -> bool:
         ok, out = run_cargo_test(module_name)
         if ok:
             print(f"\n  ⚡ Gate {gate_num}: {module_name} already exists (19 tests OK) — skipping")
-            return True
+            return True, 0.0
 
     genesis_const = f"{suffix.upper()}_GENESIS_HASH"
     thresh_const  = f"{flag.upper()}_THRESHOLD"
@@ -314,8 +337,13 @@ Output ONLY the complete Rust file contents. No markdown. No explanation."""
 
     last_code = ""
     last_error = ""
+    gate_cost  = 0.0
 
     for attempt in range(1, 4):
+        if budget_remaining is not None and gate_cost >= budget_remaining:
+            print(f"  ✗ Budget would be exceeded before attempt {attempt} — stopping")
+            return False, gate_cost
+
         print(f"  Calling Claude claude-sonnet-4-6 (attempt {attempt}/3)...")
 
         messages = [{"role": "user", "content": prompt}]
@@ -335,6 +363,10 @@ Output ONLY the complete Rust file contents. No markdown. No explanation."""
                 raise CreditsExhausted(f"API credits exhausted (402): {e}")
             raise
 
+        call_cost  = token_cost(response.usage.input_tokens, response.usage.output_tokens)
+        gate_cost += call_cost
+        print(f"  ↳ {response.usage.input_tokens} in / {response.usage.output_tokens} out = ${call_cost:.4f}")
+
         code = response.content[0].text.strip()
         code = re.sub(r'^```(?:rust)?\n', '', code)
         code = re.sub(r'\n```$', '', code)
@@ -352,7 +384,7 @@ Output ONLY the complete Rust file contents. No markdown. No explanation."""
         passed, output = run_cargo_test(module_name)
         if passed:
             print(f"  ✓ 19/19 tests passed")
-            return True
+            return True, gate_cost
         else:
             last_code = code
             last_error = output[-2000:]
@@ -367,7 +399,7 @@ Output ONLY the complete Rust file contents. No markdown. No explanation."""
                     f.write(lib_content)
 
     print(f"  ✗ Gate {gate_num} failed after 3 attempts")
-    return False
+    return False, gate_cost
 
 
 def commit_and_push(gates: list[int]):
@@ -390,8 +422,10 @@ def commit_and_push(gates: list[int]):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--count", type=int, default=2, help="Number of gates to build")
-    parser.add_argument("--gate", type=int, help="Specific gate number to start from")
+    parser.add_argument("--count",  type=int,   default=2,    help="Number of gates to build")
+    parser.add_argument("--gate",   type=int,                 help="Specific gate number to start from")
+    parser.add_argument("--budget", type=float, default=None, help="Hard spend cap in USD (e.g. --budget 0.50)")
+    parser.add_argument("--yes", "-y", action="store_true",   help="Skip confirmation prompt")
     args = parser.parse_args()
 
     api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
@@ -410,29 +444,61 @@ def main():
     client = anthropic.Anthropic(api_key=api_key)
     start_gate = args.gate or (current_gate_number() + 1)
 
+    best_usd, worst_usd = estimate_cost(args.count)
     print(f"AEGIS Auto-Gate Builder")
-    print(f"Starting at Gate {start_gate}, building {args.count} gate(s)")
+    print(f"Gates {start_gate} → {start_gate + args.count - 1}  ({args.count} gate(s))")
+    print(f"Estimated cost:  ${best_usd:.3f} best-case  /  ${worst_usd:.3f} worst-case (3 retries each)")
+    if args.budget is not None:
+        print(f"Budget cap:      ${args.budget:.2f}")
+        if best_usd > args.budget:
+            print(f"WARNING: even the best-case estimate (${best_usd:.3f}) exceeds your budget cap.")
+    print()
 
-    built = []
+    if not args.yes:
+        try:
+            answer = input("Proceed? [y/N] ").strip().lower()
+        except EOFError:
+            answer = "y"
+        if answer not in ("y", "yes"):
+            print("Aborted.")
+            sys.exit(0)
+
+    budget_remaining = args.budget
+    total_spent      = 0.0
+    built            = []
+
     for i in range(args.count):
         gate_num = start_gate + i
+
+        if budget_remaining is not None and budget_remaining <= 0:
+            print(f"\n  Budget cap reached after {len(built)} gate(s) — stopping before Gate {gate_num}.")
+            break
+
         try:
-            ok = build_gate(gate_num, client)
+            ok, gate_cost = build_gate(gate_num, client, budget_remaining)
         except CreditsExhausted as e:
             print(f"\n  Credits exhausted — saving progress and exiting cleanly")
             print(f"  {e}")
             if built:
                 print(f"  Committing {len(built)} gate(s) built before credits ran out...")
                 commit_and_push(built)
-                print(f"  ✓ Progress saved. Top up credits and re-run to continue from Gate {gate_num}.")
+                print(f"  ✓ Progress saved. Top up credits at console.anthropic.com → Plans & Billing")
+                print(f"    then re-run:  python3 scripts/auto-gate.py --count {args.count - len(built)} --gate {gate_num}")
             else:
                 print(f"  No gates built yet — repo unchanged.")
+            print(f"\n  Total spent this run: ${total_spent:.4f}")
             sys.exit(0)
+
+        total_spent += gate_cost
+        if budget_remaining is not None:
+            budget_remaining -= gate_cost
 
         if ok:
             built.append(gate_num)
             test_count, _ = run_full_test()
             update_claude_md(gate_num, test_count)
+            print(f"  Running spend: ${total_spent:.4f}"
+                  + (f"  (${budget_remaining:.4f} remaining)" if budget_remaining is not None else ""))
         else:
             print(f"Stopping at Gate {gate_num} — could not build after 3 attempts")
             break
@@ -442,6 +508,7 @@ def main():
         print(f"\n{'='*60}")
         print(f"✓ Built and pushed: Gates {built[0]}–{built[-1]}")
         print(f"✓ {len(built)} gates, {run_full_test()[0]} total tests")
+        print(f"✓ Total spend: ${total_spent:.4f}")
     else:
         print("No gates were built successfully")
         sys.exit(1)
