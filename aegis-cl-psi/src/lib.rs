@@ -1483,3 +1483,5 @@ pub mod gossip_broadcast_fanout_e3;
 pub mod gossip_broadcast_propagation_e3;
 // Gate 467 — Gossip Broadcast Collision E3 Monitor (T2)
 pub mod gossip_broadcast_collision_e3;
+// Gate 468 — Gossip Broadcast Timeout E3 Monitor (T2)
+pub mod gossip_broadcast_timeout_e3;
