@@ -1415,3 +1415,9 @@ pub use orchestrator::Phase1Orchestrator;
 pub mod gossip_broadcast_fragmentation;
 // Gate 426 — Gossip Broadcast Loss Monitor (T2)
 pub mod gossip_broadcast_loss;
+// Gate 427 — Gossip Broadcast Congestion Monitor (T2)
+pub mod gossip_broadcast_congestion;
+// Gate 429 — Gossip Broadcast Propagation Monitor (T2)
+pub mod gossip_broadcast_propagation;
+// Gate 430 — Gossip Broadcast Collision Monitor (T2)
+pub mod gossip_broadcast_collision;

@@ -1,4 +1,4 @@
-//! Gate 426 — Gossip Broadcast Loss Monitor (T2)
+//! Gate 434 — Gossip Broadcast Loss Monitor (T2)
 //! Tracks loss rate per gossip broadcast epoch.
 //! HIGH_LOSS_THRESHOLD = 3: rate_pct > 3 → high_loss
 
@@ -23,7 +23,7 @@ fn compute_hash(
     epoch_end: u64,
     lost_msgs: u32,
     total_sent: u32,
-    rate_pct: u32,
+    lost_rate_pct: u32,
     high_loss: bool,
 ) -> [u8; 32] {
     let mut h = Sha256::new();
@@ -31,7 +31,7 @@ fn compute_hash(
     h.update(epoch_end.to_be_bytes());
     h.update(lost_msgs.to_be_bytes());
     h.update(total_sent.to_be_bytes());
-    h.update(rate_pct.to_be_bytes());
+    h.update(lost_rate_pct.to_be_bytes());
     h.update([high_loss as u8]);
     h.finalize().into()
 }
@@ -106,7 +106,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn record_fields_correct_high_loss_true() {
+    fn record_fields_correct_rate_and_flag_true() {
         let mut log = GossipLossLog::new();
         let e = log.record(1000, 10, 100);
         assert_eq!(e.epoch_end, 1000);
@@ -119,7 +119,7 @@ mod tests {
     #[test]
     fn flag_false_when_exactly_at_threshold() {
         let mut log = GossipLossLog::new();
-        // 3 out of 100 = 3%, which is not > 3, so high_loss = false
+        // rate_pct == 3 → not > 3 → high_loss = false
         let e = log.record(2000, 3, 100);
         assert_eq!(e.lost_rate_pct, 3);
         assert!(!e.high_loss);
@@ -149,24 +149,23 @@ mod tests {
     #[test]
     fn entry_hash_non_zero() {
         let mut log = GossipLossLog::new();
-        let e = log.record(5000, 5, 50);
+        let e = log.record(5000, 5, 100);
         assert_ne!(e.entry_hash, [0u8; 32]);
     }
 
     #[test]
     fn first_prev_hash_is_genesis() {
         let mut log = GossipLossLog::new();
-        let e = log.record(6000, 1, 100);
-        assert_eq!(e.prev_hash, LOSS_GENESIS_HASH);
+        log.record(6000, 1, 50);
+        assert_eq!(log.entries[0].prev_hash, LOSS_GENESIS_HASH);
     }
 
     #[test]
     fn second_prev_hash_equals_first_entry_hash() {
         let mut log = GossipLossLog::new();
-        log.record(7000, 1, 100);
-        let first_hash = log.entries[0].entry_hash;
-        log.record(8000, 2, 100);
-        assert_eq!(log.entries[1].prev_hash, first_hash);
+        log.record(7000, 1, 50);
+        log.record(8000, 2, 50);
+        assert_eq!(log.entries[1].prev_hash, log.entries[0].entry_hash);
     }
 
     #[test]
@@ -176,37 +175,41 @@ mod tests {
     }
 
     #[test]
-    fn verify_chain_single_entry_returns_true_none() {
+    fn verify_chain_one_entry_returns_true_none() {
         let mut log = GossipLossLog::new();
-        log.record(9000, 1, 100);
+        log.record(9000, 1, 20);
         assert_eq!(log.verify_chain(), (true, None));
     }
 
     #[test]
     fn verify_chain_three_entries_returns_true_none() {
         let mut log = GossipLossLog::new();
-        log.record(10000, 1, 100);
-        log.record(11000, 2, 100);
-        log.record(12000, 4, 100);
+        log.record(10000, 1, 20);
+        log.record(11000, 2, 40);
+        log.record(12000, 3, 60);
         assert_eq!(log.verify_chain(), (true, None));
     }
 
     #[test]
     fn verify_chain_tamper_entry_0_returns_false_some_0() {
         let mut log = GossipLossLog::new();
-        log.record(13000, 1, 100);
-        log.record(14000, 2, 100);
+        log.record(13000, 1, 20);
+        log.record(14000, 2, 40);
         log.entries[0].lost_msgs = 99;
-        assert_eq!(log.verify_chain(), (false, Some(0)));
+        let (ok, idx) = log.verify_chain();
+        assert!(!ok);
+        assert_eq!(idx, Some(0));
     }
 
     #[test]
     fn verify_chain_tamper_entry_1_returns_false_some_1() {
         let mut log = GossipLossLog::new();
-        log.record(15000, 1, 100);
-        log.record(16000, 2, 100);
+        log.record(15000, 1, 20);
+        log.record(16000, 2, 40);
         log.entries[1].lost_msgs = 99;
-        assert_eq!(log.verify_chain(), (false, Some(1)));
+        let (ok, idx) = log.verify_chain();
+        assert!(!ok);
+        assert_eq!(idx, Some(1));
     }
 
     #[test]
@@ -214,30 +217,30 @@ mod tests {
         let mut log1 = GossipLossLog::new();
         let mut log2 = GossipLossLog::new();
         let mut log3 = GossipLossLog::new();
-        log1.record(17000, 5, 100);
-        log2.record(17000, 5, 100);
-        log3.record(17000, 5, 100);
-        assert_eq!(log1.entries[0].entry_hash, log2.entries[0].entry_hash);
-        assert_eq!(log2.entries[0].entry_hash, log3.entries[0].entry_hash);
+        let e1 = log1.record(17000, 4, 80);
+        let e2 = log2.record(17000, 4, 80);
+        let e3 = log3.record(17000, 4, 80);
+        assert_eq!(e1.entry_hash, e2.entry_hash);
+        assert_eq!(e2.entry_hash, e3.entry_hash);
     }
 
     #[test]
     fn high_loss_count_mixed_log() {
         let mut log = GossipLossLog::new();
-        log.record(18000, 1, 100);  // 1% - not high
-        log.record(19000, 4, 100);  // 4% - high
-        log.record(20000, 3, 100);  // 3% - not high
-        log.record(21000, 10, 100); // 10% - high
+        log.record(18000, 1, 100);  // 1% → not high
+        log.record(19000, 5, 100);  // 5% → high
+        log.record(20000, 3, 100);  // 3% → not high (exactly at threshold)
+        log.record(21000, 10, 100); // 10% → high
         assert_eq!(log.high_loss_count(), 2);
     }
 
     #[test]
     fn total_lost_msgs_sums_correctly() {
         let mut log = GossipLossLog::new();
-        log.record(22000, 5, 100);
-        log.record(23000, 10, 100);
-        log.record(24000, 15, 100);
-        assert_eq!(log.total_lost_msgs(), 30);
+        log.record(22000, 7, 100);
+        log.record(23000, 13, 100);
+        log.record(24000, 5, 100);
+        assert_eq!(log.total_lost_msgs(), 25);
     }
 
     #[test]

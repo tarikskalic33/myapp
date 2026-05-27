@@ -1,4 +1,4 @@
-//! Gate 425 — Gossip Broadcast Fragmentation Monitor (T2)
+//! Gate 433 — Gossip Broadcast Fragmentation Monitor (T2)
 //! Tracks fragmentation rate per gossip broadcast epoch.
 //! HIGH_FRAGMENTATION_THRESHOLD = 25: rate_pct > 25 → high_fragmentation
 
@@ -52,22 +52,10 @@ impl GossipFragmentationLog {
         total_msgs: u32,
     ) -> &GossipFragmentationEntry {
         let denom = total_msgs.max(1) as u64;
-        let fragmented_rate_pct = ((fragmented_msgs as u64).saturating_mul(100) / denom)
-            .min(100) as u32;
+        let fragmented_rate_pct = ((fragmented_msgs as u64).saturating_mul(100) / denom).min(100) as u32;
         let high_fragmentation = fragmented_rate_pct > HIGH_FRAGMENTATION_THRESHOLD;
-        let prev = self
-            .entries
-            .last()
-            .map(|e| e.entry_hash)
-            .unwrap_or(FRAGMENTATION_GENESIS_HASH);
-        let entry_hash = compute_hash(
-            &prev,
-            epoch_end,
-            fragmented_msgs,
-            total_msgs,
-            fragmented_rate_pct,
-            high_fragmentation,
-        );
+        let prev = self.entries.last().map(|e| e.entry_hash).unwrap_or(FRAGMENTATION_GENESIS_HASH);
+        let entry_hash = compute_hash(&prev, epoch_end, fragmented_msgs, total_msgs, fragmented_rate_pct, high_fragmentation);
         self.entries.push(GossipFragmentationEntry {
             epoch_end,
             fragmented_msgs,
@@ -141,9 +129,9 @@ mod tests {
     }
 
     #[test]
-    fn test_flag_false_when_exactly_at_threshold() {
+    fn test_flag_false_at_threshold_boundary() {
         let mut log = GossipFragmentationLog::new();
-        // rate_pct = 25, which is NOT > 25, so flag = false
+        // rate_pct == 25 exactly → not > 25, so flag = false
         let e = log.record(2000, 25, 100);
         assert_eq!(e.fragmented_rate_pct, 25);
         assert!(!e.high_fragmentation);
@@ -152,7 +140,6 @@ mod tests {
     #[test]
     fn test_rate_pct_capped_at_100() {
         let mut log = GossipFragmentationLog::new();
-        // 200 fragmented out of 100 total → raw rate 200, capped at 100
         let e = log.record(3000, 200, 100);
         assert_eq!(e.fragmented_rate_pct, 100);
         assert!(e.high_fragmentation);
@@ -174,12 +161,12 @@ mod tests {
     #[test]
     fn test_entry_hash_non_zero() {
         let mut log = GossipFragmentationLog::new();
-        let e = log.record(5000, 10, 50);
+        let e = log.record(5000, 10, 40);
         assert_ne!(e.entry_hash, [0u8; 32]);
     }
 
     #[test]
-    fn test_first_prev_hash_is_genesis() {
+    fn test_first_prev_hash_equals_genesis() {
         let mut log = GossipFragmentationLog::new();
         let e = log.record(6000, 5, 20);
         assert_eq!(e.prev_hash, FRAGMENTATION_GENESIS_HASH);
@@ -204,73 +191,74 @@ mod tests {
     #[test]
     fn test_verify_chain_one_entry() {
         let mut log = GossipFragmentationLog::new();
-        log.record(9000, 3, 10);
+        log.record(9000, 10, 40);
         assert_eq!(log.verify_chain(), (true, None));
     }
 
     #[test]
     fn test_verify_chain_three_entries() {
         let mut log = GossipFragmentationLog::new();
-        log.record(10000, 5, 20);
-        log.record(11000, 10, 40);
-        log.record(12000, 15, 60);
+        log.record(10000, 10, 40);
+        log.record(11000, 20, 80);
+        log.record(12000, 30, 100);
         assert_eq!(log.verify_chain(), (true, None));
     }
 
     #[test]
     fn test_verify_chain_tamper_entry_0() {
         let mut log = GossipFragmentationLog::new();
-        log.record(13000, 5, 20);
-        log.record(14000, 10, 40);
+        log.record(13000, 10, 40);
+        log.record(14000, 20, 80);
         log.entries[0].fragmented_msgs = 99;
-        let (valid, idx) = log.verify_chain();
-        assert!(!valid);
+        let (ok, idx) = log.verify_chain();
+        assert!(!ok);
         assert_eq!(idx, Some(0));
     }
 
     #[test]
     fn test_verify_chain_tamper_entry_1() {
         let mut log = GossipFragmentationLog::new();
-        log.record(15000, 5, 20);
-        log.record(16000, 10, 40);
-        log.entries[1].fragmented_msgs = 99;
-        let (valid, idx) = log.verify_chain();
-        assert!(!valid);
+        log.record(15000, 10, 40);
+        log.record(16000, 20, 80);
+        log.record(17000, 30, 100);
+        log.entries[1].total_msgs = 999;
+        let (ok, idx) = log.verify_chain();
+        assert!(!ok);
         assert_eq!(idx, Some(1));
     }
 
     #[test]
     fn test_determinism_same_inputs_same_hash() {
         let mut log1 = GossipFragmentationLog::new();
-        let e1 = log1.record(17000, 7, 30).entry_hash;
+        let h1 = log1.record(18000, 15, 50).entry_hash;
 
         let mut log2 = GossipFragmentationLog::new();
-        let e2 = log2.record(17000, 7, 30).entry_hash;
+        let h2 = log2.record(18000, 15, 50).entry_hash;
 
         let mut log3 = GossipFragmentationLog::new();
-        let e3 = log3.record(17000, 7, 30).entry_hash;
+        let h3 = log3.record(18000, 15, 50).entry_hash;
 
-        assert_eq!(e1, e2);
-        assert_eq!(e2, e3);
+        assert_eq!(h1, h2);
+        assert_eq!(h2, h3);
     }
 
     #[test]
-    fn test_high_fragmentation_count_mixed_log() {
+    fn test_high_fragmentation_count_mixed() {
         let mut log = GossipFragmentationLog::new();
-        log.record(18000, 5, 100);   // rate=5, flag=false
-        log.record(19000, 30, 100);  // rate=30, flag=true
-        log.record(20000, 25, 100);  // rate=25, flag=false (boundary)
-        log.record(21000, 50, 100);  // rate=50, flag=true
+        log.record(19000, 10, 100); // 10% — false
+        log.record(20000, 26, 100); // 26% — true
+        log.record(21000, 25, 100); // 25% — false
+        log.record(22000, 50, 100); // 50% — true
         assert_eq!(log.high_fragmentation_count(), 2);
     }
 
     #[test]
     fn test_total_fragmented_msgs_sums_correctly() {
         let mut log = GossipFragmentationLog::new();
-        log.record(22000, 10, 100);
-        log.record(23000, 20, 100);
-        log.record(24000, 30, 100);
-        assert_eq!(log.total_fragmented_msgs(), 60u64);
+        log.record(23000, 10, 100);
+        log.record(24000, 20, 100);
+        log.record(25000, 30, 100);
+        assert_eq!(log.total_fragmented_msgs(), 60);
     }
 
     #[test]
@@ -282,11 +270,11 @@ mod tests {
     #[test]
     fn test_mean_rate_pct_multi_entry_correct() {
         let mut log = GossipFragmentationLog::new();
-        log.record(25000, 10, 100); // rate=10
-        log.record(26000, 20, 100); // rate=20
-        log.record(27000, 30, 100); // rate=30
-        // mean = (10+20+30)/3 = 20
-        assert_eq!(log.mean_rate_pct(), 20);
+        log.record(26000, 10, 100); // 10%
+        log.record(27000, 30, 100); // 30%
+        log.record(28000, 50, 100); // 50%
+        // mean = (10 + 30 + 50) / 3 = 30
+        assert_eq!(log.mean_rate_pct(), 30);
     }
 
     #[test]

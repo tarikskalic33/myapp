@@ -1,123 +1,61 @@
-//! Gate 415 — Gossip Broadcast Fanout Log (T2)
-//! EPISTEMIC TIER: T2 (engineering hypothesis)
-//!
-//! Per-epoch tracking of gossip broadcast fanout. Fanout is the number of
-//! peers each message is forwarded to during the epoch.
-//!
-//! min_fanout:   u32 — minimum fanout observed this epoch
-//! max_fanout:   u32 — maximum fanout observed this epoch
-//! mean_fanout:  u32 — (min_fanout + max_fanout) / 2
-//! low_fanout:   bool — mean_fanout < FANOUT_FLOOR (3)
-//!
-//! FANOUT_FLOOR: u32 = 3
-//!
-//! GossipBroadcastFanoutEntry (hash-chained):
-//!   epoch_end:    u64
-//!   min_fanout:   u32
-//!   max_fanout:   u32
-//!   mean_fanout:  u32
-//!   low_fanout:   bool
-//!   entry_hash:   [u8;32]
-//!   prev_hash:    [u8;32]
-//!
-//! entry_hash = SHA-256(prev[32] ‖ epoch_end_be8 ‖ min_fanout_be4
-//!                       ‖ max_fanout_be4 ‖ mean_fanout_be4 ‖ low_fanout_byte)
-//!
-//! GossipBroadcastFanoutLog: record(epoch_end, min_fanout, max_fanout),
-//!   low_fanout_count(), max_ever_fanout(), mean_of_means(), verify_chain().
+//! Gate 436 — Gossip Broadcast Fanout Monitor (T2)
+//! Tracks fanout rate per gossip broadcast epoch.
+//! LOW_FANOUT_THRESHOLD = 40: rate_pct < 40 → low_fanout
 
 use sha2::{Sha256, Digest};
 
-pub const GOSSIP_BROADCAST_FANOUT_GENESIS_HASH: [u8; 32] = [0u8; 32];
-pub const FANOUT_FLOOR: u32 = 3;
-
-// ─── GossipBroadcastFanoutEntry ───────────────────────────────────────────────
+pub const FANOUT_GENESIS_HASH: [u8; 32] = [0u8; 32];
+pub const LOW_FANOUT_THRESHOLD: u32 = 40;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct GossipBroadcastFanoutEntry {
-    pub epoch_end:   u64,
-    pub min_fanout:  u32,
-    pub max_fanout:  u32,
-    pub mean_fanout: u32,
-    pub low_fanout:  bool,
-    pub entry_hash:  [u8; 32],
-    pub prev_hash:   [u8; 32],
+pub struct GossipFanoutEntry {
+    pub epoch_end:          u64,
+    pub low_fanout_msgs:    u32,
+    pub total_msgs:         u32,
+    pub low_fanout_rate_pct: u32,
+    pub low_fanout:         bool,
+    pub entry_hash:         [u8; 32],
+    pub prev_hash:          [u8; 32],
 }
 
-fn compute_broadcast_fanout_hash(
-    prev:        &[u8; 32],
-    epoch_end:   u64,
-    min_fanout:  u32,
-    max_fanout:  u32,
-    mean_fanout: u32,
-    low_fanout:  bool,
+fn compute_hash(
+    prev: &[u8; 32],
+    epoch_end: u64,
+    low_fanout_msgs: u32,
+    total_msgs: u32,
+    rate_pct: u32,
+    low_fanout: bool,
 ) -> [u8; 32] {
     let mut h = Sha256::new();
     h.update(prev);
     h.update(epoch_end.to_be_bytes());
-    h.update(min_fanout.to_be_bytes());
-    h.update(max_fanout.to_be_bytes());
-    h.update(mean_fanout.to_be_bytes());
+    h.update(low_fanout_msgs.to_be_bytes());
+    h.update(total_msgs.to_be_bytes());
+    h.update(rate_pct.to_be_bytes());
     h.update([low_fanout as u8]);
     h.finalize().into()
 }
 
-// ─── GossipBroadcastFanoutLog ─────────────────────────────────────────────────
-
-pub struct GossipBroadcastFanoutLog {
-    entries: Vec<GossipBroadcastFanoutEntry>,
+pub struct GossipFanoutLog {
+    pub entries: Vec<GossipFanoutEntry>,
 }
 
-impl GossipBroadcastFanoutLog {
-    pub fn new() -> Self { Self { entries: Vec::new() } }
-
-    pub fn entry_count(&self) -> usize { self.entries.len() }
-    pub fn is_empty(&self)    -> bool  { self.entries.is_empty() }
-    pub fn entries(&self)     -> &[GossipBroadcastFanoutEntry] { &self.entries }
-    pub fn latest(&self)      -> Option<&GossipBroadcastFanoutEntry> { self.entries.last() }
-
-    /// Count of epochs where low_fanout == true.
-    pub fn low_fanout_count(&self) -> usize {
-        self.entries.iter().filter(|e| e.low_fanout).count()
+impl GossipFanoutLog {
+    pub fn new() -> Self {
+        Self { entries: Vec::new() }
     }
 
-    /// Maximum max_fanout seen across all epochs. Returns 0 if empty.
-    pub fn max_ever_fanout(&self) -> u32 {
-        self.entries.iter().map(|e| e.max_fanout).max().unwrap_or(0)
-    }
-
-    /// Integer mean of all per-epoch mean_fanout values. Returns 0 if empty.
-    pub fn mean_of_means(&self) -> u32 {
-        if self.entries.is_empty() { return 0; }
-        let sum: u64 = self.entries.iter().map(|e| e.mean_fanout as u64).sum();
-        (sum / self.entries.len() as u64) as u32
-    }
-
-    /// Record broadcast fanout for one epoch.
-    /// mean_fanout = (min_fanout + max_fanout) / 2.
-    /// low_fanout = mean_fanout < FANOUT_FLOOR.
-    pub fn record(
-        &mut self,
-        epoch_end:  u64,
-        min_fanout: u32,
-        max_fanout: u32,
-    ) -> &GossipBroadcastFanoutEntry {
-        let mean_fanout = (min_fanout as u64 + max_fanout as u64) as u32 / 2;
-        let low_fanout  = mean_fanout < FANOUT_FLOOR;
-
-        let prev = self.entries.last()
-            .map(|e| e.entry_hash)
-            .unwrap_or(GOSSIP_BROADCAST_FANOUT_GENESIS_HASH);
-
-        let entry_hash = compute_broadcast_fanout_hash(
-            &prev, epoch_end, min_fanout, max_fanout, mean_fanout, low_fanout,
-        );
-
-        self.entries.push(GossipBroadcastFanoutEntry {
+    pub fn record(&mut self, epoch_end: u64, low_fanout_msgs: u32, total_msgs: u32) -> &GossipFanoutEntry {
+        let denom = total_msgs.max(1) as u64;
+        let rate_pct = ((low_fanout_msgs as u64).saturating_mul(100) / denom).min(100) as u32;
+        let low_fanout = rate_pct < LOW_FANOUT_THRESHOLD;
+        let prev = self.entries.last().map(|e| e.entry_hash).unwrap_or(FANOUT_GENESIS_HASH);
+        let entry_hash = compute_hash(&prev, epoch_end, low_fanout_msgs, total_msgs, rate_pct, low_fanout);
+        self.entries.push(GossipFanoutEntry {
             epoch_end,
-            min_fanout,
-            max_fanout,
-            mean_fanout,
+            low_fanout_msgs,
+            total_msgs,
+            low_fanout_rate_pct: rate_pct,
             low_fanout,
             entry_hash,
             prev_hash: prev,
@@ -125,16 +63,29 @@ impl GossipBroadcastFanoutLog {
         self.entries.last().unwrap()
     }
 
+    pub fn low_fanout_count(&self) -> usize {
+        self.entries.iter().filter(|e| e.low_fanout).count()
+    }
+
+    pub fn total_low_fanout_msgs(&self) -> u64 {
+        self.entries.iter().map(|e| e.low_fanout_msgs as u64).sum()
+    }
+
+    pub fn mean_rate_pct(&self) -> u32 {
+        if self.entries.is_empty() {
+            return 0;
+        }
+        let sum: u64 = self.entries.iter().map(|e| e.low_fanout_rate_pct as u64).sum();
+        (sum / self.entries.len() as u64) as u32
+    }
+
     pub fn verify_chain(&self) -> (bool, Option<usize>) {
-        let mut prev = GOSSIP_BROADCAST_FANOUT_GENESIS_HASH;
+        let mut prev = FANOUT_GENESIS_HASH;
         for (i, e) in self.entries.iter().enumerate() {
             if e.prev_hash != prev {
                 return (false, Some(i));
             }
-            let expected = compute_broadcast_fanout_hash(
-                &prev, e.epoch_end, e.min_fanout, e.max_fanout,
-                e.mean_fanout, e.low_fanout,
-            );
+            let expected = compute_hash(&prev, e.epoch_end, e.low_fanout_msgs, e.total_msgs, e.low_fanout_rate_pct, e.low_fanout);
             if e.entry_hash != expected {
                 return (false, Some(i));
             }
@@ -144,177 +95,182 @@ impl GossipBroadcastFanoutLog {
     }
 }
 
-impl Default for GossipBroadcastFanoutLog {
-    fn default() -> Self { Self::new() }
+impl Default for GossipFanoutLog {
+    fn default() -> Self {
+        Self::new()
+    }
 }
-
-// ─── Tests ────────────────────────────────────────────────────────────────────
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    // ── record fields ─────────────────────────────────────────────────────────
-
     #[test]
-    fn record_fields_stored() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        let e = log.record(1, 2, 8);
-        assert_eq!(e.epoch_end, 1);
-        assert_eq!(e.min_fanout, 2);
-        assert_eq!(e.max_fanout, 8);
-        assert_eq!(e.mean_fanout, 5); // (2+8)/2
-    }
-
-    #[test]
-    fn zero_fanout_stored() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        let e = log.record(1, 0, 0);
-        assert_eq!(e.mean_fanout, 0);
+    fn test_record_fields_correct_flag_true() {
+        let mut log = GossipFanoutLog::new();
+        let e = log.record(1000, 10, 100);
+        assert_eq!(e.epoch_end, 1000);
+        assert_eq!(e.low_fanout_msgs, 10);
+        assert_eq!(e.total_msgs, 100);
+        assert_eq!(e.low_fanout_rate_pct, 10);
         assert!(e.low_fanout);
     }
 
     #[test]
-    fn mean_rounds_down() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        // (1+4)/2 = 2 (rounds down)
-        let e = log.record(1, 1, 4);
-        assert_eq!(e.mean_fanout, 2);
+    fn test_flag_false_when_at_threshold() {
+        let mut log = GossipFanoutLog::new();
+        // rate_pct = (40 * 100) / 100 = 40, low_fanout = 40 < 40 = false
+        let e = log.record(2000, 40, 100);
+        assert_eq!(e.low_fanout_rate_pct, 40);
+        assert!(!e.low_fanout);
     }
 
-    // ── low_fanout threshold ──────────────────────────────────────────────────
+    #[test]
+    fn test_rate_pct_capped_at_100() {
+        let mut log = GossipFanoutLog::new();
+        let e = log.record(3000, 200, 100);
+        assert_eq!(e.low_fanout_rate_pct, 100);
+        assert!(!e.low_fanout);
+    }
 
     #[test]
-    fn low_fanout_below_floor() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        // mean = (0+4)/2 = 2 < 3
-        let e = log.record(1, 0, 4);
-        assert_eq!(e.mean_fanout, 2);
+    fn test_total_msgs_zero_no_div_by_zero() {
+        let mut log = GossipFanoutLog::new();
+        let e = log.record(4000, 0, 0);
+        assert_eq!(e.low_fanout_rate_pct, 0);
         assert!(e.low_fanout);
     }
 
     #[test]
-    fn fanout_at_floor_not_low() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        // mean = (2+4)/2 = 3 — at floor, not low
-        let e = log.record(1, 2, 4);
-        assert_eq!(e.mean_fanout, 3);
-        assert!(!e.low_fanout);
+    fn test_threshold_constant_value() {
+        assert_eq!(LOW_FANOUT_THRESHOLD, 40);
     }
 
     #[test]
-    fn fanout_above_floor_not_low() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        let e = log.record(1, 4, 10);
-        assert!(!e.low_fanout);
-    }
-
-    // ── aggregate stats ───────────────────────────────────────────────────────
-
-    #[test]
-    fn low_fanout_count_correct() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        log.record(1, 4, 8);  // mean=6 — ok
-        log.record(2, 0, 2);  // mean=1 — low
-        log.record(3, 2, 4);  // mean=3 — ok (at floor)
-        log.record(4, 0, 0);  // mean=0 — low
-        assert_eq!(log.low_fanout_count(), 2);
-    }
-
-    #[test]
-    fn max_ever_fanout_correct() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        log.record(1, 2, 6);
-        log.record(2, 3, 12);
-        log.record(3, 1, 8);
-        assert_eq!(log.max_ever_fanout(), 12);
-    }
-
-    #[test]
-    fn max_ever_fanout_empty_zero() {
-        let log = GossipBroadcastFanoutLog::new();
-        assert_eq!(log.max_ever_fanout(), 0);
-    }
-
-    #[test]
-    fn mean_of_means_correct() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        log.record(1, 2, 8);  // mean=5
-        log.record(2, 4, 10); // mean=7
-        log.record(3, 0, 6);  // mean=3
-        // (5+7+3)/3 = 5
-        assert_eq!(log.mean_of_means(), 5);
-    }
-
-    #[test]
-    fn mean_of_means_empty_zero() {
-        let log = GossipBroadcastFanoutLog::new();
-        assert_eq!(log.mean_of_means(), 0);
-    }
-
-    // ── hash chain ────────────────────────────────────────────────────────────
-
-    #[test]
-    fn entry_hash_nonzero() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        let e = log.record(1, 3, 9);
+    fn test_entry_hash_non_zero() {
+        let mut log = GossipFanoutLog::new();
+        let e = log.record(5000, 10, 100);
         assert_ne!(e.entry_hash, [0u8; 32]);
     }
 
     #[test]
-    fn first_entry_prev_hash_is_genesis() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        let e = log.record(1, 3, 9);
-        assert_eq!(e.prev_hash, GOSSIP_BROADCAST_FANOUT_GENESIS_HASH);
+    fn test_first_prev_hash_is_genesis() {
+        let mut log = GossipFanoutLog::new();
+        let e = log.record(6000, 10, 100);
+        assert_eq!(e.prev_hash, FANOUT_GENESIS_HASH);
     }
 
     #[test]
-    fn chain_prev_links() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        log.record(1, 3, 9);
-        let h0 = log.entries()[0].entry_hash;
-        log.record(2, 4, 10);
-        assert_eq!(log.entries()[1].prev_hash, h0);
-    }
-
-    // ── verify_chain ──────────────────────────────────────────────────────────
-
-    #[test]
-    fn verify_chain_empty_ok() {
-        let log = GossipBroadcastFanoutLog::new();
-        let (ok, idx) = log.verify_chain();
-        assert!(ok);
-        assert!(idx.is_none());
+    fn test_second_prev_hash_equals_first_entry_hash() {
+        let mut log = GossipFanoutLog::new();
+        log.record(7000, 10, 100);
+        let first_hash = log.entries[0].entry_hash;
+        log.record(8000, 20, 100);
+        assert_eq!(log.entries[1].prev_hash, first_hash);
     }
 
     #[test]
-    fn verify_chain_multiple_ok() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        for i in 1u64..=5 { log.record(i, i as u32, i as u32 * 3); }
-        let (ok, idx) = log.verify_chain();
-        assert!(ok);
-        assert!(idx.is_none());
+    fn test_verify_chain_empty() {
+        let log = GossipFanoutLog::new();
+        assert_eq!(log.verify_chain(), (true, None));
     }
 
     #[test]
-    fn verify_chain_detects_tamper() {
-        let mut log = GossipBroadcastFanoutLog::new();
-        log.record(1, 3, 9);
-        log.record(2, 4, 10);
-        log.entries[0].entry_hash[0] ^= 0xFF;
+    fn test_verify_chain_one_entry() {
+        let mut log = GossipFanoutLog::new();
+        log.record(9000, 5, 50);
+        assert_eq!(log.verify_chain(), (true, None));
+    }
+
+    #[test]
+    fn test_verify_chain_three_entries() {
+        let mut log = GossipFanoutLog::new();
+        log.record(10000, 5, 50);
+        log.record(11000, 15, 100);
+        log.record(12000, 30, 200);
+        assert_eq!(log.verify_chain(), (true, None));
+    }
+
+    #[test]
+    fn test_verify_chain_tamper_entry_0() {
+        let mut log = GossipFanoutLog::new();
+        log.record(13000, 5, 50);
+        log.record(14000, 10, 100);
+        log.entries[0].low_fanout_msgs = 99;
         let (ok, idx) = log.verify_chain();
         assert!(!ok);
         assert_eq!(idx, Some(0));
     }
 
-    // ── determinism ───────────────────────────────────────────────────────────
+    #[test]
+    fn test_verify_chain_tamper_entry_1() {
+        let mut log = GossipFanoutLog::new();
+        log.record(15000, 5, 50);
+        log.record(16000, 10, 100);
+        log.entries[1].total_msgs = 999;
+        let (ok, idx) = log.verify_chain();
+        assert!(!ok);
+        assert_eq!(idx, Some(1));
+    }
 
     #[test]
-    fn entry_hash_deterministic() {
-        let mut l1 = GossipBroadcastFanoutLog::new();
-        let mut l2 = GossipBroadcastFanoutLog::new();
-        let h1 = l1.record(5, 3, 9).entry_hash;
-        let h2 = l2.record(5, 3, 9).entry_hash;
+    fn test_determinism_same_inputs_same_hash() {
+        let mut log1 = GossipFanoutLog::new();
+        let h1 = log1.record(17000, 20, 80).entry_hash;
+
+        let mut log2 = GossipFanoutLog::new();
+        let h2 = log2.record(17000, 20, 80).entry_hash;
+
+        let mut log3 = GossipFanoutLog::new();
+        let h3 = log3.record(17000, 20, 80).entry_hash;
+
         assert_eq!(h1, h2);
+        assert_eq!(h2, h3);
+    }
+
+    #[test]
+    fn test_low_fanout_count_mixed() {
+        let mut log = GossipFanoutLog::new();
+        // rate = 10 < 40 → low_fanout = true
+        log.record(18000, 10, 100);
+        // rate = 50 >= 40 → low_fanout = false
+        log.record(19000, 50, 100);
+        // rate = 20 < 40 → low_fanout = true
+        log.record(20000, 20, 100);
+        assert_eq!(log.low_fanout_count(), 2);
+    }
+
+    #[test]
+    fn test_total_low_fanout_msgs_sums_correctly() {
+        let mut log = GossipFanoutLog::new();
+        log.record(21000, 7, 100);
+        log.record(22000, 13, 100);
+        log.record(23000, 50, 100);
+        assert_eq!(log.total_low_fanout_msgs(), 70);
+    }
+
+    #[test]
+    fn test_mean_rate_pct_empty_returns_zero() {
+        let log = GossipFanoutLog::new();
+        assert_eq!(log.mean_rate_pct(), 0);
+    }
+
+    #[test]
+    fn test_mean_rate_pct_multi_entry() {
+        let mut log = GossipFanoutLog::new();
+        // rate = 20
+        log.record(24000, 20, 100);
+        // rate = 60
+        log.record(25000, 60, 100);
+        // rate = 40
+        log.record(26000, 40, 100);
+        // mean = (20 + 60 + 40) / 3 = 40
+        assert_eq!(log.mean_rate_pct(), 40);
+    }
+
+    #[test]
+    fn test_default_has_zero_entries() {
+        let log = GossipFanoutLog::default();
+        assert_eq!(log.entries.len(), 0);
     }
 }
