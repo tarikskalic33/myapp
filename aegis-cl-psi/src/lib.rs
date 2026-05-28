@@ -1682,3 +1682,15 @@ pub mod gossip_broadcast_drop_cascade_e5;
 // entry_hash = SHA-256(prev[32]‖epoch_end_be8‖misses_be4‖epochs_be4‖rate_be4‖flag_byte).
 // GossipQuorumMissE5Log: record(), high_quorum_miss_e5_count(), total_quorum_misses(), mean_quorum_miss_rate_pct(), verify_chain().
 pub mod gossip_broadcast_quorum_miss_e5;
+// Gate 532 — Gossip Broadcast Backpressure E5 Monitor (T2)
+// Per-epoch backpressure event rate: backpressure_events, total_msgs, backpressure_rate_pct = (events*100)/max(total,1) capped 100.
+// high_backpressure_e5: backpressure_rate_pct > HIGH_BACKPRESSURE_E5_THRESHOLD (14).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖events_be4‖total_be4‖rate_be4‖flag_byte).
+// GossipBackpressureE5Log: record(), high_backpressure_e5_count(), total_backpressure_events(), mean_backpressure_rate_pct(), verify_chain().
+pub mod gossip_broadcast_backpressure_e5;
+// Gate 533 — Gossip Broadcast Sync Lag E5 Monitor (T2)
+// Per-epoch sync lag rate: lagged_peers, total_peers, sync_lag_rate_pct = (lagged*100)/max(total,1) capped 100.
+// high_sync_lag_e5: sync_lag_rate_pct > HIGH_SYNC_LAG_E5_THRESHOLD (10).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖lagged_be4‖total_be4‖rate_be4‖flag_byte).
+// GossipSyncLagE5Log: record(), high_sync_lag_e5_count(), total_lagged_peers(), mean_sync_lag_rate_pct(), verify_chain().
+pub mod gossip_broadcast_sync_lag_e5;
