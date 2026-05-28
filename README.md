@@ -21,7 +21,7 @@ AEGIS-Ω was conceived, designed, and executed by a single engineer operating un
 - **Single author, single machine** — AMD RX 570, 8GB RAM. No cloud. No build farm. No team.
 - **113,000+ lines of polyglot code** — TypeScript (governance runtime), Rust (gossip fabric + seven-pillar runtime), Python (analytical bridge) — architected, typed, and maintained by a singular author.
 - **8456 invariant tests, 0 failures** — every hash chain, every BFT boundary, every determinism proof runs on the same machine that generated them. Test density is approximately one test per 17 lines of production code, approaching DO-178C aerospace coverage standards.
-- **535 gates completed** — each gate required a passing implementation, unit tests, and a full-suite green run before the commit was allowed to land.
+- **537 gates completed** — each gate required a passing implementation, unit tests, and a full-suite green run before the commit was allowed to land.
 - **One law above all others** — `AdaptivePower(T) ≤ ReplayVerifiability(T)` — every module, every layer, every commit answers to it.
 
 The code does not ask to be believed. It can be replayed from genesis and will produce the same cryptographic fingerprint every time.
@@ -492,4 +492,4 @@ Free to use, study, modify, and distribute. Derivative works must release source
 
 *A finite automaton is a machine that remembers its state.*
 *A hash-chained automaton is a machine that can prove it remembered correctly.*
-*344 of them, watching each other — that is the organism.*
+*346 of them, watching each other — that is the organism.*

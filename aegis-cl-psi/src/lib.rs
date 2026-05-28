@@ -1706,3 +1706,15 @@ pub mod gossip_broadcast_epoch_drift_e5;
 // entry_hash = SHA-256(prev[32]‖epoch_end_be8‖partitioned_be4‖total_be4‖rate_be4‖flag_byte).
 // GossipPartitionDetectE5Log: record(), high_partition_detect_e5_count(), total_partitioned_peers(), mean_partition_rate_pct(), verify_chain().
 pub mod gossip_broadcast_partition_detect_e5;
+// Gate 536 — Gossip Broadcast Route Flap E5 Monitor (T2)
+// Per-epoch route flap rate: flapped_routes, total_routes, flap_rate_pct = (flapped*100)/max(total,1) capped 100.
+// high_route_flap_e5: flap_rate_pct > HIGH_ROUTE_FLAP_E5_THRESHOLD (12).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖flapped_be4‖total_be4‖rate_be4‖flag_byte).
+// GossipRouteFlapE5Log: record(), high_route_flap_e5_count(), total_flapped_routes(), mean_flap_rate_pct(), verify_chain().
+pub mod gossip_broadcast_route_flap_e5;
+// Gate 537 — Gossip Broadcast Window Exhaust E5 Monitor (T2)
+// Per-epoch window exhaustion rate: exhausted_windows, total_windows, exhaust_rate_pct = (exhausted*100)/max(total,1) capped 100.
+// high_window_exhaust_e5: exhaust_rate_pct > HIGH_WINDOW_EXHAUST_E5_THRESHOLD (16).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖exhausted_be4‖total_be4‖rate_be4‖flag_byte).
+// GossipWindowExhaustE5Log: record(), high_window_exhaust_e5_count(), total_exhausted_windows(), mean_exhaust_rate_pct(), verify_chain().
+pub mod gossip_broadcast_window_exhaust_e5;
