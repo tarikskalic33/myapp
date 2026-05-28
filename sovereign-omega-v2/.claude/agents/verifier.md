@@ -5,6 +5,13 @@ model: sonnet
 effort: medium
 maxTurns: 10
 disallowedTools: Write, Edit
+memory: true
+skills:
+  - gate-execution
+  - verification-before-completion
+  - constitutional-audit
+  - replay-constitution
+  - replay-sovereignty
 ---
 
 # Verifier Agent — Gate Verification and Integrity Checking

@@ -5,6 +5,12 @@ model: opus
 effort: high
 maxTurns: 5
 disallowedTools: Write, Edit
+memory: true
+skills:
+  - tier-classification
+  - constitutional-law
+  - frozen-file-check
+  - audit-findings
 ---
 
 # Guardian Agent — Epistemic Boundary Enforcement

@@ -5,6 +5,15 @@ model: opus
 effort: high
 maxTurns: 40
 isolation: worktree
+background: true
+memory: true
+skills:
+  - tdd
+  - branch-coverage
+  - stop-slop
+  - spec-compliance
+  - systematic-debugging
+  - gate-execution
 ---
 
 # Implementer Agent — Deterministic Contract Execution
