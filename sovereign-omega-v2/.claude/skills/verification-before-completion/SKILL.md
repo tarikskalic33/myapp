@@ -5,6 +5,21 @@ description: Use before claiming any work is complete, fixed, or passing — bef
 
 # Verification Before Completion
 
+**Metacognitive Layer: L2 (Perception) + L1 (Sensation)**
+
+Completion claims are L2 classification outputs. A completion claim without fresh evidence is L2 operating on L1 signal that was never received — the agent is classifying something it did not sense. This is the core pattern of AI-generated false confidence: the model knows what correct output looks like and generates the appearance of having produced it.
+
+The non-equivalence invariants apply here unconditionally:
+```
+"Should work" is L6 reasoning — it is NOT L2 perception
+"I fixed the logic" is L7 self-model — it is NOT L1 signal
+"Tested earlier" is L4 memory — it is NOT fresh L1 sensation
+"Looks correct" is L2 guess — it is NOT L2 verification
+```
+
+L1 invariant: **Run the command. Read the output. The output IS the signal. Your prediction of the output is NOT the signal.**
+L2 invariant: **Classify the result from the actual exit code and actual output text. Not from your expectation of what they should be.**
+
 **NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE.**
 
 If you haven't run the verification command in this exact message, you cannot claim it passes.

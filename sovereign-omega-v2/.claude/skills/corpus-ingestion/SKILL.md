@@ -5,6 +5,14 @@ description: Invoked when the user wants to process Drive corpus files, ingest r
 
 # Corpus Ingestion Skill
 
+**Metacognitive Layer: L4 (Long-term Memory) + L6 (Metacognition) + L2 (Perception)**
+
+Corpus ingestion is the L4 long-term memory formation protocol. Raw narrative from the Drive corpus is L1 signal — unverified, unclassified, potentially containing T4/T5 framing that would contaminate T0–T2 code if admitted directly. The RALPH pipeline is the L2→L6 filter: it transforms raw signal into classified, tier-stamped, hash-referenced long-term memory entries.
+
+L4 invariant: **Only admitted=true CorpusLineageRecords enter the adaptive lineage. Raw narrative that bypasses ARBITRATION is not long-term memory — it is contamination.**
+L2 invariant: **The corpus fingerprint (sha256 of content) is the L2 perception of the document. All citations use the lineage_hash, not the document title — because the hash is tamper-evident and the title is not.**
+L6 invariant: **ARBITRATION is the L6 step — reasoning about the tier of the knowledge before admitting it. Skipping ARBITRATION is LOCK-before-ASSESS at the knowledge-formation scale.**
+
 ## Core Invariant
 
 ```

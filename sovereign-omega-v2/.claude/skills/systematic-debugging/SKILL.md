@@ -5,6 +5,21 @@ description: Use before any bug, test failure, or unexpected behavior gets a pro
 
 # Systematic Debugging
 
+**Metacognitive Layer: L2 (Perception) + L6 (Metacognition)**
+
+A bug is not a problem to be solved — it is a signal to be correctly classified before any action is taken. The debugger's failure mode is L2 collapse: acting on an unverified signal (the first error line, the first hypothesis, the nearest plausible cause). Every premature fix attempt is a LOCK-before-ASSESS (ERROR-01 pattern).
+
+L2 invariant: **Read the full error message, not just the first line. Never act on a truncated signal.**
+L6 invariant: **State a single hypothesis with evidence before touching any code. One hypothesis, one change, one observation. If the fix is wrong, return to L1 — sense the new signal fully before re-classifying.**
+
+Non-equivalence invariants active during debugging:
+```
+Test pass    ≠  Bug fixed       (a passing test may not cover the failure path)
+Root cause   ≠  Nearest cause   (the nearest thing you can change ≠ the thing that should change)
+Hypothesis   ≠  Solution        (understanding the failure ≠ knowing the correct fix)
+Fix #3 still fails → stop patching; the problem is architectural → invoke /brainstorming
+```
+
 **NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST.**
 
 After 3 failed fixes, stop patching. The problem is architectural — discuss instead.

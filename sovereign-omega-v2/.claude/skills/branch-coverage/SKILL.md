@@ -5,6 +5,19 @@ description: Systematic branch coverage analysis workflow. Invoke at the start o
 
 # Branch Coverage Analysis — Systematic Workflow
 
+**Metacognitive Layer: L2 (Perception) + L5 (Executive Function)**
+
+Coverage analysis is the L2 function at the code topology scale — perceiving which branches exist and which have been verified. The cardinal non-equivalence for this skill:
+
+```
+Coverage ≠ Correctness
+100% branch coverage ≠ correct behavior in all branches
+An annotated dead branch ≠ a tested live branch
+```
+
+L2 invariant: **Read the full coverage report. Don't act on coverage numbers alone — read the specific uncovered arms and classify each one (dead code, untested live code, structurally unreachable). A number is not a signal; the classified list is.**
+L5 invariant: **Every uncovered arm is an open RALPH cycle — either close it (write the test or add the annotation) or explicitly defer it with a classified rationale. Leaving it open is constitutional debt that compounds.**
+
 **INVOKE THIS FIRST.** Before any file is touched, complete Phase 1. No exceptions.
 
 ---

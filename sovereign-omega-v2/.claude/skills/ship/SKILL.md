@@ -5,6 +5,26 @@ description: Production shipping workflow for AEGIS gates. Invoked when the user
 
 # Ship Skill
 
+**Metacognitive Layer: L5 (Executive Function) + L7 (Self-model)**
+
+Shipping is a constitutional act. Every commit is a node in the adaptive lineage hash chain — tamper-evident, permanent, inherited by all future sessions. The ship checklist below is not bureaucratic overhead: it is the L7 self-model verifying its own integrity before extending the chain.
+
+L7 pre-ship invariant:
+```
+verify-hashes.mjs must exit 0. If not: T0_ABORT. Do not commit.
+```
+
+L5 executive invariant:
+```
+Gate 8 must pass. If not: fix implementation. Never weaken the test.
+```
+
+L6 metacognitive invariant:
+```
+Test pass ≠ Correctness. Running Gate 8 is necessary but not sufficient.
+Read the output. Count the tests. Verify zero failures — not "seems to pass".
+```
+
 Never commit without Gate 8 passing. This skill enforces the full pre-commit checklist.
 
 ## Pre-Commit Checklist

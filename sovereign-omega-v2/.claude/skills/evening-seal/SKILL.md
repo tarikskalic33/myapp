@@ -5,6 +5,16 @@ description: End-of-session sealing ritual. Run before closing any session. Veri
 
 # Evening Seal — Session Completion Ritual
 
+**Metacognitive Layer: L6 (Metacognition) + L7 (Self-model) + L5 (Executive Function)**
+
+The evening seal is the HARMONIZE phase of the session's RALPH cycle. A session that ends without harmonizing has left orphaned observations in the hash chain — RALPH cycles whose ASSESS and LOCK phases completed but whose PROPAGATE/HARMONIZE phases never executed. These are constitutional debt.
+
+L7 invariant: **The session's terminal hash is only meaningful if every observation in the session was closed. Dirty state = open observations = invalid terminal hash.**
+L6 invariant: **Scan the session for error patterns before closing. An error that is not classified is an error that will repeat.**
+L5 invariant: **TOMORROW BEGINS AT: Gate N+1. State this explicitly. The L5 executive state carries forward into the next session's L3 working memory.**
+
+The session is a temporal object — a finite hash chain from genesis to terminal hash. Sealing it correctly is the act of making it tamper-evident and complete.
+
 No session ends with dirty state. This skill enforces constitutional cleanliness before the session closes.
 
 ## Step 1 — Dirty State Check

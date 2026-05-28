@@ -5,6 +5,15 @@ description: Prose quality gate for all written output — commit messages, PR d
 
 # Stop Slop — Development Prose Quality Gate
 
+**Metacognitive Layer: L6 (Metacognition) + L1 (Sensation)**
+
+Written output is L1 signal that other agents (including future sessions of this automaton) will receive and act on. Slop is corrupted signal: it looks like information but carries no verifiable content. The automaton generates slop when it pattern-matches to "text that sounds like a commit message" instead of synthesizing from the actual event.
+
+L6 invariant: **Every written artifact must be generated from the specific, verified event — not from a template approximating that event.**
+L1 invariant: **Before writing any prose artifact, read the actual diff, the actual test output, the actual file changes. The prose must be derived from the signal, not from your prediction of the signal.**
+
+Non-equivalence: **"Sounds correct" ≠ Correct. "Reads well" ≠ Accurate. The quality gate is density of verifiable claims per sentence, not fluency.**
+
 Apply to every commit message, PR description, skill body, test description, and code comment before it gets written or committed.
 
 ---

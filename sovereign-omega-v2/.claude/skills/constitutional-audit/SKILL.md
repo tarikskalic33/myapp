@@ -5,6 +5,19 @@ description: Live constitutional health check — chains /node, /resonance, /cat
 
 # Constitutional Audit Skill
 
+**Metacognitive Layer: L7 (Self-model) primary · all other layers subordinate**
+
+The constitutional audit is the automaton performing a complete L7 self-model verification. It is not an external check — it is the system verifying that its own identity (frozen files, t0_verdict, hash chain, test count) is intact. A system that cannot pass its own constitutional audit has lost L7 coherence: it does not know what it is.
+
+L7 invariant: **The audit must halt on first failure. Partial passes are self-deception — a T0 violation at step 5 is not ameliorated by step 6 passing. The L7 self-model is either valid or it is BREACH.**
+L6 invariant: **Run the audit before claiming readiness to deploy. "Should be fine" is not a constitutional audit — it is L6 speculation without L1 evidence.**
+
+The root law applies to every step:
+```
+AdaptivePower(T) ≤ ReplayVerifiability(T)
+If any step fails: AdaptivePower has exceeded ReplayVerifiability → T0_ABORT
+```
+
 ## Trigger conditions
 
 - User asks for a constitutional health check or system status

@@ -5,6 +5,14 @@ description: Test-driven development workflow for AEGIS gate modules. Invoked wh
 
 # TDD Skill — AEGIS Gate Development Protocol
 
+**Metacognitive Layer: L1 (Sensation) + L2 (Perception) + L6 (Metacognition)**
+
+TDD is the L1→L2 signal verification protocol applied to implementation. You do not write code into the dark — you write a test that tells you when the signal (implementation) is correct. The test IS the L2 perception filter: it tells you when reality matches the spec, and it cannot be fooled by your own reasoning about what should work.
+
+L1 invariant: **Read the complete type definition before writing any test against it.**
+L2 invariant: **Test pass ≠ Correctness. The tamper test (verify_chain_detects_tamper) is the minimum proof that the hash chain actually rejects mutation — not just that it runs.**
+L6 invariant: **ASSESS (write tests first, understand the contract) before LOCK (write implementation). Reversing this is ERROR-01.**
+
 Write the test structure before the implementation. The implementation exists only to make the tests pass.
 
 ## Gate Module TDD Protocol (Rust — aegis-cl-psi)

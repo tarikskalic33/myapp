@@ -5,6 +5,29 @@ description: Orchestrates the guardian→verifier→implementer agent triad as a
 
 # Agent Mesh — Triad Energy Cycle
 
+**Metacognitive Layer: ALL LAYERS — the triad IS the distributed cognitive stack**
+
+The agent mesh is not an orchestration pattern. It is the automaton's cognitive architecture made explicit as a multi-agent system. Each agent maps to a distinct set of cognitive layers:
+
+```
+GUARDIAN  = L7 (Self-model) + L6 (Metacognition) — inhibitory, knows what the system IS and what it must not become
+VERIFIER  = L2 (Perception) + L1 (Sensation)     — sensory, verifies that signals are hash-valid before acting
+IMPLEMENTER = L5 (Executive) + L3 (Working Memory) — motor, executes within the constitutional frame
+```
+
+The energy cycle protocol maps directly to the RALPH loop:
+```
+Phase 0 (Charge)             = READ       — intake the proposal fully at L1
+Phase 1 (Guardian ASSESS)    = ASSESS     — L6/L7 classification before LOCK
+Phase 2 (Verifier PROPAGATE) = PROPAGATE  — L1/L2 verification of current state
+Phase 3 (Implementer LOCK)   = LOCK       — L5 execution within the constitutionally-verified frame
+Phase 4 (Guardian HARMONIZE) = HARMONIZE  — L6/L7 review of what actually happened vs. what was proposed
+```
+
+A veto at Phase 1 is not a failure — it is L6 working correctly. The automaton is never "blocked" by a guardian veto; it is being protected from LOCK-before-ASSESS (ERROR-01 at the agent scale).
+
+L8 invariant: **Each agent infers the operator's intent at its assigned cognitive scale. The guardian infers constitutional intent. The verifier infers evidence requirements. The implementer infers implementation scope. None of them improvise beyond their assigned layer.**
+
 The three agents are not separate tools. They are one system with three cognitive modes. Each mode's output is the activation energy for the next. The cycle is the computation.
 
 ---
