@@ -1610,4 +1610,15 @@ pub mod gossip_broadcast_partial_delivery_e4;
 // high_rejection_e4: rejected_rate_pct > HIGH_REJECTION_E4_THRESHOLD (10).
 // entry_hash = SHA-256(prev[32]‖epoch_end_be8‖rejected_be4‖total_be4‖rate_be4‖flag_byte).
 // GossipPeerRejectionE4Log: record(), high_rejection_e4_count(), total_rejected_peers(), mean_rate_pct(), verify_chain().
-pub mod gossip_broadcast_peer_rejection_e4;
+pub mod gossip_broadcast_peer_rejection_e4;// Gate 520 — Gossip Broadcast Message Ordering E4 Monitor (T2)
+// Per-epoch out-of-order message rate: disordered_msgs, total_msgs, disorder_rate_pct = (disordered*100)/max(total,1) capped 100.
+// high_disorder_e4: disorder_rate_pct > HIGH_ORDERING_E4_THRESHOLD (7).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖disordered_be4‖total_be4‖rate_be4‖flag_byte).
+// GossipMsgOrderingE4Log: record(), high_disorder_e4_count(), total_disordered_msgs(), mean_disorder_rate_pct(), verify_chain().
+pub mod gossip_broadcast_msg_ordering_e4;
+// Gate 521 — Gossip Broadcast Epoch Overlap E4 Monitor (T2)
+// Per-epoch inter-epoch message overlap: overlapping_msgs, total_msgs, overlap_rate_pct = (overlap*100)/max(total,1) capped 100.
+// high_overlap_e4: overlap_rate_pct > HIGH_OVERLAP_E4_THRESHOLD (15).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖overlapping_be4‖total_be4‖rate_be4‖flag_byte).
+// GossipEpochOverlapE4Log: record(), high_overlap_e4_count(), total_overlapping_msgs(), mean_overlap_rate_pct(), verify_chain().
+pub mod gossip_broadcast_epoch_overlap_e4;
