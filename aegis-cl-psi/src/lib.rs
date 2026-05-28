@@ -1754,3 +1754,15 @@ pub mod gossip_broadcast_seq_gap_e5;
 // entry_hash = SHA-256(prev[32]‖epoch_end_be8‖delayed_be4‖total_be4‖rate_be4‖flag_byte).
 // GossipAckDelayE5Log: record(), high_ack_delay_e5_count(), total_delayed_acks(), mean_delay_rate_pct(), verify_chain().
 pub mod gossip_broadcast_ack_delay_e5;
+// Gate 544 — Gossip Broadcast Header Corrupt E5 Monitor (T2)
+// Per-epoch header corruption rate: corrupted_headers, total_headers, corrupt_rate_pct = (corrupted*100)/max(total,1) capped 100.
+// high_header_corrupt_e5: corrupt_rate_pct > HIGH_HEADER_CORRUPT_E5_THRESHOLD (4).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖corrupted_be4‖total_be4‖rate_be4‖flag_byte).
+// GossipHeaderCorruptE5Log: record(), high_header_corrupt_e5_count(), total_corrupted_headers(), mean_corrupt_rate_pct(), verify_chain().
+pub mod gossip_broadcast_header_corrupt_e5;
+// Gate 545 — Gossip Broadcast Relay Drop E5 Monitor (T2)
+// Per-epoch relay drop rate: dropped_relays, total_relays, drop_rate_pct = (dropped*100)/max(total,1) capped 100.
+// high_relay_drop_e5: drop_rate_pct > HIGH_RELAY_DROP_E5_THRESHOLD (10).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖dropped_be4‖total_be4‖rate_be4‖flag_byte).
+// GossipRelayDropE5Log: record(), high_relay_drop_e5_count(), total_dropped_relays(), mean_drop_rate_pct(), verify_chain().
+pub mod gossip_broadcast_relay_drop_e5;
