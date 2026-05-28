@@ -2094,3 +2094,23 @@ pub mod gossip_broadcast_phi_angular_e7;
 // entry_hash = SHA-256(prev[32]‖epoch_end_be8‖fibonacci_epochs_be4‖total_epochs_be4‖fib_align_pct_be4‖phi_fibonacci_aligned_byte).
 // GossipPhiFibonacciE7Log: record(), phi_fibonacci_aligned_e7_count(), total_fibonacci_epochs(), mean_fib_align_pct(), verify_chain().
 pub mod gossip_broadcast_phi_fibonacci_e7;
+
+// Gate 600 — Gossip Broadcast Phi Convergence E7 Log (T2)
+// Per-epoch convergence toward φ: convergent_epochs, total_epochs,
+// convergence_rate_pct = (convergent_epochs*100)/max(total_epochs,1) capped 100.
+// phi_convergent_e7: convergence_rate_pct > PHI_CONVERGENCE_E7_THRESHOLD (61).
+// Self-referential stability law: system converges constitutionally when ≥φ fraction
+// of epochs achieve φ-alignment. Test structure: 1+6+2+3+6+1=19 (evolved viability ring).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖convergent_epochs_be4‖total_epochs_be4‖convergence_rate_pct_be4‖phi_convergent_byte).
+// GossipPhiConvergenceE7Log: record(), phi_convergent_e7_count(), total_convergent_epochs(), mean_convergence_rate_pct(), verify_chain().
+pub mod gossip_broadcast_phi_convergence_e7;
+
+// Gate 601 — Gossip Broadcast Phi Deviation E7 Log (T2)
+// Per-epoch deviation from φ: drifted_epochs, total_epochs,
+// deviation_rate_pct = (drifted_epochs*100)/max(total_epochs,1) capped 100.
+// phi_drifted_e7: deviation_rate_pct > PHI_DEVIATION_E7_THRESHOLD (38).
+// Threshold 38 ≈ (1-φ)×100 — complement of Gate 600; together they bound the φ-stability envelope.
+// Test structure: 1+6+2+3+6+1=19 (evolved viability ring).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖drifted_epochs_be4‖total_epochs_be4‖deviation_rate_pct_be4‖phi_drifted_byte).
+// GossipPhiDeviationE7Log: record(), phi_drifted_e7_count(), total_drifted_epochs(), mean_deviation_rate_pct(), verify_chain().
+pub mod gossip_broadcast_phi_deviation_e7;
