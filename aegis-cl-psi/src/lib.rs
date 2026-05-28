@@ -1587,3 +1587,15 @@ pub mod gossip_broadcast_bandwidth_exceed_e4;
 // entry_hash = SHA-256(prev[32]‖epoch_end_be8‖drifted_be4‖total_be4‖rate_be4‖flag_byte).
 // GossipPeerDriftE4Log: record(), high_peer_drift_e4_count(), total_drifted_peers(), mean_rate_pct(), verify_chain().
 pub mod gossip_broadcast_peer_drift_e4;
+// Gate 516 — Gossip Broadcast Epoch Stall E4 Monitor (T2)
+// Per-epoch stall rate: stalled_epochs, total_epochs, stalled_rate_pct = (stalled*100)/max(total,1) capped 100.
+// epoch_stalling_e4: stalled_rate_pct > EPOCH_STALLING_E4_THRESHOLD (5).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖stalled_be4‖total_be4‖rate_be4‖flag_byte).
+// GossipEpochStallE4Log: record(), epoch_stalling_e4_count(), total_stalled_epochs(), mean_rate_pct(), verify_chain().
+pub mod gossip_broadcast_epoch_stall_e4;
+// Gate 517 — Gossip Broadcast Rebroadcast E4 Monitor (T2)
+// Per-epoch rebroadcast rate: rebroadcast_count, total_sent, rebroadcast_rate_pct = (rebroadcast*100)/max(total,1) capped 100.
+// high_rebroadcast_e4: rebroadcast_rate_pct > HIGH_REBROADCAST_E4_THRESHOLD (12).
+// entry_hash = SHA-256(prev[32]‖epoch_end_be8‖rebroadcast_be4‖total_be4‖rate_be4‖flag_byte).
+// GossipRebroadcastE4Log: record(), high_rebroadcast_e4_count(), total_rebroadcast_count(), mean_rate_pct(), verify_chain().
+pub mod gossip_broadcast_rebroadcast_e4;
