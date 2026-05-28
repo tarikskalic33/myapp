@@ -3,7 +3,7 @@
   "name": "aegis-sovereign",
   "displayName": "AEGIS Sovereign Runtime",
   "version": "0.5.3",
-  "description": "Constitutional governance runtime — skills, agents, and telemetry monitors for AEGIS-Ω",
+  "description": "Constitutional governance runtime — skills, agents, telemetry monitors, and operator channels for AEGIS-Ω",
   "author": {
     "name": "Tarik Skalić",
     "email": "tarikskalic33@gmail.com",
@@ -14,7 +14,21 @@
   "keywords": ["aegis", "constitutional", "governance", "replay", "martingale", "epistemic"],
   "skills": "../.claude/skills/",
   "agents": "../.claude/agents/",
+  "lspServers": "./.lsp.json",
   "experimental": {
     "monitors": "./monitors/monitors.json"
+  },
+  "userConfig": {
+    "bridge_port": {
+      "type": "number",
+      "title": "Python bridge port",
+      "description": "Port the AEGIS Python bridge listens on",
+      "default": 7890
+    },
+    "operator_id": {
+      "type": "string",
+      "title": "Operator ID",
+      "description": "Operator identifier for governance event signing"
+    }
   }
 }
