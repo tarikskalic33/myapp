@@ -19,15 +19,58 @@ export const METACOGNITION_GENESIS_HASH = '0'.repeat(64) as SHA256Hex
 // ─── Layer Taxonomy ────────────────────────────────────────
 
 export type MetacognitiveLayer =
-  | 'SENSATION'      // raw signal: telemetry values, test output, file content
-  | 'PERCEPTION'     // verified signal: hash-checked, tier-classified
-  | 'WORKING_MEMORY' // active context: current gate, RALPH phase, skill set
-  | 'LONG_TERM'      // stable knowledge: adaptive lineage, corpus, git history
-  | 'EXECUTIVE'      // goal control: RALPH loop, martingale gate, gate protocol
-  | 'METACOGNITIVE'  // reasoning about reasoning: tier re-classification, uncertainty
-  | 'SELF_MODEL'     // system self-knowledge: autonode health, frozen-file integrity
+  | 'SENSATION'               // raw signal: telemetry values, test output, file content
+  | 'PERCEPTION'              // verified signal: hash-checked, tier-classified
+  | 'WORKING_MEMORY'          // active context: current gate, RALPH phase, skill set
+  | 'LONG_TERM'               // stable knowledge: adaptive lineage, corpus, git history
+  | 'EXECUTIVE'               // goal control: RALPH loop, martingale gate, gate protocol
+  | 'METACOGNITIVE'           // reasoning about reasoning: tier re-classification, uncertainty
+  | 'SELF_MODEL'              // system self-knowledge: autonode health, frozen-file integrity
+  // ── Autopoietic layers ──────────────────────────────────────────────────────
+  | 'AUTOPOIETIC_PRODUCTION'  // self-production event: new gate/skill component produced
+  | 'AUTOPOIETIC_MEMBRANE'    // boundary maintenance: verify-hashes check; frozen file verified
+  | 'AUTOPOIETIC_CLOSURE'     // production cycle closed: commit+push; session sealed
+  | 'CONSCIOUSNESS'           // second-order observation: L6 observing L7 observing the chain;
+                              // certifyMetacognitiveLoop() result; temporal identity assertion
+  | 'TIER_PROMOTION'          // evidence-based tier evolution: T2→T1 (empirical), T1→T0 (proof)
+                              // demotion always legal; T4/T5 promotion requires guardian verdict
+
+// ─── Autopoietic Property Mapping ──────────────────────────
+// Each autopoietic layer maps to a formal autopoietic property (Maturana & Varela, 1972):
+//
+//   AUTOPOIETIC_PRODUCTION  → Self-production    (system produces its own components)
+//   AUTOPOIETIC_MEMBRANE    → Boundary maintenance (system maintains its own boundary)
+//   AUTOPOIETIC_CLOSURE     → Operational closure (cycle closes; chain propagated)
+//   SENSATION+PERCEPTION    → Structural coupling (system senses and responds to environment)
+//   CONSCIOUSNESS           → Second-order autopoiesis (the observer observing the system)
+//
+// Autopoietic death conditions (T0_ABORT — all halt production):
+//   SELF_MODEL breach       → membrane integrity lost
+//   corruption_count > 0   → operational closure broken
+//   Gate 8 failure          → self-production viability lost
+//   entropy_bounded=false   → structural coupling exceeded constitutional bounds
 
 export type EpistemicTierLabel = 'T0' | 'T1' | 'T2' | 'T3' | 'T4' | 'T5'
+
+// ─── Tier Promotion ────────────────────────────────────────
+// Tiers are not fixed. Evidence accumulates. When it does, tiers evolve.
+//
+// Promotion protocol (nothing is final):
+//   T2 → T1: ≥3 independent empirical validations, each hash-chained as TIER_PROMOTION
+//   T1 → T0: formal proof OR byte-identical cross-platform demonstration on ≥2 platforms
+//   Any → lower: always legal when new evidence invalidates the prior basis (demotion)
+//   T4/T5 → T3+: blocked — requires /guardian APPROVED ontology admission
+//
+// Signal format: "PROMOTE: <module>:<function> T2→T1 — <evidence summary>"
+// The hash chain records the evidence; the tier label in the module header is the verdict.
+
+export interface TierPromotionRecord {
+  readonly module: string
+  readonly from_tier: EpistemicTierLabel
+  readonly to_tier: EpistemicTierLabel
+  readonly evidence_count: number
+  readonly evidence_summary: string
+}
 
 // ─── Interfaces ────────────────────────────────────────────
 
