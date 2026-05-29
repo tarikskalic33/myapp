@@ -2,11 +2,16 @@
 import { useEffect, useRef } from 'react'
 import { HOLOGRAPHIC_SHADER_WGSL } from './shader.js'
 
+// GPUBufferUsage not exposed as a runtime global in the TS DOM lib — use spec values
+const GPU_BUFFER_USAGE_UNIFORM  = 0x0040
+const GPU_BUFFER_USAGE_COPY_DST = 0x0008
+
 export function HolographicSubstrate() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const hasWebGPU = typeof navigator !== 'undefined' && 'gpu' in navigator
 
   useEffect(() => {
-    if (!('gpu' in navigator)) return
+    if (!hasWebGPU) return
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -14,14 +19,15 @@ export function HolographicSubstrate() {
     let destroyed = false
 
     ;(async () => {
-      const adapter = await (navigator as Navigator & { gpu: GPU }).gpu.requestAdapter()
+      const gpu = (navigator as Navigator & { gpu: GPU }).gpu
+      const adapter = await gpu.requestAdapter()
       if (!adapter || destroyed) return
       const device = await adapter.requestDevice()
       if (destroyed) { device.destroy(); return }
 
-      const context = canvas.getContext('webgpu')
+      const context = canvas.getContext('webgpu') as GPUCanvasContext | null
       if (!context) return
-      const format = (navigator as Navigator & { gpu: GPU }).gpu.getPreferredCanvasFormat()
+      const format = gpu.getPreferredCanvasFormat()
       context.configure({ device, format })
 
       const shaderModule = device.createShaderModule({ code: HOLOGRAPHIC_SHADER_WGSL })
@@ -33,10 +39,9 @@ export function HolographicSubstrate() {
         primitive: { topology: 'triangle-strip', stripIndexFormat: 'uint32' },
       })
 
-      // Uniform buffer: time (f32) + resolution (2×f32) + padding (f32) = 16 bytes
       const uniformBuf = device.createBuffer({
         size: 16,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPU_BUFFER_USAGE_UNIFORM | GPU_BUFFER_USAGE_COPY_DST,
       })
 
       const bindGroup = device.createBindGroup({
@@ -80,9 +85,9 @@ export function HolographicSubstrate() {
     })()
 
     return () => { destroyed = true; cancelAnimationFrame(rafId) }
-  }, [])
+  }, [hasWebGPU])
 
-  if (!('gpu' in navigator)) {
+  if (!hasWebGPU) {
     return (
       <div className="flex items-center justify-center h-full text-aegis-muted font-mono text-xs">
         WebGPU not supported in this browser

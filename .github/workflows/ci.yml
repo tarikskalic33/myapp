@@ -173,7 +173,7 @@ jobs:
         run: python python/tests/test_constitutional.py
 
       - name: Run ledger persistence tests
-        run: python -m pytest python/tests/test_ledger_persist.py -v
+        run: python -m unittest python.tests.test_ledger_persist -v
 
 # ── INFORMATIONAL — Rust coverage (not in BFT ceremony) ──────────────────────
   coverage-rust:
