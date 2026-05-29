@@ -1,24 +1,37 @@
 {
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/user/AEGIS--/scripts/sync-readme.sh",
-            "timeout": 30
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh",
-            "timeout": 300
+            "command": "cd /home/user/AEGIS-- && node sovereign-omega-v2/scripts/verify-hashes.mjs 2>&1 | tail -5",
+            "timeout": 15,
+            "statusMessage": "L7: verifying constitutional membrane..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/user/AEGIS--/.claude/hooks/post-write.sh",
+            "timeout": 120,
+            "statusMessage": "Viability ring assertion..."
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"PRE-COMPACT: Preserve — current gate, open RALPH phase, active skill, pending commits, bridge t0_verdict, any uncommitted file changes.\"}' ",
+            "timeout": 5
           }
         ]
       }
@@ -26,6 +39,10 @@
   },
   "permissions": {
     "allow": [
+      "Write(.claude/hooks/*)",
+      "Edit(.claude/hooks/*)",
+      "Write(.claude/settings.json)",
+      "Edit(.claude/settings.json)",
       "mcp__github__pull_request_read",
       "mcp__github__list_pull_requests",
       "mcp__github__list_branches",
@@ -38,13 +55,15 @@
       "mcp__github__get_file_contents",
       "mcp__github__list_tags",
       "mcp__github__list_releases",
-      "mcp__d9cdfe21-5413-4025-9cf9-6ed482558dd0__list_projects",
-      "mcp__d9cdfe21-5413-4025-9cf9-6ed482558dd0__get_project",
-      "mcp__d9cdfe21-5413-4025-9cf9-6ed482558dd0__list_deployments",
-      "mcp__d9cdfe21-5413-4025-9cf9-6ed482558dd0__get_deployment",
-      "mcp__d9cdfe21-5413-4025-9cf9-6ed482558dd0__get_runtime_logs",
-      "mcp__d9cdfe21-5413-4025-9cf9-6ed482558dd0__list_teams",
-      "mcp__d9cdfe21-5413-4025-9cf9-6ed482558dd0__search_vercel_documentation"
+      "mcp__github__update_pull_request",
+      "mcp__github__create_pull_request",
+      "mcp__github__push_files",
+      "mcp__github__add_issue_comment",
+      "mcp__95bfae93-a19c-41de-89a1-7f2307236318__workers_list",
+      "mcp__95bfae93-a19c-41de-89a1-7f2307236318__workers_get_worker",
+      "mcp__95bfae93-a19c-41de-89a1-7f2307236318__workers_get_worker_code",
+      "mcp__95bfae93-a19c-41de-89a1-7f2307236318__accounts_list",
+      "mcp__95bfae93-a19c-41de-89a1-7f2307236318__set_active_account"
     ]
   }
 }
