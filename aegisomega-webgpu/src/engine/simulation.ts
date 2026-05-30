@@ -51,6 +51,8 @@ export class SimulationEngine {
   private parity = 0
   private frame  = 0
   private lastParams: SimParams = { lambdaInfluence: 0.5, sigmaPerturb: 0 }
+  private mouseX = -1  // -1 = not pressed
+  private mouseY = 0
   private readonly passOrder: readonly string[]
 
   private constructor(
@@ -149,6 +151,11 @@ export class SimulationEngine {
     )
   }
 
+  setMouse(x: number, y: number, pressed: boolean): void {
+    this.mouseX = pressed ? x : -1
+    this.mouseY = y
+  }
+
   tick(params: SimParams): void {
     this.lastParams = params
 
@@ -161,6 +168,8 @@ export class SimulationEngine {
       params.sigmaPerturb,
       SIM_WIDTH,
       SIM_HEIGHT,
+      this.mouseX,
+      this.mouseY,
     )
 
     this.sigmaPass.setBindGroup(this.sigmaBGs[this.parity])

@@ -19,23 +19,51 @@ export class App {
   async init(): Promise<void> {
     const { device } = await initGPU()
 
-    // ShaderView must come first — it sets canvas dimensions
     this.scroll  = new ScrollController()
     this.panel   = new SystemPanel()
     this.nav     = new Navigation()
     this.overlay = new StateOverlay()
 
-    // ShaderView wires canvas sizing and notifies us on resize
     const view = new ShaderView((w, h) => {
-      // Canvas context reconfiguration on resize (simulation stays 1024×1024)
-      if (this.sim) {
-        resizeCanvas(ctx, view.canvas, w, h)
-      }
+      if (this.sim) resizeCanvas(ctx, view.canvas, w, h)
     })
 
     const ctx = configureCanvas(device, view.canvas)
-
     this.sim = await SimulationEngine.create(ctx)
+
+    this.wireMouseEvents(view.canvas)
+  }
+
+  private wireMouseEvents(canvas: HTMLCanvasElement): void {
+    let pressed = false
+
+    const toNorm = (e: PointerEvent): [number, number] => {
+      const r = canvas.getBoundingClientRect()
+      return [
+        (e.clientX - r.left) / r.width,
+        (e.clientY - r.top)  / r.height,
+      ]
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      pressed = true
+      const [x, y] = toNorm(e)
+      this.sim.setMouse(x, y, true)
+      canvas.setPointerCapture(e.pointerId)
+    })
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (!pressed) return
+      const [x, y] = toNorm(e)
+      this.sim.setMouse(x, y, true)
+    })
+
+    const release = (): void => {
+      pressed = false
+      this.sim.setMouse(0, 0, false)
+    }
+    canvas.addEventListener('pointerup',     release)
+    canvas.addEventListener('pointercancel', release)
   }
 
   start(): void {
@@ -45,7 +73,6 @@ export class App {
       const params = this.scroll.getParams()
       this.sim.tick(params)
       const state = this.sim.getFrameState()
-      // Update UI every frame (DOM writes are cheap — only text content)
       this.panel.update(state, this.scroll.getScrollFraction())
       this.nav.updateFrame(state.frame)
       this.overlay.update(state)

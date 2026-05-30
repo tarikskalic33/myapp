@@ -10,8 +10,8 @@ struct Uniforms {
   sigma_perturb   : f32,
   width           : u32,
   height          : u32,
-  _pad0           : u32,
-  _pad1           : u32,
+  mouse_x         : f32,
+  mouse_y         : f32,
 }
 
 @vertex
@@ -129,6 +129,16 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   let rim = exp(-sigma * sigma * 6.0);
   let iridescent = vec3<f32>(0.40, 0.95, 0.90) * rim * 0.45;
 
+  // ── Mouse cursor glow ─────────────────────────────────────────────────────
+  var cursor_glow = vec3<f32>(0.0);
+  if (u.mouse_x >= 0.0) {
+    let m_uv = vec2<f32>(u.mouse_x, 1.0 - u.mouse_y);
+    let m_dist = length(uv - m_uv);
+    let inner = exp(-m_dist * m_dist * 800.0);
+    let outer = exp(-m_dist * m_dist * 80.0) * 0.3;
+    cursor_glow = vec3<f32>(1.00, 0.85, 0.50) * (inner + outer);
+  }
+
   // ── Vignette ──────────────────────────────────────────────────────────────
   let vig_uv = uv - 0.5;
   let vignette = 1.0 - dot(vig_uv, vig_uv) * 1.6;
@@ -136,7 +146,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   // ── Composite (additive HDR) ───────────────────────────────────────────────
   let hdr = (bg + star_color + teal_arch + arch_bloom
              + violet + pink_rim + galaxy
-             + gold_bright + gold_soft + iridescent)
+             + gold_bright + gold_soft + iridescent + cursor_glow)
             * clamp(vignette, 0.1, 1.0);
 
   // Reinhard extended — preserves colour saturation better than basic Reinhard

@@ -9,8 +9,8 @@ import type { PingPongField } from './textures.js'
 // offset 12: sigma_perturb    (f32)
 // offset 16: width            (u32)
 // offset 20: height           (u32)
-// offset 24: _pad0            (u32)
-// offset 28: _pad1            (u32)
+// offset 24: mouse_x          (f32)  — normalised [0,1]; -1 when not pressed
+// offset 28: mouse_y          (f32)  — normalised [0,1]
 export const UNIFORMS_SIZE = 32
 
 export function createUniformBuffer(device: GPUDevice): GPUBuffer {
@@ -30,6 +30,8 @@ export function writeUniforms(
   sigmaPerturb: number,
   width: number,
   height: number,
+  mouseX: number,
+  mouseY: number,
 ): void {
   const ab  = new ArrayBuffer(UNIFORMS_SIZE)
   const f32 = new Float32Array(ab)
@@ -40,6 +42,8 @@ export function writeUniforms(
   f32[3] = sigmaPerturb
   u32[4] = width >>> 0
   u32[5] = height >>> 0
+  f32[6] = mouseX   // -1 when not pressed
+  f32[7] = mouseY
   device.queue.writeBuffer(buffer, 0, ab)
 }
 

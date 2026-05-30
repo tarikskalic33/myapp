@@ -5,8 +5,8 @@ struct Uniforms {
   sigma_perturb   : f32,
   width           : u32,
   height          : u32,
-  _pad0           : u32,
-  _pad1           : u32,
+  mouse_x         : f32,
+  mouse_y         : f32,
 }
 
 @group(0) @binding(0) var sigma_in  : texture_2d<f32>;
@@ -30,9 +30,20 @@ fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
   let b = textureLoad(sigma_in, clamp(c + vec2<i32>( 0, -1), vec2<i32>(0), dims), 0).r;
   let lap = r + l + t + b - 4.0 * sigma;
 
-  // σ' = σ + dt*(reaction_diffusion + diffusion) + scroll perturbation
+  // Mouse splash — Gaussian kick centred on pointer when pressed (mouse_x >= 0)
+  var mouse_kick = 0.0;
+  if (u.mouse_x >= 0.0) {
+    let mx = u.mouse_x * f32(u.width);
+    let my = u.mouse_y * f32(u.height);
+    let dx = f32(c.x) - mx;
+    let dy = f32(c.y) - my;
+    let d2 = (dx * dx + dy * dy) / (40.0 * 40.0);
+    mouse_kick = exp(-d2) * 2.5;
+  }
+
+  // σ' = σ + dt*(reaction_diffusion + diffusion) + scroll perturbation + mouse
   let reaction = sin(sigma + lambda) + cos(lambda) * 0.8;
-  let next = sigma + u.dt * (reaction + 0.18 * lap) + u.sigma_perturb;
+  let next = sigma + u.dt * (reaction + 0.18 * lap) + u.sigma_perturb + mouse_kick * u.dt;
 
   // Soft clamp to keep field bounded without hard discontinuities
   let clamped = next / (1.0 + abs(next) * 0.04);
