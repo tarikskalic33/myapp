@@ -5,6 +5,12 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash /home/user/AEGIS--/.claude/hooks/session-start.sh",
+            "timeout": 180,
+            "statusMessage": "Installing npm dependencies..."
+          },
+          {
+            "type": "command",
             "command": "cd /home/user/AEGIS--/sovereign-omega-v2 && node scripts/verify-hashes.mjs 2>&1 | tail -5",
             "timeout": 15,
             "statusMessage": "L7: verifying constitutional membrane..."
