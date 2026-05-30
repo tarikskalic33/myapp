@@ -1,9 +1,16 @@
 // EPISTEMIC TIER: T2 (engineering hypothesis) — φ holographic correspondence
-// WGSL fragment shader: dual-eigenvalue φ projection onto a 2D substrate.
-// Expansion axis:   cos(x·φ + y·INV_PHI), sin(y·φ - x·INV_PHI)
-// Contraction axis: cos(x·INV_PHI - y·φ), sin(y·INV_PHI + x·φ)
-// Superposition → interference pattern → smoothstep ring render.
+// 2D holographic substrate: the boundary equation that projects bulk reality.
+// The 2x2 unitary matrix M = [[1,1],[1,0]] (eigenvalues φ and −1/φ) is the
+// minimal information surface needed to generate infinite self-similar structure.
+//
+// Expansion axis (φ):       wave_x1 = cos(x·φ + y·INV_PHI)
+//                           wave_y1 = sin(y·φ − x·INV_PHI)
+// Contraction axis (−1/φ):  wave_x2 = cos(x·INV_PHI − y·φ)
+//                           wave_y2 = sin(y·INV_PHI + x·φ)
+//
+// Superposition → interference → smoothstep ring at abs(val) ∈ (0.20, 0.30).
 // R = macro (φ channel) · G = micro (INV_PHI channel) · B = intensity.
+// The phyllotaxis spirals and quasicrystalline grid emerge from geometric necessity.
 
 export const HOLOGRAPHIC_SHADER_WGSL = /* wgsl */`
 struct Uniforms {
@@ -26,39 +33,35 @@ const INV_PHI: f32 = 0.61803398875;
 
 @fragment
 fn fs_main(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
-  let st = (pos.xy - u.resolution * 0.5) / min(u.resolution.x, u.resolution.y);
-  let t  = u.time * 0.3;
+  // Centre and scale: maps screen to ±10 substrate-space units
+  let st = (pos.xy / u.resolution - vec2<f32>(0.5, 0.5)) * 2.0 * 10.0;
+  let t  = u.time * 0.18;
 
-  // Expansion eigenvector (φ scale)
-  let ex = vec2<f32>(
-    cos(st.x * PHI     + st.y * INV_PHI + t),
-    sin(st.y * PHI     - st.x * INV_PHI + t * 0.7)
-  );
+  // Expansion axis — driven by φ (manages global scale and epoch progression)
+  let wave_x1 = cos(st.x * PHI     + st.y * INV_PHI + t);
+  let wave_y1 = sin(st.y * PHI     - st.x * INV_PHI + t * 0.73);
 
-  // Contraction eigenvector (INV_PHI scale)
-  let cx = vec2<f32>(
-    cos(st.x * INV_PHI - st.y * PHI     - t * 0.5),
-    sin(st.y * INV_PHI + st.x * PHI     + t * 1.1)
-  );
+  // Contraction axis — driven by −1/φ (manages boundary conditions and micro-scale)
+  let wave_x2 = cos(st.x * INV_PHI - st.y * PHI     - t * 0.51);
+  let wave_y2 = sin(st.y * INV_PHI + st.x * PHI     + t * 1.09);
 
-  // Superposition — interference amplitude
-  let psi = ex + cx;
-  let amp = length(psi);          // ∈ [0, 2√2]
+  // Superposition of both eigenvalue definitions in wave space
+  let interference = (wave_x1 + wave_y1 + wave_x2 + wave_y2) / 4.0;
 
-  // Interference fringes — two nested smoothstep rings
-  let edge = fract(amp * INV_PHI);
-  let fringe = smoothstep(0.2, 0.25, edge) * (1.0 - smoothstep(0.25, 0.3, edge));
+  // High-contrast fringe at the interference boundary
+  let intensity = intensity_map(interference);
 
-  // φ-channel separation
-  let macro_ch = dot(ex, ex) * 0.5;   // R — φ dominant
-  let micro_ch = dot(cx, cx) * 0.5;   // G — INV_PHI dominant
-  let intensity = fringe * (0.6 + 0.4 * sin(amp * PHI + t));
+  // φ-channel separation: R = macro (φ dominant), G = micro (INV_PHI dominant)
+  let r = abs(wave_x1 + wave_y1) * 0.5;
+  let g = abs(wave_x2 + wave_y2) * 0.5;
+  let b = intensity;
 
-  return vec4<f32>(
-    macro_ch * intensity,
-    micro_ch * intensity,
-    intensity * INV_PHI,
-    1.0
-  );
+  return vec4<f32>(r, g, b, 1.0);
+}
+
+// Maps interference amplitude to a high-contrast edge ring at ≈ 0.225
+fn intensity_map(val: f32) -> f32 {
+  let edge = abs(val);
+  return smoothstep(0.2, 0.25, edge) * (1.0 - smoothstep(0.25, 0.3, edge));
 }
 `
