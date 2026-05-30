@@ -26,6 +26,15 @@ const PLAN_TOOLS: Record<Plan, string[]> = {
   full:    ['platform-picker', 'hook-generator', 'content-calendar'],
 }
 
+const VALID_PLANS: Plan[] = ['single', 'starter', 'full']
+
+function getInitialAccess(): { plan: Plan; token: string } | null {
+  const params = new URLSearchParams(window.location.search)
+  const plan = params.get('plan') as Plan | null
+  if (!plan || !VALID_PLANS.includes(plan)) return null
+  return { plan, token: createGrantToken(plan) }
+}
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? 'https://rwehltdwpsncnwxzkwik.supabase.co'
 
 interface ToolLinkProps { tool: string; token: string }
@@ -128,20 +137,13 @@ function RestoreForm() {
 }
 
 export function SuccessPage() {
-  const [plan, setPlan] = useState<Plan | null>(null)
-  const [token, setToken] = useState<string | null>(null)
+  const [access] = useState(getInitialAccess)
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const p = params.get('plan') as Plan | null
-    if (p && ['single', 'starter', 'full'].includes(p)) {
-      setPlan(p)
-      setToken(createGrantToken(p))
-    }
     window.history.replaceState({}, '', window.location.pathname)
   }, [])
 
-  if (!plan || !token) {
+  if (!access) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#08090C' }}>
         <div className="w-full max-w-sm">
@@ -166,7 +168,7 @@ export function SuccessPage() {
     )
   }
 
-  const tools = PLAN_TOOLS[plan]
+  const tools = PLAN_TOOLS[access.plan]
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#08090C' }}>
@@ -181,7 +183,7 @@ export function SuccessPage() {
 
         <div className="space-y-3 mb-8">
           {tools.map(tool => (
-            <ToolLink key={tool} tool={tool} token={token} />
+            <ToolLink key={tool} tool={tool} token={access.token} />
           ))}
         </div>
 

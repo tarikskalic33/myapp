@@ -1,7 +1,18 @@
 import { useEffect, useRef } from 'react'
-import { PricingTable } from './components/PricingTable.js'
 import { SuccessPage } from './components/SuccessPage.js'
-import { Zap, Lock, RefreshCw, Code, Mail } from 'lucide-react'
+import {
+  Activity,
+  ArrowRight,
+  BrainCircuit,
+  Code,
+  Database,
+  Gauge,
+  Mail,
+  Network,
+  ShieldCheck,
+  TerminalSquare,
+  Zap,
+} from 'lucide-react'
 
 function captureEvent(event: string, props?: Record<string, unknown>): void {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -9,386 +20,354 @@ function captureEvent(event: string, props?: Record<string, unknown>): void {
   if (typeof ph?.capture === 'function') ph.capture(event, props)
 }
 
-// ── Product definitions ─────────────────────────────────────────────────
-const PRODUCTS = [
+const CORE_METRICS = [
+  { value: '9,748', label: 'Invariant tests' },
+  { value: '113K+', label: 'Polyglot LOC' },
+  { value: '605', label: 'Governance gates' },
+  { value: '0', label: 'Silent state drift' },
+]
+
+const PLATFORM_LAYERS = [
   {
-    icon: '🎯',
-    name: 'Platform Picker',
-    tagline: 'Stop guessing which platform fits you',
-    desc: 'Tell the AI your niche, style, posting schedule, and monetisation goal. Get a scored breakdown across TikTok, YouTube Shorts, Instagram Reels, and Snapchat — with a radar chart and one-click share.',
-    features: [
-      'Radar chart across 4 platforms',
-      'Score + reasoning per platform',
-      'Tailored to your monetisation goal',
-      'Share summary to clipboard',
-    ],
-    accent: '#7C3AED',
-    glow:   '#A78BFA',
-    price:  19,
-    url:    'https://aegis-platform-picker.vercel.app',
+    Icon: ShieldCheck,
+    title: 'Constitutional Runtime',
+    kicker: 'Replay-verifiable control plane',
+    desc: 'Every transition is sequence-numbered, hash-chained, and replayable from genesis so adaptive behavior cannot outrun proof.',
+    bullets: ['AdaptivePower(T) ≤ ReplayVerifiability(T)', 'RFC 8785 canonical state hashing', 'Deterministic Rust + TypeScript execution'],
   },
   {
-    icon: '⚡',
-    name: 'Hook Generator',
-    tagline: '10 scroll-stopping hooks in 10 seconds',
-    desc: 'Input your niche, platform, topic, and tone. Get 10 ranked viral hooks — curiosity gap, controversy, social proof, numbers, pain point — each with a type badge and one-click copy.',
-    features: [
-      '10 hooks ranked by viral potential',
-      'Type-coded with colour badges',
-      'Star & save favourites locally',
-      'Export all hooks at once',
-    ],
-    accent: '#D97706',
-    glow:   '#FCD34D',
-    price:  19,
-    url:    'https://aegis-hook-generator.vercel.app',
+    Icon: Network,
+    title: 'Swarm Governance Fabric',
+    kicker: 'Distributed coherence layer',
+    desc: 'Peer messages, epochs, watchdogs, and quarantine boundaries operate as a fault-aware nervous system instead of isolated dashboards.',
+    bullets: ['Gossip health and peer state gates', 'Epoch synchronization and recovery paths', 'BFT boundary monitoring'],
   },
   {
-    icon: '📅',
-    name: 'Content Calendar',
-    tagline: 'A month of content ideas in one click',
-    desc: 'Enter your niche, platforms, posting frequency, and 3 content pillars. Get a full 4-week calendar with daily ideas, viral hooks per post, formats, and production notes. Export as TXT or CSV.',
-    features: [
-      '4 weeks × your posting frequency',
-      'Per-post hook, format, and notes',
-      'Colour-coded content pillars',
-      'Export as TXT or CSV',
-    ],
-    accent: '#16A34A',
-    glow:   '#86EFAC',
-    price:  19,
-    url:    'https://aegis-content-calendar.vercel.app',
+    Icon: Activity,
+    title: 'Operator Cockpit',
+    kicker: 'Human-in-the-loop AI command surface',
+    desc: 'A premium cockpit for inspecting telemetry, constitutional verdicts, memory events, and agent output from one controlled interface.',
+    bullets: ['AI chat with telemetry context', 'Read-only observability surfaces', 'Audit-first operator workflows'],
   },
 ]
 
-// ── Guarantees ──────────────────────────────────────────────────────────
-const GUARANTEES = [
+const PROOF_POINTS = [
   {
-    Icon:  Lock,
-    title: 'Zero backend',
-    desc:  'Runs entirely in your browser. No servers, no accounts, no data collection.',
+    Icon: Database,
+    label: 'Tamper-evident memory',
+    copy: 'Ledger records extend from a genesis hash and fail closed when replay diverges.',
   },
   {
-    Icon:  Zap,
-    title: 'Your API key, your costs',
-    desc:  'DashScope free tier covers hundreds of runs. You pay pennies, not subscriptions.',
+    Icon: Gauge,
+    label: 'Bounded adaptation',
+    copy: 'Entropy budgets and martingale gates keep autonomous power inside verifiable limits.',
   },
   {
-    Icon:  Code,
-    title: 'Full source code',
-    desc:  'Self-host on Vercel in 2 minutes. Fork, modify, make it yours.',
+    Icon: TerminalSquare,
+    label: 'Built to ship',
+    copy: 'The repo contains runnable React apps, Rust crates, Supabase functions, and operator tooling.',
   },
   {
-    Icon:  RefreshCw,
-    title: 'Buy once, own forever',
-    desc:  'No recurring fees. Future updates included.',
+    Icon: BrainCircuit,
+    label: 'AI-native stack',
+    copy: 'Designed around agents, governance events, telemetry, and deterministic replay—not a wrapper around a prompt box.',
   },
 ]
 
-// ── FAQs ────────────────────────────────────────────────────────────────
+const DEPLOYMENT_SURFACES = [
+  {
+    name: 'Cockpit',
+    href: 'https://aegis-cockpit.vercel.app',
+    desc: 'Operator-facing AI command UI with constitutional telemetry hooks.',
+    tag: 'Command surface',
+  },
+  {
+    name: 'Studio',
+    href: 'https://aegis-studio.vercel.app',
+    desc: 'Observability layer for runtime health, drift, replay, and governance state.',
+    tag: 'Observability',
+  },
+  {
+    name: 'Runtime',
+    href: 'https://github.com/tarikskalic/AEGIS--',
+    desc: 'Source-level runtime: ledgers, hypervisor policy, gossip fabric, and proofs.',
+    tag: 'Core system',
+  },
+]
+
 const FAQS = [
   {
-    q: 'What is DashScope / do I need to pay for it?',
-    a: "DashScope is Alibaba Cloud's AI API, powered by Qwen. The free tier gives you enough credits to run hundreds of generations per month. Most users never need to upgrade.",
+    q: 'Is AEGIS-Ω a creator-tool bundle?',
+    a: 'No. The platform includes creator-facing utilities, but the core product is a constitutional AI runtime with replay, telemetry, governance gates, and operator surfaces.',
   },
   {
-    q: 'Do I need to know how to code?',
-    a: 'You need to import the repo to Vercel and set one environment variable. Vercel walks you through it — takes about 2 minutes. No coding required.',
+    q: 'What makes it “full stack”?',
+    a: 'It spans Rust runtime primitives, TypeScript governance modules, React operator interfaces, Supabase edge functions, telemetry views, and deployment-ready web surfaces.',
   },
   {
-    q: 'What do I actually receive when I buy?',
-    a: 'You receive the full source code as a zip file. It\'s a React + TypeScript project that you deploy to Vercel. You own the code — modify it however you like.',
+    q: 'What is the premium claim backed by?',
+    a: 'The public story is now anchored in concrete proof: invariant tests, gate counts, hash-chain replay, deterministic serialization, and named product surfaces instead of generic marketing copy.',
   },
   {
-    q: 'Can I use the output commercially?',
-    a: 'Yes. Hooks, platform recommendations, calendar content — use them for your own channels, your clients, or your agency.',
-  },
-  {
-    q: "What if the tool doesn't work for me?",
-    a: 'Email for a refund within 30 days. No questions asked.',
+    q: 'How should a buyer evaluate it?',
+    a: 'Start with the README claims, run the test suites, inspect the runtime modules, then use the cockpit and studio as the human-facing layer over the verifiable substrate.',
   },
 ]
 
-// ── App ─────────────────────────────────────────────────────────────────
 export default function App() {
-  if (window.location.pathname === '/success') return <SuccessPage />
-
-  const trialStartRef = useRef(Date.now())
+  const trialStartRef = useRef<number | null>(null)
+  const isSuccess = window.location.pathname === '/success'
 
   useEffect(() => {
+    if (isSuccess) return
+    trialStartRef.current = Date.now()
     captureEvent('trial_started', { product: 'hub', source: document.referrer || 'direct' })
-  }, [])
+  }, [isSuccess])
 
-  const handlePurchaseClick = (product: string, price: number) => {
-    const ttv = Math.round((Date.now() - trialStartRef.current) / 1000)
-    captureEvent('conversion', { product, price, ttv_seconds: ttv })
+  const handlePrimaryClick = (target: string) => {
+    const startedAt = trialStartRef.current ?? Date.now()
+    const ttv = Math.round((Date.now() - startedAt) / 1000)
+    captureEvent('platform_cta_click', { target, ttv_seconds: ttv })
   }
 
-  return (
-    <div className="min-h-screen bg-hub-bg text-hub-text">
+  if (isSuccess) return <SuccessPage />
 
-      {/* ── Nav ──────────────────────────────────────────────── */}
-      <nav className="border-b border-hub-border/60 sticky top-0 z-50 bg-hub-bg/95 backdrop-blur-sm">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <span
-            className="text-sm font-semibold animate-breathe"
-            style={{ fontFamily: '"JetBrains Mono", monospace', letterSpacing: '0.22em', color: '#C8A96E' }}
+  return (
+    <div className="min-h-screen overflow-hidden bg-hub-bg text-hub-text">
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute left-1/2 top-[-12rem] h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-hub-accent/20 blur-[120px]" />
+        <div className="absolute bottom-[-16rem] right-[-10rem] h-[32rem] w-[32rem] rounded-full bg-phi/15 blur-[120px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:72px_72px] [mask-image:radial-gradient(circle_at_top,black,transparent_72%)]" />
+      </div>
+
+      <nav className="sticky top-0 z-50 border-b border-hub-border/70 bg-hub-bg/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+          <a
+            href="#top"
+            className="text-sm font-semibold text-phi animate-breathe"
+            style={{ fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.22em' }}
           >
             AEGIS-Ω
-          </span>
+          </a>
           <div className="flex items-center gap-6">
-            <a href="#products" className="text-hub-muted text-xs hover:text-hub-text transition-colors hidden sm:block">Products</a>
-            <a href="#pricing"  className="text-hub-muted text-xs hover:text-hub-text transition-colors hidden sm:block">Pricing</a>
+            <a href="#platform" className="hidden text-xs text-hub-muted transition-colors hover:text-hub-text sm:block">Platform</a>
+            <a href="#proof" className="hidden text-xs text-hub-muted transition-colors hover:text-hub-text sm:block">Proof</a>
+            <a href="#deployment" className="hidden text-xs text-hub-muted transition-colors hover:text-hub-text sm:block">Deploy</a>
             <a
-              href="#pricing"
-              onClick={() => handlePurchaseClick('nav', 39)}
-              className="text-xs font-semibold px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity text-white"
-              style={{ background: '#6366F1' }}
+              href="https://github.com/tarikskalic/AEGIS--"
+              onClick={() => handlePrimaryClick('github')}
+              className="rounded-full border border-phi/40 px-4 py-2 text-xs font-semibold text-phi transition-all hover:border-phi hover:bg-phi/10"
             >
-              Get started
+              View system
             </a>
           </div>
         </div>
       </nav>
 
-      {/* ── Hero ─────────────────────────────────────────────── */}
-      <div className="max-w-4xl mx-auto px-4 pt-20 pb-16 text-center">
-        {/* Eyebrow pill */}
-        <div
-          className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium mb-8"
-          style={{ background: 'rgba(99,102,241,0.10)', border: '1px solid rgba(99,102,241,0.30)', color: '#818CF8' }}
-        >
-          <Zap size={13} />
-          Creator AI Toolkit — 3 tools, one DashScope key
-        </div>
-
-        {/* h1 — two lines, second in glow */}
-        <h1
-          className="font-bold leading-none mb-6"
-          style={{ fontSize: 'clamp(42px, 7vw, 60px)', letterSpacing: '-0.02em' }}
-        >
-          AI tools that actually<br />
-          <span style={{ color: '#818CF8' }}>help you grow.</span>
-        </h1>
-
-        <p className="text-hub-muted text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-          Platform Picker. Hook Generator. Content Calendar.
-          Zero backend, zero subscription. You own the code.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
-          <a
-            href="#pricing"
-            onClick={() => handlePurchaseClick('hero', 39)}
-            className="inline-flex items-center justify-center gap-2 text-white font-semibold px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity text-sm"
-            style={{ background: '#6366F1' }}
-          >
-            <Zap size={15} />
-            Get all 3 tools — $39
-          </a>
-          <a
-            href="#products"
-            className="inline-flex items-center justify-center gap-2 border border-hub-border text-hub-muted hover:text-hub-text hover:border-hub-border/80 font-medium px-8 py-3.5 rounded-xl transition-all text-sm"
-          >
-            See the tools
-          </a>
-        </div>
-        <p className="text-hub-muted/60 text-xs">One-time payment · Full source code · No subscriptions</p>
-      </div>
-
-      {/* ── Product cards ─────────────────────────────────────── */}
-      <section id="products" className="max-w-5xl mx-auto px-4 pb-20 scroll-mt-16">
-        <div className="grid md:grid-cols-3 gap-6">
-          {PRODUCTS.map(p => (
-            <div
-              key={p.name}
-              className="flex flex-col rounded-2xl p-6 transition-all duration-200"
-              style={{ background: '#0F1117', border: '1px solid #1A1D27' }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLDivElement).style.borderColor = p.accent + '66'
-                ;(e.currentTarget as HTMLDivElement).style.boxShadow = `0 10px 28px ${p.accent}1A`
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLDivElement).style.borderColor = '#1A1D27'
-                ;(e.currentTarget as HTMLDivElement).style.boxShadow = 'none'
-              }}
-            >
-              {/* Card top row: icon tile + price */}
-              <div className="flex justify-between items-start mb-4">
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-                  style={{ background: p.accent + '20', border: `1px solid ${p.accent}40` }}
-                >
-                  {p.icon}
-                </div>
-                <div className="text-right">
-                  <span
-                    className="inline-block text-sm font-bold px-3 py-1 rounded-full"
-                    style={{ background: p.glow + '20', color: p.glow }}
-                  >
-                    ${p.price}
-                  </span>
-                  <div className="text-hub-muted text-xs mt-0.5">one-time</div>
-                </div>
-              </div>
-
-              {/* Name, tagline, desc */}
-              <h3 className="font-bold text-lg text-hub-text mb-0.5">{p.name}</h3>
-              <p className="text-sm font-medium mb-3" style={{ color: p.glow }}>{p.tagline}</p>
-              <p className="text-hub-muted text-sm leading-relaxed mb-4">{p.desc}</p>
-
-              {/* Feature list */}
-              <ul className="flex flex-col gap-2 mb-6 flex-1">
-                {p.features.map(f => (
-                  <li key={f} className="flex gap-2 text-sm text-hub-muted">
-                    <span style={{ color: p.glow, flexShrink: 0 }}>✓</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Buy button */}
+      <main id="top">
+        <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-20 lg:grid-cols-[1.08fr_0.92fr] lg:pt-28">
+          <div>
+            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-phi/30 bg-phi/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-phi">
+              <ShieldCheck size={14} />
+              Constitutional AI Runtime
+            </div>
+            <h1 className="max-w-4xl text-[clamp(3.2rem,8vw,6.8rem)] font-black leading-[0.88] tracking-[-0.07em]">
+              Ultra-premium AI control plane.
+              <span className="block bg-gradient-to-r from-phi via-white to-hub-glow bg-clip-text text-transparent">
+                Proof, not vibes.
+              </span>
+            </h1>
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-hub-muted">
+              AEGIS-Ω is a full-stack, self-governing AI platform: deterministic runtime, swarm governance,
+              replay-verifiable memory, operator cockpit, and production web surfaces presented as one coherent system.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#pricing"
-                onClick={() => handlePurchaseClick(p.name.toLowerCase().replace(/ /g, '-'), p.price)}
-                className="inline-flex items-center justify-center gap-2 text-white font-semibold py-3 rounded-xl hover:opacity-90 transition-opacity text-sm"
-                style={{ background: p.accent }}
+                href="https://github.com/tarikskalic/AEGIS--"
+                onClick={() => handlePrimaryClick('hero-github')}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-phi px-7 py-4 text-sm font-bold text-black transition-transform hover:-translate-y-0.5"
               >
-                Buy — ${p.price}
+                Inspect the runtime <ArrowRight size={16} />
+              </a>
+              <a
+                href="#platform"
+                className="inline-flex items-center justify-center rounded-xl border border-hub-border bg-hub-surface/70 px-7 py-4 text-sm font-semibold text-hub-text transition-all hover:border-hub-glow/50"
+              >
+                See platform layers
               </a>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Guarantees ───────────────────────────────────────── */}
-      <div className="border-y border-hub-border/60 bg-hub-surface/30">
-        <div className="max-w-3xl mx-auto px-4 py-14">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {GUARANTEES.map(g => (
-              <div key={g.title} className="bg-hub-bg border border-hub-border rounded-xl p-5">
-                <g.Icon size={18} className="mb-3" style={{ color: '#818CF8' }} />
-                <h4 className="text-hub-text font-semibold text-sm mb-1">{g.title}</h4>
-                <p className="text-hub-muted text-xs leading-relaxed">{g.desc}</p>
-              </div>
-            ))}
           </div>
-        </div>
-      </div>
 
-      {/* ── Pricing ──────────────────────────────────────────── */}
-      <div id="pricing" className="max-w-3xl mx-auto px-4 py-16 scroll-mt-16">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold text-hub-text mb-2" style={{ letterSpacing: '-0.02em' }}>Simple pricing</h2>
-          <p className="text-hub-muted text-sm">Buy once. Own it forever. No subscriptions, no upsells.</p>
-        </div>
-        <PricingTable />
-      </div>
-
-      {/* ── How it works ──────────────────────────────────────── */}
-      <div className="border-y border-hub-border/60 bg-hub-surface/30">
-        <div className="max-w-3xl mx-auto px-4 py-16">
-          <h2 className="text-xl font-bold text-hub-text text-center mb-10">Up and running in 5 minutes</h2>
-          <div className="grid md:grid-cols-3 gap-4">
-            {[
-              {
-                step: '01',
-                title: 'Choose your plan',
-                desc:  'One tool for $19, any two for $29, all three for $39. One payment. No subscription.',
-              },
-              {
-                step: '02',
-                title: 'Pay via Lemon Squeezy',
-                desc:  'Works in 130+ countries — including Bosnia, Serbia, and everywhere Stripe blocks. Card, PayPal.',
-              },
-              {
-                step: '03',
-                title: 'Instant access',
-                desc:  'Redirected back automatically. Click a tool link and it opens. No account, no email, no API key required.',
-              },
-            ].map(item => (
-              <div key={item.step} className="bg-hub-bg border border-hub-border rounded-xl p-5">
-                <div
-                  className="font-bold mb-3"
-                  style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: '11px', color: '#6366F1', letterSpacing: '0.05em' }}
-                >
-                  {item.step}
+          <div className="rounded-[2rem] border border-phi/20 bg-hub-surface/80 p-5 shadow-2xl shadow-black/40 backdrop-blur">
+            <div className="rounded-[1.5rem] border border-hub-border bg-black/25 p-5">
+              <div className="mb-5 flex items-center justify-between border-b border-hub-border pb-4">
+                <div>
+                  <div className="font-mono text-xs uppercase tracking-[0.24em] text-phi">Runtime Status</div>
+                  <div className="mt-1 text-2xl font-bold">Replay coherent</div>
                 </div>
-                <div className="font-semibold text-hub-text text-sm mb-1">{item.title}</div>
-                <p className="text-hub-muted text-xs leading-relaxed">{item.desc}</p>
+                <span className="h-3 w-3 rounded-full bg-aegis-T0 shadow-[0_0_24px_rgba(52,211,153,0.9)]" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {CORE_METRICS.map(metric => (
+                  <div key={metric.label} className="rounded-2xl border border-hub-border bg-hub-bg/80 p-4">
+                    <div className="text-3xl font-black tracking-tight text-hub-text">{metric.value}</div>
+                    <div className="mt-1 text-xs uppercase tracking-[0.16em] text-hub-muted">{metric.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 rounded-2xl border border-phi/20 bg-phi/10 p-4 font-mono text-xs leading-6 text-phi">
+                <div>AdaptivePower(T) ≤ ReplayVerifiability(T)</div>
+                <div className="text-hub-muted">state_hash = SHA-256(prev_hash ‖ canonical_event)</div>
+                <div className="text-aegis-T0">verdict: chain intact · policy enforced · operator visible</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="platform" className="mx-auto max-w-6xl px-4 py-20 scroll-mt-24">
+          <div className="mb-10 max-w-3xl">
+            <div className="mb-3 font-mono text-xs uppercase tracking-[0.22em] text-hub-glow">Platform architecture</div>
+            <h2 className="text-4xl font-black tracking-[-0.04em] md:text-5xl">Not three tiny tools. A governed AI stack.</h2>
+            <p className="mt-4 text-base leading-7 text-hub-muted">
+              The landing page now matches the README: it leads with constitutional runtime, distributed state,
+              observability, and operator control instead of underselling the system as a discount creator bundle.
+            </p>
+          </div>
+          <div className="grid gap-5 lg:grid-cols-3">
+            {PLATFORM_LAYERS.map(({ Icon, title, kicker, desc, bullets }) => (
+              <article key={title} className="rounded-[1.5rem] border border-hub-border bg-hub-surface/80 p-6 transition-all hover:-translate-y-1 hover:border-phi/40 hover:shadow-2xl hover:shadow-phi/5">
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl border border-phi/30 bg-phi/10 text-phi">
+                  <Icon size={22} />
+                </div>
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-hub-glow">{kicker}</div>
+                <h3 className="mt-2 text-xl font-bold">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-hub-muted">{desc}</p>
+                <ul className="mt-5 space-y-2">
+                  {bullets.map(bullet => (
+                    <li key={bullet} className="flex gap-2 text-sm text-hub-muted">
+                      <span className="mt-1 text-phi">✓</span>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="proof" className="border-y border-hub-border/70 bg-hub-surface/35 scroll-mt-24">
+          <div className="mx-auto max-w-6xl px-4 py-20">
+            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+              <div>
+                <div className="mb-3 font-mono text-xs uppercase tracking-[0.22em] text-phi">Proof layer</div>
+                <h2 className="text-4xl font-black tracking-[-0.04em] md:text-5xl">Premium means evidence on screen.</h2>
+                <p className="mt-4 text-base leading-7 text-hub-muted">
+                  AEGIS-Ω should feel like an institutional AI platform: precise, technical, verified, and controlled.
+                  These proof blocks put the substrate in front of the buyer before the CTA.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {PROOF_POINTS.map(({ Icon, label, copy }) => (
+                  <div key={label} className="rounded-2xl border border-hub-border bg-hub-bg/80 p-5">
+                    <Icon className="mb-4 text-hub-glow" size={22} />
+                    <h3 className="font-bold text-hub-text">{label}</h3>
+                    <p className="mt-2 text-sm leading-6 text-hub-muted">{copy}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="deployment" className="mx-auto max-w-6xl px-4 py-20 scroll-mt-24">
+          <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <div>
+              <div className="mb-3 font-mono text-xs uppercase tracking-[0.22em] text-hub-glow">Deployment surfaces</div>
+              <h2 className="text-4xl font-black tracking-[-0.04em] md:text-5xl">One system, multiple operator faces.</h2>
+            </div>
+            <a
+              href="mailto:tarikskalic33@gmail.com?subject=AEGIS-%CE%A9%20platform%20review"
+              onClick={() => handlePrimaryClick('contact')}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-phi/40 px-5 py-3 text-sm font-semibold text-phi transition-all hover:bg-phi/10"
+            >
+              Request platform review <Mail size={15} />
+            </a>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {DEPLOYMENT_SURFACES.map(surface => (
+              <a
+                key={surface.name}
+                href={surface.href}
+                onClick={() => handlePrimaryClick(`surface-${surface.name.toLowerCase()}`)}
+                className="group rounded-2xl border border-hub-border bg-hub-surface p-6 transition-all hover:-translate-y-1 hover:border-hub-glow/50"
+              >
+                <div className="mb-4 w-fit rounded-full border border-hub-glow/30 bg-hub-glow/10 px-3 py-1 text-xs font-semibold text-hub-glow">{surface.tag}</div>
+                <h3 className="text-2xl font-bold">{surface.name}</h3>
+                <p className="mt-3 min-h-20 text-sm leading-6 text-hub-muted">{surface.desc}</p>
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-phi">
+                  Open surface <ArrowRight className="transition-transform group-hover:translate-x-1" size={15} />
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-3xl px-4 py-16">
+          <h2 className="mb-8 text-center text-3xl font-black tracking-[-0.04em]">FAQ</h2>
+          <div className="flex flex-col gap-4">
+            {FAQS.map(item => (
+              <div key={item.q} className="rounded-2xl border border-hub-border bg-hub-surface/80 p-6">
+                <h3 className="font-bold text-hub-text">{item.q}</h3>
+                <p className="mt-2 text-sm leading-6 text-hub-muted">{item.a}</p>
               </div>
             ))}
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* ── FAQ ───────────────────────────────────────────────── */}
-      <div className="max-w-2xl mx-auto px-4 py-16">
-        <h2 className="text-xl font-bold text-hub-text text-center mb-8">FAQ</h2>
-        <div className="flex flex-col gap-4">
-          {FAQS.map(item => (
-            <div key={item.q} className="bg-hub-surface border border-hub-border rounded-xl p-5">
-              <h6 className="font-semibold text-hub-text text-sm mb-2">{item.q}</h6>
-              <p className="text-hub-muted text-sm leading-relaxed">{item.a}</p>
+        <section className="mx-auto max-w-4xl px-4 pb-20">
+          <div className="rounded-[2rem] border border-phi/25 bg-gradient-to-br from-phi/15 via-hub-surface to-hub-accent/10 p-10 text-center shadow-2xl shadow-black/30">
+            <Code className="mx-auto mb-5 text-phi" size={28} />
+            <h2 className="text-4xl font-black tracking-[-0.05em]">Ship the platform story the code deserves.</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-hub-muted">
+              The page now sells AEGIS-Ω as a serious AI operating layer: runtime, governance, observability,
+              deployment, and proof. No more “$39 bundle” first impression.
+            </p>
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <a
+                href="https://github.com/tarikskalic/AEGIS--"
+                onClick={() => handlePrimaryClick('final-github')}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-phi px-8 py-4 text-sm font-bold text-black hover:opacity-90"
+              >
+                Audit GitHub README <ArrowRight size={16} />
+              </a>
+              <a
+                href="mailto:tarikskalic33@gmail.com"
+                onClick={() => handlePrimaryClick('final-contact')}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-hub-border px-8 py-4 text-sm font-semibold text-hub-text hover:border-phi/40"
+              >
+                Contact operator <Mail size={15} />
+              </a>
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        </section>
+      </main>
 
-      {/* ── Final CTA ─────────────────────────────────────────── */}
-      <div className="max-w-2xl mx-auto px-4 pb-20">
-        <div
-          className="rounded-2xl p-10 text-center"
-          style={{ background: '#0F1117', border: '1px solid rgba(99,102,241,0.20)' }}
-        >
-          <h2 className="text-2xl font-bold text-hub-text mb-3" style={{ letterSpacing: '-0.02em' }}>
-            Ready to start?
-          </h2>
-          <p className="text-hub-muted text-sm mb-6">All three tools for $39. One-time payment. Full source code.</p>
-          <a
-            href="#pricing"
-            onClick={() => handlePurchaseClick('final-cta', 39)}
-            className="inline-flex items-center justify-center gap-2 text-white font-semibold px-10 py-4 rounded-xl hover:opacity-90 transition-opacity text-sm"
-            style={{ background: '#6366F1' }}
-          >
-            <Zap size={15} />
-            Get the Full Toolkit — $39
-          </a>
-          <p className="text-hub-muted/60 text-xs mt-4">
-            Single tool $19 · Any two $29 · 30-day refund
-          </p>
-        </div>
-      </div>
-
-      {/* ── Footer ────────────────────────────────────────────── */}
-      <div className="border-t border-hub-border">
-        <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-hub-border">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 md:flex-row">
           <div className="flex items-center gap-3">
-            <Zap size={16} style={{ color: '#818CF8' }} />
-            <span className="text-hub-muted text-sm font-medium">AEGIS Creator Toolkit</span>
+            <Zap size={16} className="text-phi" />
+            <span className="text-sm font-medium text-hub-muted">AEGIS-Ω Constitutional AI Platform</span>
           </div>
           <div className="flex items-center gap-6">
-            <a href="#products" className="text-hub-muted text-xs hover:text-hub-text transition-colors">Products</a>
-            <a href="#pricing"  className="text-hub-muted text-xs hover:text-hub-text transition-colors">Pricing</a>
-            <a
-              href="#pricing"
-              onClick={() => handlePurchaseClick('footer', 39)}
-              className="text-xs font-medium hover:text-hub-text transition-colors"
-              style={{ color: '#818CF8' }}
-            >
-              Buy now →
-            </a>
-            <a
-              href="mailto:tarikskalic33@gmail.com"
-              className="inline-flex items-center gap-1.5 text-hub-muted text-xs hover:text-hub-text transition-colors"
-            >
-              <Mail size={11} />
-              Contact
+            <a href="#platform" className="text-xs text-hub-muted hover:text-hub-text">Platform</a>
+            <a href="#proof" className="text-xs text-hub-muted hover:text-hub-text">Proof</a>
+            <a href="#deployment" className="text-xs text-hub-muted hover:text-hub-text">Deploy</a>
+            <a href="mailto:tarikskalic33@gmail.com" className="inline-flex items-center gap-1.5 text-xs text-hub-muted hover:text-hub-text">
+              <Mail size={11} /> Contact
             </a>
           </div>
         </div>
-      </div>
-
+      </footer>
     </div>
   )
 }
