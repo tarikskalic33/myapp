@@ -129,6 +129,17 @@ async function sha256hex(data: string): Promise<string> {
     .join('')
 }
 
+// Canonical hash preimage — explicit field concatenation, never JSON.stringify.
+// Mirrors the bridge MetacognitiveLoop: SHA-256(prev_hash | sequence | layer | signal | tier).
+// Single source of truth shared by makeEntry and certify so they can never drift.
+function canonicalPreimage(
+  previous_entry_hash: string,
+  sequence: number,
+  obs: MetacognitiveObservation,
+): string {
+  return `${previous_entry_hash}|${sequence}|${obs.layer}|${obs.signal}|${obs.tier}`
+}
+
 async function makeEntry(
   previous_entry_hash: string,
   sequence: number,
@@ -138,8 +149,7 @@ async function makeEntry(
   const idx = sequence % pool.length
   const slot = pool[idx] ?? pool[0]
   const observation: MetacognitiveObservation = { layer, signal: slot.signal, tier: slot.tier }
-  const raw = `${previous_entry_hash}${sequence}${JSON.stringify(observation)}`
-  const entry_hash = await sha256hex(raw)
+  const entry_hash = await sha256hex(canonicalPreimage(previous_entry_hash, sequence, observation))
   return Object.freeze({ observation, previous_entry_hash, sequence, entry_hash })
 }
 
@@ -152,8 +162,9 @@ export async function certify(chain: readonly MetacognitiveEntry[]): Promise<Cer
     if (entry.previous_entry_hash !== prev_hash) {
       return { is_valid: false, entry_count: chain.length, terminal_hash: entry.entry_hash }
     }
-    const raw = `${entry.previous_entry_hash}${entry.sequence}${JSON.stringify(entry.observation)}`
-    const expected = await sha256hex(raw)
+    const expected = await sha256hex(
+      canonicalPreimage(entry.previous_entry_hash, entry.sequence, entry.observation),
+    )
     if (expected !== entry.entry_hash) {
       return { is_valid: false, entry_count: chain.length, terminal_hash: entry.entry_hash }
     }
