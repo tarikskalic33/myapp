@@ -18,6 +18,30 @@
         ]
       }
     ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/user/AEGIS--/.claude/hooks/pre-commit-gate.sh",
+            "timeout": 120,
+            "statusMessage": "Gate 8 pre-commit check..."
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"PRE-WRITE L6: ASSESS before LOCK. Read the file first. Classify tier (T0/T1/T2/T3). No T4/T5 in src/. Frozen files: gate.py dna.py router.py — never touch.\"}'",
+            "timeout": 5,
+            "statusMessage": "L6 ASSESS check..."
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
@@ -29,6 +53,17 @@
             "statusMessage": "Viability ring assertion..."
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"$CLAUDE_TOOL_INPUT\" | python3 -c \"import sys,json,os; inp=os.environ.get('CLAUDE_TOOL_INPUT','{}'); d=json.loads(inp) if inp else {}; cmd=d.get('command',''); pushed='git push' in cmd; print(json.dumps({'systemMessage':'PUSHED — CI running. Watch PR checks.'})) if pushed else None\" 2>/dev/null || true",
+            "timeout": 5,
+            "statusMessage": "Post-push CI reminder..."
+          }
+        ]
       }
     ],
     "PreCompact": [
@@ -36,7 +71,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '{\"systemMessage\": \"PRE-COMPACT: Preserve — current gate, open RALPH phase, active skill, pending commits, bridge t0_verdict, any uncommitted file changes.\"}' ",
+            "command": "echo '{\"systemMessage\": \"PRE-COMPACT: Preserve — current gate, open RALPH phase, active skill, pending commits, bridge t0_verdict, any uncommitted file changes.\"}'",
             "timeout": 5
           }
         ]
@@ -47,8 +82,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '{\"systemMessage\": \"STOP: run /evening-seal — Gate 8, frozen files, commit, push.\"}'",
-            "timeout": 5
+            "command": "python3 -c \"import subprocess,json; s=subprocess.run(['git','status','--short'],cwd='/home/user/AEGIS--',capture_output=True,text=True).stdout.strip(); b=subprocess.run(['git','branch','--show-current'],cwd='/home/user/AEGIS--',capture_output=True,text=True).stdout.strip(); print(json.dumps({'systemMessage':f'STOP | branch:{b} | uncommitted:{s or chr(10)+\\\" none\\\"} — /evening-seal: Gate8 → commit → push'}))\"",
+            "timeout": 10
           }
         ]
       }
@@ -77,6 +112,7 @@
       "Bash(node sovereign-omega-v2/scripts/verify-hashes.mjs*)",
       "Bash(cd /home/user/AEGIS--/sovereign-omega-v2 && node scripts/verify-hashes.mjs*)",
       "Bash(curl -s http://localhost:7890/*)",
+      "Bash(curl -sv http://localhost:7890/*)",
       "Bash(python python/tests/*)",
       "Bash(python -m pytest*)",
       "Bash(find /home/user/AEGIS--*)",
@@ -92,6 +128,7 @@
       "Bash(git checkout *)",
       "Bash(git fetch *)",
       "Bash(git branch *)",
+      "Bash(bash /home/user/AEGIS--/.claude/hooks/pre-commit-gate.sh*)",
       "mcp__github__pull_request_read",
       "mcp__github__list_pull_requests",
       "mcp__github__list_branches",
@@ -108,13 +145,12 @@
       "mcp__github__create_pull_request",
       "mcp__github__push_files",
       "mcp__github__add_issue_comment",
+      "mcp__github__list_issues",
       "mcp__95bfae93-a19c-41de-89a1-7f2307236318__workers_list",
       "mcp__95bfae93-a19c-41de-89a1-7f2307236318__workers_get_worker",
       "mcp__95bfae93-a19c-41de-89a1-7f2307236318__workers_get_worker_code",
       "mcp__95bfae93-a19c-41de-89a1-7f2307236318__accounts_list",
       "mcp__95bfae93-a19c-41de-89a1-7f2307236318__set_active_account",
-      "Bash(curl -sv http://localhost:7890/*)",
-      "mcp__github__list_issues",
       "mcp__d9cdfe21-5413-4025-9cf9-6ed482558dd0__list_deployments",
       "mcp__d9cdfe21-5413-4025-9cf9-6ed482558dd0__list_teams",
       "mcp__d9cdfe21-5413-4025-9cf9-6ed482558dd0__list_projects",
