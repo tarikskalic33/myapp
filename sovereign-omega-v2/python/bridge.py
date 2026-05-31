@@ -225,7 +225,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 return
 
             messages = data.get('messages', [])
-            model = data.get('model', 'claude-sonnet-4-6')
+            model = data.get('model', 'claude-opus-4-8')
             max_tokens = int(data.get('max_tokens', 2048))
             user_system = data.get('system', '')
 
@@ -237,6 +237,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 + '\n\n---\n\n' + mc_context
             )
             system_prompt = (base_system + '\n---\n' + user_system) if user_system else base_system
+            # Cache the large static constitutional system prompt — same on every call.
+            system_blocks = [{'type': 'text', 'text': system_prompt, 'cache_control': {'type': 'ephemeral'}}]
 
             req_hash = hashlib.sha256(json.dumps(
                 {'messages': messages, 'model': model}, sort_keys=True
@@ -247,7 +249,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 resp = client.messages.create(
                     model=model,
                     max_tokens=max_tokens,
-                    system=system_prompt,
+                    system=system_blocks,
                     messages=messages,
                 )
                 response_text = ''.join(
@@ -257,13 +259,16 @@ class BridgeHandler(BaseHTTPRequestHandler):
                     {'response_text': response_text, 'model': model}, sort_keys=True
                 ).encode()).hexdigest()
                 chain_hash = hashlib.sha256(f'{req_hash}{resp_hash}'.encode()).hexdigest()
+                cache_read   = getattr(resp.usage, 'cache_read_input_tokens', 0) or 0
+                cache_create = getattr(resp.usage, 'cache_creation_input_tokens', 0) or 0
 
                 # Record this conversation as a CONSCIOUSNESS layer observation
                 last_user = messages[-1].get('content', '')[:80] if messages else ''
                 _mc_observe(
                     'CONSCIOUSNESS',
                     f'Conversation processed: "{last_user}" → {len(response_text)} chars, '
-                    f'chain={chain_hash[:16]}, tokens={resp.usage.input_tokens}+{resp.usage.output_tokens}',
+                    f'chain={chain_hash[:16]}, tokens={resp.usage.input_tokens}+{resp.usage.output_tokens} '
+                    f'cache_read={cache_read} cache_create={cache_create}',
                     'T1',
                 )
                 self._respond(200, {
@@ -276,6 +281,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
                     'mc_terminal_hash': _metacognitive_chain[-1]['entry_hash'][-16:] if _metacognitive_chain else _MC_GENESIS[-16:],
                     'input_tokens': resp.usage.input_tokens,
                     'output_tokens': resp.usage.output_tokens,
+                    'cache_read_tokens': cache_read,
+                    'cache_creation_tokens': cache_create,
                     'stop_reason': resp.stop_reason,
                     'is_replay_reconstructable': True,
                 })
@@ -297,7 +304,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 return
 
             messages = data.get('messages', [])
-            model = data.get('model', 'claude-sonnet-4-6')
+            model = data.get('model', 'claude-opus-4-8')
             max_tokens = int(data.get('max_tokens', 2048))
             live_state = _build_live_state_context()
             mc_context = _mc_recent_context(3)
@@ -306,6 +313,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 + '\n\n---\n\n' + live_state
                 + '\n\n---\n\n' + mc_context
             )
+            # Cache the static constitutional compact prompt — same on every stream call.
+            stream_system_blocks = [{'type': 'text', 'text': stream_system, 'cache_control': {'type': 'ephemeral'}}]
 
             self.send_response(200)
             self._cors_headers()
@@ -320,7 +329,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 with client.messages.stream(
                     model=model,
                     max_tokens=max_tokens,
-                    system=stream_system,
+                    system=stream_system_blocks,
                     messages=messages,
                 ) as stream:
                     for text in stream.text_stream:
@@ -329,14 +338,17 @@ class BridgeHandler(BaseHTTPRequestHandler):
                         self.wfile.flush()
                     # Final event with usage
                     final = stream.get_final_message()
+                    cache_read   = getattr(final.usage, 'cache_read_input_tokens', 0) or 0
+                    cache_create = getattr(final.usage, 'cache_creation_input_tokens', 0) or 0
                     # Record this conversation in the metacognitive chain
                     last_user = messages[-1].get('content', '')[:80] if messages else ''
                     mc_hash = _mc_observe(
                         'CONSCIOUSNESS',
-                        f'Stream conversation: "{last_user}" tokens={final.usage.input_tokens}+{final.usage.output_tokens}',
+                        f'Stream conversation: "{last_user}" tokens={final.usage.input_tokens}+{final.usage.output_tokens} '
+                        f'cache_read={cache_read} cache_create={cache_create}',
                         'T1',
                     )
-                    done_event = f'data: {json.dumps({"done": True, "input_tokens": final.usage.input_tokens, "output_tokens": final.usage.output_tokens, "mc_chain_length": len(_metacognitive_chain), "mc_terminal_hash": mc_hash[-16:]})}\n\n'
+                    done_event = f'data: {json.dumps({"done": True, "input_tokens": final.usage.input_tokens, "output_tokens": final.usage.output_tokens, "cache_read_tokens": cache_read, "cache_creation_tokens": cache_create, "mc_chain_length": len(_metacognitive_chain), "mc_terminal_hash": mc_hash[-16:]})}\n\n'
                     self.wfile.write(done_event.encode())
                     self.wfile.flush()
             except (BrokenPipeError, ConnectionResetError):

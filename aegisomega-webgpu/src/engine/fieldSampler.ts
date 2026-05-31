@@ -4,7 +4,8 @@ import { SIM_WIDTH, SIM_HEIGHT } from './textures.js'
 // Sample the center pixel of σ/ρ/λ textures every SAMPLE_INTERVAL frames.
 // Readback is async — values lag 1-2 frames behind but that's imperceptible in the UI.
 const SAMPLE_INTERVAL = 10
-const BYTES_PER_PIXEL = 16  // rgba32float = 4 channels × 4 bytes
+// rgba32float center pixel = 16 bytes; bytesPerRow must be ≥256 (WebGPU alignment).
+const STAGING_STRIDE = 256
 const GPU_MAP_READ = 0x0001 as GPUMapModeFlags  // GPUMapMode.READ — not a namespace in TS6
 
 const CENTER_X = Math.floor(SIM_WIDTH  / 2)
@@ -25,7 +26,7 @@ export class FieldSampler {
 
   constructor(device: GPUDevice) {
     const desc: GPUBufferDescriptor = {
-      size:  BYTES_PER_PIXEL,
+      size:  STAGING_STRIDE,
       usage: GPU_BUFFER_USAGE.MAP_READ | GPU_BUFFER_USAGE.COPY_DST,
     }
     this.stagingSigma  = device.createBuffer({ ...desc, label: 'staging-sigma' })
@@ -46,7 +47,7 @@ export class FieldSampler {
     const copyPixel = (src: GPUTexture, dst: GPUBuffer): void => {
       encoder.copyTextureToBuffer(
         { texture: src, origin: { x: CENTER_X, y: CENTER_Y, z: 0 } },
-        { buffer: dst, bytesPerRow: BYTES_PER_PIXEL },
+        { buffer: dst, bytesPerRow: STAGING_STRIDE },
         { width: 1, height: 1, depthOrArrayLayers: 1 },
       )
     }

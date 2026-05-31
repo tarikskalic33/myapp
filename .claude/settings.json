@@ -63,7 +63,13 @@
       "mcp__95bfae93-a19c-41de-89a1-7f2307236318__workers_get_worker",
       "mcp__95bfae93-a19c-41de-89a1-7f2307236318__workers_get_worker_code",
       "mcp__95bfae93-a19c-41de-89a1-7f2307236318__accounts_list",
-      "mcp__95bfae93-a19c-41de-89a1-7f2307236318__set_active_account"
+      "mcp__95bfae93-a19c-41de-89a1-7f2307236318__set_active_account",
+      "Bash(npm run typecheck)",
+      "Bash(npm run build)",
+      "Bash(npm run test)",
+      "Bash(cargo test)",
+      "Bash(cargo build)",
+      "Bash(curl -s http://localhost:*)"
     ]
   }
 }

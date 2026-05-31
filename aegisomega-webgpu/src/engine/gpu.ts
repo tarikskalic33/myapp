@@ -6,8 +6,14 @@ export async function initGPU(): Promise<{ adapter: GPUAdapter; device: GPUDevic
   if (!adapter) {
     throw new Error('WebGPU adapter not found — hardware may not support WebGPU')
   }
+  // Request float32-filterable if the adapter has it so rgba32float textures
+  // can be bound to pipelines using layout:'auto' on all devices.
+  const requiredFeatures: GPUFeatureName[] = adapter.features.has('float32-filterable')
+    ? ['float32-filterable']
+    : []
   const device = await adapter.requestDevice({
     label: 'aegis-simulation-device',
+    requiredFeatures,
   })
   device.lost.then(info => {
     console.error('WebGPU device lost:', info.message, info.reason)
