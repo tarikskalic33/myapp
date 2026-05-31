@@ -87,8 +87,8 @@ export async function* streamDashScope(opts: StreamOptions): AsyncGenerator<stri
 export async function* streamClaude(opts: StreamOptions): AsyncGenerator<string> {
   // Routes through the AEGIS bridge (/claude/stream) which applies the constitutional
   // system prompt and keeps the API key server-side. Bridge must be running on port 7890.
-  const bridgeUrl = import.meta.env.VITE_BRIDGE_URL ?? 'http://localhost:7890'
-  const model = import.meta.env.VITE_CLAUDE_MODEL ?? 'claude-sonnet-4-6'
+  const bridgeUrl = (import.meta.env.VITE_BRIDGE_URL as string | undefined) ?? 'http://localhost:7890'
+  const model = (import.meta.env.VITE_CLAUDE_MODEL as string | undefined) || 'claude-opus-4-8'
   const maxTokens = Number(import.meta.env.VITE_CLAUDE_MAX_TOKENS ?? '2048')
 
   const res = await fetch(`${bridgeUrl}/claude/stream`, {
