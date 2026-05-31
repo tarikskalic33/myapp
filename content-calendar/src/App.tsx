@@ -49,19 +49,26 @@ function downloadBlob(blob: Blob, filename: string) {
   URL.revokeObjectURL(url)
 }
 
+function q(s: string) { return `"${s.replace(/"/g, '""')}"` }
+
 function buildCsv(weeks: WeekPlan[]): string {
   const DAY_NAMES = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-  const header = 'Week,Theme,Day,Platform,Pillar,Hook,Format,Notes'
+  const header = 'Week,Theme,Day,Platform,Pillar,Topic,Hook,Format,Difficulty,OptimalTime,CTA,Notes,Hashtags'
   const rows = weeks.flatMap(w =>
     w.posts.map(p => [
       w.week,
-      `"${w.theme}"`,
+      q(w.theme),
       DAY_NAMES[p.day] ?? `Day${p.day}`,
       p.platform ?? '',
       p.content_pillar ?? p.pillar ?? '',
-      `"${p.hook.replace(/"/g, '""')}"`,
+      q(p.topic ?? ''),
+      q(p.hook),
       p.format,
-      `"${(p.notes ?? p.production_note ?? '').replace(/"/g, '""')}"`,
+      p.difficulty ?? '',
+      q(p.optimal_time ?? ''),
+      q(p.cta ?? ''),
+      q(p.notes ?? p.production_note ?? ''),
+      q(p.hashtags?.join(' ') ?? ''),
     ].join(','))
   )
   return [header, ...rows].join('\n')

@@ -86,9 +86,13 @@ export default function App() {
   }
 
   const exportAll = () => {
-    const text = allResults
-      .map((h, i) => `${i + 1}. ${h.hook} [${h.type}] ${h.score}/10`)
-      .join('\n')
+    const text = allResults.map((h, i) => {
+      const lines = [`${i + 1}. [${h.type}] ${h.score}/10 — ${h.platform_fit}`]
+      lines.push(`   "${h.hook}"`)
+      if (h.why_it_works ?? h.why) lines.push(`   Why: ${h.why_it_works ?? h.why}`)
+      if (h.caption_starter) lines.push(`   Caption: ${h.caption_starter}`)
+      return lines.join('\n')
+    }).join('\n\n')
     navigator.clipboard.writeText(text)
   }
 
