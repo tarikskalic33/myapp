@@ -13,6 +13,7 @@ export class App {
   private panel!: SystemPanel
   private nav!: Navigation
   private overlay!: StateOverlay
+  private canvas!: HTMLCanvasElement
   private canvasSection!: HTMLElement
   private pauseEl!: HTMLElement
   private running = false
@@ -32,6 +33,7 @@ export class App {
     const view = new ShaderView((w, h) => {
       if (this.sim) resizeCanvas(ctx, view.canvas, w, h)
     })
+    this.canvas = view.canvas
 
     const ctx = configureCanvas(device, view.canvas)
     this.sim = await SimulationEngine.create(ctx)
@@ -102,7 +104,8 @@ export class App {
     const loop = (): void => {
       const params   = this.scroll.getParams()
       const fraction = this.scroll.getScrollFraction()
-      if (!this.paused) this.sim.tick(params)
+      const aspect   = this.canvas.width / Math.max(this.canvas.height, 1)
+      if (!this.paused) this.sim.tick(params, aspect)
       const state  = this.sim.getFrameState()
       const fields = this.sim.getFieldValues()
       this.panel.update(state, fraction, fields)

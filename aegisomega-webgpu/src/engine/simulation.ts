@@ -190,7 +190,7 @@ export class SimulationEngine {
     this.mouseY = 0
   }
 
-  tick(params: SimParams): void {
+  tick(params: SimParams, canvasAspect: number): void {
     this.lastParams = params
 
     writeUniforms(
@@ -204,6 +204,7 @@ export class SimulationEngine {
       SIM_HEIGHT,
       this.mouseX,
       this.mouseY,
+      canvasAspect,
     )
 
     this.sigmaPass.setBindGroup(this.sigmaBGs[this.parity])

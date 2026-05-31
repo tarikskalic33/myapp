@@ -12,6 +12,7 @@ struct Uniforms {
   height          : u32,
   mouse_x         : f32,
   mouse_y         : f32,
+  canvas_aspect   : f32,   // canvas_width / canvas_height — for aspect-correct geometry
 }
 
 @vertex
@@ -61,22 +62,29 @@ fn stars(uv: vec2<f32>, density: f32, time: f32) -> f32 {
   return smoothstep(0.04, 0.0, dist) * step(0.92, bright) * (bright - 0.92) * 14.0 * twinkle;
 }
 
+// Aspect-correct distance from center: scales x by 1/canvas_aspect so both axes
+// measure in the same "fraction of screen height" unit → circles appear circular.
+fn screen_dist(uv: vec2<f32>, center: vec2<f32>, inv_aspect: f32) -> f32 {
+  let p = uv - center;
+  return length(vec2<f32>(p.x * inv_aspect, p.y));
+}
+
 // Soft radial arch glow centered in frame; time adds slow ring pulse
-fn arch_radial(uv: vec2<f32>, sigma: f32, time: f32) -> f32 {
-  let center = vec2<f32>(0.5, 0.45);
-  let d = length(uv - center);
-  // Ring pulses ±0.01 around base radius
-  let ring_r   = 0.32 + sigma * 0.04 + sin(time * 0.65) * 0.010;
+fn arch_radial(uv: vec2<f32>, sigma: f32, time: f32, inv_aspect: f32) -> f32 {
+  let center    = vec2<f32>(0.5, 0.45);
+  let d         = screen_dist(uv, center, inv_aspect);
+  // Ring pulses ±0.01 around base radius (in screen-height units)
+  let ring_r    = 0.32 + sigma * 0.04 + sin(time * 0.65) * 0.010;
   let ring_dist = abs(d - ring_r);
   return exp(-ring_dist * ring_dist * 80.0) * smoothstep(0.6, 0.0, d);
 }
 
 // Spiral galaxy arm pattern driven by uv position + λ + slow time rotation
-fn spiral_arm(uv: vec2<f32>, lambda: f32, time: f32) -> f32 {
-  let p = uv - vec2<f32>(0.5, 0.5);
+fn spiral_arm(uv: vec2<f32>, lambda: f32, time: f32, inv_aspect: f32) -> f32 {
+  let p     = vec2<f32>((uv.x - 0.5) * inv_aspect, uv.y - 0.5);
   let angle = atan2(p.y, p.x);
-  let r = length(p);
-  let arm = sin(angle * 2.0 + r * 18.0 - lambda * 6.0 + time * 0.18);
+  let r     = length(p);
+  let arm   = sin(angle * 2.0 + r * 18.0 - lambda * 6.0 + time * 0.18);
   return smoothstep(0.0, 1.0, arm) * exp(-r * 4.5) * 0.6;
 }
 
@@ -93,10 +101,9 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   let rho    = textureLoad(rho_tex,    coord, 0).r;
   let lambda = textureLoad(lambda_tex, coord, 0).r;
 
-  // Aspect-corrected UV for circular geometry
-  let aspect = f32(u.width) / f32(u.height);
-  let uv     = vec2<f32>(in.uv.x, 1.0 - in.uv.y);
-  let uv_sq  = vec2<f32>((uv.x - 0.5) * aspect + 0.5, uv.y);
+  let uv  = vec2<f32>(in.uv.x, 1.0 - in.uv.y);
+  // inv_aspect = h/w: multiplied by (uv.x-0.5) to normalise x to screen-height units
+  let inv_aspect = 1.0 / max(u.canvas_aspect, 0.1);
 
   // Continuous time from frame counter — drives animated elements
   let time = f32(u.frame) * 0.016;  // ≈ seconds at 60fps
@@ -110,7 +117,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   let star_color = vec3<f32>(0.85, 0.90, 1.00) * (star1 + star2);
 
   // ── Portal arch — teal glow from σ field ──────────────────────────────────
-  let arch = arch_radial(uv_sq, sigma, time);
+  let arch = arch_radial(uv, sigma, time, inv_aspect);
   let sigma_norm = (sigma + 1.0) * 0.5;  // map roughly to [0,1]
   let teal_arch  = vec3<f32>(0.08, 0.80, 0.90) * pow(max(sigma_norm, 0.0), 1.6) * 1.4;
   let arch_bloom = vec3<f32>(0.20, 0.70, 0.85) * arch * 2.5;
@@ -124,7 +131,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
                    * pow(lambda_n, 2.5) * 0.5;
 
   // ── Spiral galaxy arms driven by λ + time rotation ─────────────────────────
-  let arm    = spiral_arm(uv_sq, lambda, time);
+  let arm    = spiral_arm(uv, lambda, time, inv_aspect);
   let galaxy = vec3<f32>(0.55, 0.75, 1.00) * arm * 0.7;
 
   // ── Gold particle streams from ρ gradient edges ───────────────────────────
@@ -151,9 +158,9 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     cursor_glow = vec3<f32>(1.00, 0.85, 0.50) * (inner + outer);
   }
 
-  // ── Vignette ──────────────────────────────────────────────────────────────
-  let vig_uv = uv - 0.5;
-  let vignette = 1.0 - dot(vig_uv, vig_uv) * 1.6;
+  // ── Vignette (aspect-correct: circular fade, not elliptical) ─────────────
+  let vig_p    = vec2<f32>((uv.x - 0.5) * inv_aspect, uv.y - 0.5);
+  let vignette = 1.0 - dot(vig_p, vig_p) * 1.6;
 
   // ── Composite (additive HDR) ───────────────────────────────────────────────
   let hdr = (bg + star_color + teal_arch + arch_bloom

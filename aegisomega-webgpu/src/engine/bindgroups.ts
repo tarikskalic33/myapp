@@ -2,16 +2,20 @@ import { GPU_BUFFER_USAGE } from './constants.js'
 import type { ComputePipelines, RenderPipelineSet } from './pipelines.js'
 import type { PingPongField } from './textures.js'
 
-// Uniforms layout: 32 bytes
+// Uniforms layout: 48 bytes
 // offset 0 : dt               (f32)
 // offset 4 : frame            (u32)
 // offset 8 : lambda_influence (f32)
 // offset 12: sigma_perturb    (f32)
 // offset 16: width            (u32)
 // offset 20: height           (u32)
-// offset 24: mouse_x          (f32)  — normalised [0,1]; -1 when not pressed
-// offset 28: mouse_y          (f32)  — normalised [0,1]
-export const UNIFORMS_SIZE = 32
+// offset 24: mouse_x          (f32)  — normalised [0,1]; -1 when no hover/press
+// offset 28: mouse_y          (f32)  — press: [0,1]; hover: -(y+1) ∈ [-2,-1]
+// offset 32: canvas_aspect    (f32)  — canvas_width / canvas_height
+// offset 36: _pad0            (u32)
+// offset 40: _pad1            (u32)
+// offset 44: _pad2            (u32)
+export const UNIFORMS_SIZE = 48
 
 export function createUniformBuffer(device: GPUDevice): GPUBuffer {
   return device.createBuffer({
@@ -32,6 +36,7 @@ export function writeUniforms(
   height: number,
   mouseX: number,
   mouseY: number,
+  canvasAspect: number,
 ): void {
   const ab  = new ArrayBuffer(UNIFORMS_SIZE)
   const f32 = new Float32Array(ab)
@@ -42,8 +47,10 @@ export function writeUniforms(
   f32[3] = sigmaPerturb
   u32[4] = width >>> 0
   u32[5] = height >>> 0
-  f32[6] = mouseX   // -1 when not pressed
+  f32[6] = mouseX
   f32[7] = mouseY
+  f32[8] = canvasAspect
+  // f32[9..11] remain 0 (padding)
   device.queue.writeBuffer(buffer, 0, ab)
 }
 
