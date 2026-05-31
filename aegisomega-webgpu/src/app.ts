@@ -13,6 +13,7 @@ export class App {
   private panel!: SystemPanel
   private nav!: Navigation
   private overlay!: StateOverlay
+  private canvasSection!: HTMLElement
   private running = false
   private rafId   = 0
 
@@ -23,6 +24,7 @@ export class App {
     this.panel   = new SystemPanel()
     this.nav     = new Navigation()
     this.overlay = new StateOverlay()
+    this.canvasSection = document.getElementById('canvas-section') ?? document.body
 
     const view = new ShaderView((w, h) => {
       if (this.sim) resizeCanvas(ctx, view.canvas, w, h)
@@ -70,12 +72,17 @@ export class App {
     if (this.running) return
     this.running = true
     const loop = (): void => {
-      const params = this.scroll.getParams()
+      const params   = this.scroll.getParams()
+      const fraction = this.scroll.getScrollFraction()
       this.sim.tick(params)
-      const state = this.sim.getFrameState()
-      this.panel.update(state, this.scroll.getScrollFraction(), this.sim.getFieldValues())
+      const state  = this.sim.getFrameState()
+      const fields = this.sim.getFieldValues()
+      this.panel.update(state, fraction, fields)
       this.nav.updateFrame(state.frame)
-      this.overlay.update(state)
+      this.overlay.update(state, fields)
+      // Scroll-driven camera brightness: 1.0 → 1.5 as page scrolls down
+      const brightness = 1.0 + fraction * 0.5
+      this.canvasSection.style.filter = `brightness(${brightness.toFixed(3)})`
       this.rafId = requestAnimationFrame(loop)
     }
     this.rafId = requestAnimationFrame(loop)

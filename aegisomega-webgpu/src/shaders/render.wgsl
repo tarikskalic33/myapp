@@ -47,8 +47,8 @@ fn hash11(n: f32) -> f32 {
   return fract(sin(n) * 43758.5453);
 }
 
-// Starfield: sparse bright points across the field
-fn stars(uv: vec2<f32>, density: f32) -> f32 {
+// Starfield: sparse bright points across the field; time drives per-star twinkle
+fn stars(uv: vec2<f32>, density: f32, time: f32) -> f32 {
   let scale  = 300.0 * density;
   let cell   = floor(uv * scale);
   let local  = fract(uv * scale) - 0.5;
@@ -56,26 +56,27 @@ fn stars(uv: vec2<f32>, density: f32) -> f32 {
   let offset = vec2<f32>(hash11(h), hash11(h + 7.3)) - 0.5;
   let dist   = length(local - offset * 0.7);
   let bright = hash11(h + 13.1);
+  let twinkle = 0.55 + 0.45 * sin(time * (2.0 + h * 3.7) + h * 61.3);
   // Only bright stars appear (top ~8%)
-  return smoothstep(0.04, 0.0, dist) * step(0.92, bright) * (bright - 0.92) * 14.0;
+  return smoothstep(0.04, 0.0, dist) * step(0.92, bright) * (bright - 0.92) * 14.0 * twinkle;
 }
 
-// Soft radial arch glow centered in frame
-fn arch_radial(uv: vec2<f32>, sigma: f32) -> f32 {
+// Soft radial arch glow centered in frame; time adds slow ring pulse
+fn arch_radial(uv: vec2<f32>, sigma: f32, time: f32) -> f32 {
   let center = vec2<f32>(0.5, 0.45);
   let d = length(uv - center);
-  // Ring at r≈0.32, width controlled by σ amplitude
-  let ring_r   = 0.32 + sigma * 0.04;
+  // Ring pulses ±0.01 around base radius
+  let ring_r   = 0.32 + sigma * 0.04 + sin(time * 0.65) * 0.010;
   let ring_dist = abs(d - ring_r);
   return exp(-ring_dist * ring_dist * 80.0) * smoothstep(0.6, 0.0, d);
 }
 
-// Spiral galaxy arm pattern driven by uv position + λ
-fn spiral_arm(uv: vec2<f32>, lambda: f32) -> f32 {
+// Spiral galaxy arm pattern driven by uv position + λ + slow time rotation
+fn spiral_arm(uv: vec2<f32>, lambda: f32, time: f32) -> f32 {
   let p = uv - vec2<f32>(0.5, 0.5);
   let angle = atan2(p.y, p.x);
   let r = length(p);
-  let arm = sin(angle * 2.0 + r * 18.0 - lambda * 6.0);
+  let arm = sin(angle * 2.0 + r * 18.0 - lambda * 6.0 + time * 0.18);
   return smoothstep(0.0, 1.0, arm) * exp(-r * 4.5) * 0.6;
 }
 
@@ -97,27 +98,33 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   let uv     = vec2<f32>(in.uv.x, 1.0 - in.uv.y);
   let uv_sq  = vec2<f32>((uv.x - 0.5) * aspect + 0.5, uv.y);
 
+  // Continuous time from frame counter — drives animated elements
+  let time = f32(u.frame) * 0.016;  // ≈ seconds at 60fps
+
   // ── Background ─────────────────────────────────────────────────────────────
   let bg = vec3<f32>(0.006, 0.010, 0.038);
 
   // ── Starfield (two density layers for parallax feel) ──────────────────────
-  let star1 = stars(uv, 1.0) * 0.9;
-  let star2 = stars(uv * 1.618, 0.6) * 0.55;
+  let star1 = stars(uv, 1.0, time) * 0.9;
+  let star2 = stars(uv * 1.618, 0.6, time * 0.71) * 0.55;
   let star_color = vec3<f32>(0.85, 0.90, 1.00) * (star1 + star2);
 
   // ── Portal arch — teal glow from σ field ──────────────────────────────────
-  let arch = arch_radial(uv_sq, sigma);
+  let arch = arch_radial(uv_sq, sigma, time);
   let sigma_norm = (sigma + 1.0) * 0.5;  // map roughly to [0,1]
   let teal_arch  = vec3<f32>(0.08, 0.80, 0.90) * pow(max(sigma_norm, 0.0), 1.6) * 1.4;
   let arch_bloom = vec3<f32>(0.20, 0.70, 0.85) * arch * 2.5;
 
-  // ── Nebula clouds — violet/pink from λ field ───────────────────────────────
-  let lambda_n = clamp((lambda + 0.5) * 1.2, 0.0, 1.0);
-  let violet   = vec3<f32>(0.50, 0.10, 0.90) * pow(lambda_n, 1.3) * 0.85;
-  let pink_rim = vec3<f32>(0.80, 0.20, 0.60) * pow(lambda_n, 2.5) * 0.5;
+  // ── Nebula clouds — violet/pink with slow hue breathing from λ ────────────
+  let breathe    = sin(time * 0.28) * 0.5 + 0.5;  // [0,1] slow oscillation ~22s period
+  let lambda_n   = clamp((lambda + 0.5) * 1.2, 0.0, 1.0);
+  let violet     = vec3<f32>(0.50 + breathe * 0.12, 0.08, 0.90 - breathe * 0.10)
+                   * pow(lambda_n, 1.3) * 0.85;
+  let pink_rim   = vec3<f32>(0.80, 0.20 + breathe * 0.08, 0.60)
+                   * pow(lambda_n, 2.5) * 0.5;
 
-  // ── Spiral galaxy arms driven by λ ────────────────────────────────────────
-  let arm   = spiral_arm(uv_sq, lambda);
+  // ── Spiral galaxy arms driven by λ + time rotation ─────────────────────────
+  let arm    = spiral_arm(uv_sq, lambda, time);
   let galaxy = vec3<f32>(0.55, 0.75, 1.00) * arm * 0.7;
 
   // ── Gold particle streams from ρ gradient edges ───────────────────────────

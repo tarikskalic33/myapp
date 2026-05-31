@@ -1,4 +1,5 @@
 import type { FrameState } from '../engine/simulation.js'
+import type { FieldValues } from '../engine/fieldSampler.js'
 
 // StateOverlay — debug panel toggled with D key.
 // Shows full frame graph state, params, and pass execution order.
@@ -38,11 +39,14 @@ export class StateOverlay {
     this.overlay.setAttribute('hidden', '')
   }
 
-  update(state: FrameState): void {
+  update(state: FrameState, fields: FieldValues): void {
     if (!this.visible) return
     this.content.innerHTML = [
       row('frame',             String(state.frame)),
       row('dt',                state.dt.toFixed(6)),
+      row('σ (GPU center)',    fields.sigma.toFixed(5)),
+      row('ρ (GPU center)',    fields.rho.toFixed(5)),
+      row('λ (GPU center)',    fields.lambda.toFixed(5)),
       row('λ influence',       state.lambdaInfluence.toFixed(4)),
       row('σ perturb',         state.sigmaPerturb.toFixed(6)),
       row('pass order',        state.passOrder.join(' → ')),
