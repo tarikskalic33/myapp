@@ -35,11 +35,25 @@ export interface LiveResonance {
   phi_headroom: number
 }
 
+export interface LiveBlock {
+  block_height: number
+  sequence: number
+  state_root: string
+  bft_quorum: number
+  validator_weights: { coordinator: number; auditor_1: number; auditor_2: number }
+  t0_verdict: boolean
+  corruption_count: number
+  drift_risk: number
+  is_replay_reconstructable: boolean
+  schema_version: string
+}
+
 export interface BridgeSnapshot {
   reachable: boolean
   telemetry?: LiveTelemetry
   node?: LiveNode
   resonance?: LiveResonance
+  block?: LiveBlock
 }
 
 const BRIDGE_URL = (import.meta.env.VITE_BRIDGE_URL as string | undefined)?.replace(/\/$/, '')
@@ -62,13 +76,14 @@ export async function fetchBridgeSnapshot(): Promise<BridgeSnapshot> {
   const ctrl = new AbortController()
   const timer = setTimeout(() => ctrl.abort(), 2000)
   try {
-    const [telemetry, node, resonance] = await Promise.all([
+    const [telemetry, node, resonance, block] = await Promise.all([
       getJson<LiveTelemetry>('/telemetry', ctrl.signal),
       getJson<LiveNode>('/node', ctrl.signal),
       getJson<LiveResonance>('/resonance', ctrl.signal),
+      getJson<LiveBlock>('/block', ctrl.signal),
     ])
-    const reachable = Boolean(telemetry || node || resonance)
-    return { reachable, telemetry, node, resonance }
+    const reachable = Boolean(telemetry || node || resonance || block)
+    return { reachable, telemetry, node, resonance, block }
   } finally {
     clearTimeout(timer)
   }

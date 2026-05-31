@@ -137,6 +137,9 @@ function Landing() {
             {epoch !== undefined && (
               <div style={{ marginTop: 28, fontSize: 12, color: '#475569', fontFamily: '"JetBrains Mono", monospace' }}>
                 bridge epoch {epoch} · sequence {sequence}
+                {bridge.block !== undefined && (
+                  <span> · block {bridge.block.block_height} · root …{bridge.block.state_root.slice(-8)}</span>
+                )}
               </div>
             )}
           </div>
