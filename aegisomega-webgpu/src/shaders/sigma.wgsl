@@ -23,12 +23,18 @@ fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
   let sigma  = textureLoad(sigma_in, c, 0).r;
   let lambda = textureLoad(lambda_in, c, 0).r;
 
-  // Spatial Laplacian — drives beautiful wave-like diffusion
-  let r = textureLoad(sigma_in, clamp(c + vec2<i32>( 1,  0), vec2<i32>(0), dims), 0).r;
-  let l = textureLoad(sigma_in, clamp(c + vec2<i32>(-1,  0), vec2<i32>(0), dims), 0).r;
-  let t = textureLoad(sigma_in, clamp(c + vec2<i32>( 0,  1), vec2<i32>(0), dims), 0).r;
-  let b = textureLoad(sigma_in, clamp(c + vec2<i32>( 0, -1), vec2<i32>(0), dims), 0).r;
-  let lap = r + l + t + b - 4.0 * sigma;
+  // 9-point isotropic Laplacian — gives circular wave fronts rather than the
+  // axis-aligned diamond bias of the 4-point stencil.
+  // Weights: cardinal ×0.5, diagonal ×0.25 → L = 0.5(r+l+t+b)+0.25(diag)−3σ
+  let r  = textureLoad(sigma_in, clamp(c + vec2<i32>( 1,  0), vec2<i32>(0), dims), 0).r;
+  let l  = textureLoad(sigma_in, clamp(c + vec2<i32>(-1,  0), vec2<i32>(0), dims), 0).r;
+  let t  = textureLoad(sigma_in, clamp(c + vec2<i32>( 0,  1), vec2<i32>(0), dims), 0).r;
+  let b  = textureLoad(sigma_in, clamp(c + vec2<i32>( 0, -1), vec2<i32>(0), dims), 0).r;
+  let tr = textureLoad(sigma_in, clamp(c + vec2<i32>( 1,  1), vec2<i32>(0), dims), 0).r;
+  let tl = textureLoad(sigma_in, clamp(c + vec2<i32>(-1,  1), vec2<i32>(0), dims), 0).r;
+  let br = textureLoad(sigma_in, clamp(c + vec2<i32>( 1, -1), vec2<i32>(0), dims), 0).r;
+  let bl = textureLoad(sigma_in, clamp(c + vec2<i32>(-1, -1), vec2<i32>(0), dims), 0).r;
+  let lap = 0.5*(r+l+t+b) + 0.25*(tr+tl+br+bl) - 3.0*sigma;
 
   // Mouse splash — Gaussian kick only when pressing (mouse_y >= 0 = press encoding;
   // hover uses mouse_y = -(y+1) which is negative, so hover never injects energy).
