@@ -3,9 +3,9 @@
 # Epistemic Tier: T1 — infrastructure substrate.
 #
 # Usage:
-#   cp sovereign-omega-v2/.env.example sovereign-omega-v2/.env  # add your keys
-#   docker-compose up -d
-#   docker-compose logs -f bridge
+#   cp .env.example .env  # add your keys
+#   docker compose up -d
+#   docker compose logs -f bridge
 #
 # The checkpoint volume survives container restarts — governance state is durable.
 
@@ -23,9 +23,11 @@ services:
     restart: unless-stopped
     ports:
       - "7890:7890"
+    env_file:
+      - ./.env
     environment:
-      SOVEREIGN_BRIDGE_PORT: "7890"
-      AEGIS_CHECKPOINT_PATH: "/app/data/aegis_checkpoint.json"
+      SOVEREIGN_BRIDGE_PORT: "${SOVEREIGN_BRIDGE_PORT:-7890}"
+      AEGIS_CHECKPOINT_PATH: "${AEGIS_CHECKPOINT_PATH:-/app/data/aegis_checkpoint.json}"
     volumes:
       # Persisted checkpoint — governance state survives restarts
       - bridge-checkpoint:/app/data
@@ -64,7 +66,7 @@ services:
       bridge:
         condition: service_healthy
     env_file:
-      - ./cockpit/.env
+      - ./.env
 
 volumes:
   bridge-checkpoint:

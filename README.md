@@ -12,6 +12,60 @@
 
 ---
 
+## ⚡ Quick Start (5 minutes)
+
+```bash
+# 1. Clone
+git clone https://github.com/Aegis-Omega/AEGIS--.git && cd AEGIS--
+
+# 2. Configure
+cp .env.example .env
+# edit .env and add your ANTHROPIC_API_KEY
+
+# 3. Run the bridge + cockpit via Docker
+docker compose up -d
+
+# 4. Verify
+curl http://localhost:7890/telemetry
+# → {"corruption_count": 0, "epoch": 0, ...}
+
+# 5. Open the cockpit and Studio
+open http://localhost:3000  # cockpit
+open http://localhost:3001  # Studio observability
+```
+
+**Prerequisites**
+
+| Tool | Version |
+|---|---|
+| Node | ≥ 20.x |
+| Rust | ≥ 1.75 (stable) |
+| Python | ≥ 3.11 |
+| Docker | ≥ 24.x (optional, for quick start) |
+
+## Table of Contents
+
+- [Quick Start](#-quick-start-5-minutes)
+- [Genesis & Constraints](#--genesis--constraints--)
+- [What Was Built](#what-was-built)
+- [The Organism Metaphor](#the-organism-metaphor)
+- [Architecture Overview](#architecture-overview)
+- [How It Maintains Coherence](#how-it-maintains-coherence)
+- [Testing](#testing)
+- [Gate Structure](#gate-structure)
+- [Running the System](#running-the-system)
+- [Studio (Observability)](#the-studio--read-only-observability)
+- [Skill Harness](#the-skill-harness)
+- [Multi-Model Consensus](#multi-model-consensus)
+- [Codebase Scale](#codebase-scale)
+- [Known Limitations](#known-limitations)
+- [What Comes Next](#what-comes-next)
+- [Repository Structure](#repository-structure)
+- [Contributing](CONTRIBUTING.md)
+- [License](#license)
+
+---
+
 ## ── Genesis & Constraints ──
 
 AEGIS-Ω was conceived, designed, and executed by a single engineer operating under strict resource constraints. While modern distributed systems are built by teams with dedicated infrastructure and cloud compute budgets, this system was built as an exercise in mathematical determinism over raw compute scale.
@@ -436,31 +490,51 @@ The foundation is built. The organism exists. These are the remaining gaps befor
 
 ## Repository Structure
 
-```
-aegis-cl-psi/               Rust · 385 gate modules (gossip + math + compaction gossip)
-aegis-runtime/              Rust · 7-pillar distributed agent runtime
-sovereign-omega-v2/         TypeScript governance runtime
-  src/core/                 RFC 8785 canonical JSON · SHA-256 · immutability
-  src/frame/                DFA · topology · lineage · epoch · divergence
-  src/consensus/            BFT swarm · game theory · synthesis swarm
-  src/constitutional/       Martingale · reduction gate · guardian policy
-  src/ledger/               Hash-chained ledger · persistence seam
-  src/skill-harness/        Skill catalog · HGT scanner · RALPH executor
-  src/capsule/              Capability VM · evolution lifecycle
-  src/agents/               Fibonacci scheduler · RALPH loops · 15 agent types
-  src/corpus-engine/        5-phase RALPH document pipeline
-  src/sitr/                 Situation Awareness runtime
-  src/aoie/                 Adaptive Ontological Inference Engine
-  python/                   HTTP bridge · PGCS · constitutional gate validation
-cockpit/                    AI chat UI (React 18, constitutional telemetry)
-studio/                     10-surface observability dashboard (read-only)
-platform-picker/            Creator tool (Qwen-powered, $19)
-hook-generator/             Creator tool (Qwen-powered, $19)
-content-calendar/           Creator tool (Qwen-powered, $19)
-hub/                        Products landing page
-packages/shared/            Shared TS infrastructure
-docs/                       Architecture specifications and formal declarations
-```
+### Runtime core (the "organism")
+
+- `aegis-cl-psi/` — Rust gossip fabric + math gates (385 modules, 6862 tests)
+- `aegis-runtime/` — Rust seven-pillar runtime (96 tests)
+- `sovereign-omega-v2/` — TypeScript governance runtime + Python bridge (2790 tests)
+- `crates/` — Shared Rust crates (workspace members)
+- `packages/shared/` — Shared TypeScript types and utilities
+
+### Front-end surfaces
+
+- `cockpit/` — Constitutional AI chat UI (React)
+- `studio/` — 10-surface observability dashboard
+- `hub/` — Products landing page
+
+### Commercial products (`AGPL-3.0-or-later` + commercial terms — see `FOUNDERS.md`)
+
+- `platform-picker/` — AI platform recommender ($19)
+- `hook-generator/` — Viral hook generator ($19)
+- `content-calendar/` — AI content planner ($19)
+
+### Subsystems / specs
+
+- `alignment/` — Alignment specs and tests
+- `eccf/` — ECCF security alignment (Gate 204)
+- `gcce/` — GCCE architecture (see `docs/GCCE_ARCHITECTURE.md`)
+- `harness/` — Skill harness SDK (Gate 202)
+- `sovereign-mesh/` — Mesh deployment artifacts (Gate 205)
+- `security/` — Threat models and advisories
+- `enterprise/` — Enterprise build artifacts
+- `paperclip/` — TODO: document purpose
+- `core/` — TODO: document overlap with `crates/`
+- `src/` — TODO: document overlap with `sovereign-omega-v2/src/`
+- `state/` — Persisted ledger state and runtime artifacts
+- `supabase/` — Supabase schema, migrations, and edge functions
+- `scripts/` — Build, release, and development scripts
+
+### Documentation
+
+- `docs/` — 28+ architecture specs; start with `docs/architecture.md`
+- `README.md` — You are here
+- `CONSTITUTIONAL_DECLARATION.md` — Constitutional declaration
+- `CLAUDE.md` — Agent operating manual used when AI assistants edit this repo
+- `SECURITY.md` — Security reporting policy
+- `FOUNDERS.md` — Founding / commercial terms
+- `DEPLOY.md` — Deployment notes
 
 ---
 
