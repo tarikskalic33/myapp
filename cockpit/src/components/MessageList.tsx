@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { Copy, Check } from 'lucide-react'
 import type { ChatMessage } from '../lib/agent.js'
 
 interface MessageListProps {
@@ -123,9 +124,31 @@ function EmptyState() {
   )
 }
 
+function CopyBtn({ text, light }: { text: string; light?: boolean }) {
+  const [copied, setCopied] = useState(false)
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  return (
+    <button
+      onClick={handleCopy}
+      aria-label="Copy message"
+      className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-0.5"
+      style={{ color: light ? 'rgba(255,255,255,0.6)' : '#6B6B7A' }}
+    >
+      {copied
+        ? <Check size={13} style={{ color: light ? 'rgba(255,255,255,0.9)' : '#34D399' }} />
+        : <Copy size={13} />}
+    </button>
+  )
+}
+
 function UserBubble({ content }: { content: string }) {
   return (
-    <div className="flex justify-end">
+    <div className="flex justify-end items-start gap-2 group">
+      <CopyBtn text={content} light />
       <div
         className="max-w-[72%] px-4 py-3 rounded-2xl rounded-br-sm text-sm leading-relaxed whitespace-pre-wrap"
         style={{ background: '#60A5FA', color: '#ffffff' }}
@@ -251,7 +274,7 @@ function MarkdownContent({ content }: { content: string }) {
 
 function AssistantBubble({ content, isStreaming }: { content: string; isStreaming: boolean }) {
   return (
-    <div className="flex justify-start">
+    <div className="flex justify-start group">
       <div className="flex gap-3 max-w-[80%]">
         <div
           className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-mono text-xs font-semibold mt-0.5"
@@ -277,6 +300,7 @@ function AssistantBubble({ content, isStreaming }: { content: string; isStreamin
           )}
         </div>
       </div>
+      {!isStreaming && <CopyBtn text={content} />}
     </div>
   )
 }
